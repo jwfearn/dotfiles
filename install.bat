@@ -1,2 +1,1 @@
-REM TODO: check for git
-REM TODO: check for ruby/python? or just use native
+REM TODO: if git not found, echo "git not found" followed by README.md and exit 1

@@ -1,0 +1,92 @@
+# John's ~/.gitconfig, see `man git-config` for more info
+[user]
+	name = John Fearnside
+	email = john@moz.com
+[apply]
+  whitespace = strip
+[pager]
+  color = true
+[github]
+  user = jwfearn
+[alias]
+# from me
+  branches = branch
+# from Mel
+  graph = log --graph --decorate --all
+  unadd = reset --
+  unedit = checkout --
+  unrm = checkout --
+  unstash = stash pop
+  hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+# from https://gist.github.com/1637874
+  l = log --graph --all --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'
+  ll = log --stat --abbrev-commit
+  d = diff --color-words
+  dh = diff --color-words head
+# from Marty
+#l = log --stat
+  co = checkout
+  br = branch
+  ci = commit
+  st = status
+  rename = mv
+  unstage = reset HEAD --
+  amend = commit --amend
+  last = log -1 HEAD
+#viz = !gitx --all
+#deploy = !cap staging deploy
+#hack = !hack
+#ship = !ship
+  restart = !touch ./tmp/restart.txt
+  test = !rake cucumber && rake spec
+  current-branch = !git branch | grep '\\*' | awk '{print $2}'
+  stagify = !CURRENT=`git current-branch` && git co staging && git pull . master && git co $CURRENT && git push -n
+  prodify = !CURRENT=`git current-branch` && git co staging && git co production && git pull . staging && git co $CURRENT && git push -n
+  freeze = update-index --assume-unchanged
+  thaw = update-index --no-assume-unchanged
+  has = branch -a --contains
+  thas = tag --contains
+  loose-branches = branch -r -v --no-merged
+# from http://gitready.com/advanced/2011/10/21/ribbon-and-catchup-reading-new-commits.html
+  ribbon = tag --force _ribbon origin/master
+  catchup = log --patch --reverse --topo-order _ribbon..origin/master
+[color]
+  branch = auto
+  diff = auto
+  grep = auto
+  interactive = auto
+  pager = true
+  showbranch = auto
+  status = auto
+  ui = auto
+[status]
+  color = auto
+[push]
+  default = tracking
+[core]
+	excludesfile = /Users/john/.gitignore
+# from Ben
+#editor = vim
+[mergetool]
+	keepBackup = true
+[diff]
+; 	external = /Applications/DeltaWalker.app/Contents/MacOS/git-diff
+  color = auto
+  rename = copy
+[merge]
+  conflictstyle = diff3
+; 	tool = deltawalker
+; [mergetool "deltawalker"]
+; 	path = '/Applications/DeltaWalker.app/Contents/MacOS/git-merge'
+; 	cmd = '/Applications/DeltaWalker.app/Contents/MacOS/git-merge' $LOCAL $REMOTE $BASE $MERGED
+[branch]
+	autosetuprebase = always
+[filter "media"]
+	clean = git-media-clean %f
+	smudge = git-media-smudge %f
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
