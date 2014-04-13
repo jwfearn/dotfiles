@@ -1,16 +1,19 @@
 ## dotfiles
 
-### System Requirements:
-`bash` (Mac/Linux), `cmd` (Windows)
+### System Requirements
 
-`git`  See http://git-scm.com/
+ - `git` See: http://git-scm.com/
+
+And one of:
+ - `bash` (Mac, Linux, Cygwin, MinGW, etc.)
+ - `cmd` (Windows)
 
 ### Installation
-#### Unix-like (Mac, Linux, Cygwin, MinGW)
+**bash** (Mac, Linux, Cygwin, MinGW, etc.):
 ```bash
-pushd ~; git clone git@github.com:jwfearn/dotfiles; bash dotfiles/install.sh; popd
+bash -c"pushd ~ && git clone git@github.com:jwfearn/dotfiles && source dotfiles/install.sh && popd"
 ```
-#### Windows (cmd, PowerShell)
+**cmd** (Windows):
 ```bat
-pushd %HOMEPATH%; git clone git@github.com:jwfearn/dotfiles; cmd dotfiles/install.bat; popd
+cmd /c"pushd %HOMEPATH% && git clone git@github.com:jwfearn/dotfiles && call dotfiles/install.bat && popd"
 ```
