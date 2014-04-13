@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# TODO: if git not found, echo "git required, see README:" followed by README.md and exit 1
-#which git
-#git --version
 
 H=~                      # home directory
 D=$H/dotfiles            # dotfiles directory
@@ -13,12 +10,20 @@ pushd $D
 
 # TODO: for each non-git-ignored file or directory
 fs=$(git ls-tree --full-tree --name-only HEAD)  # non-git-ignored files AND dirs?
-for f in fs; do  # TODO: include $D/.* and $D/*
+#echo fs = ${fs[*]}
+#echo X = ${X[*]}
+
+#echo ${fs[@]#install.bat}
+#${fs[@]/install.sh/bar}
+#${fs[@]/README.md/baz}
+
+
+for f in ${fs}; do  # TODO: include $D/.* and $D/*
   #  f=$(basename $path)
   # TODO: if excluded, skip
   ok=1
-  if $ok; then
-    if test -e $f; then # TODO: if f in H
+  if [[ ${ok} ]]; then
+    if [[ -e ${f} ]]; then # TODO: if f in H
       echo "WOULD DO: mkdir -p $B"
       echo "WOULD DO: mv $H/$f $B/$f"
     fi
