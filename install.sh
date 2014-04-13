@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-H=~                      # home directory
-D=$H/dotfiles            # dotfiles directory
-T=$(date +%s)            # timestamp
-B=$H/dotfiles_backup_$T  # backup directory
-X=(README.md install.sh install.bat)       # excludes
+H=~                                   # home directory
+D=$H/dotfiles                         # dotfiles directory
+T=$(date +%s)                         # timestamp
+B=$H/dotfiles_backup_$T               # backup directory
+X=(README.md install.sh install.bat)  # excludes
 
 pushd $D
 
