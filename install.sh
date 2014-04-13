@@ -12,8 +12,9 @@ X=(README.md install.sh install.bat)       # excludes
 pushd D
 
 # TODO: for each non-git-ignored file or directory
-for path in $D/*; do  # TODO: include $D/.* and $D/*
-  f=$(basename $path)
+fs=$(git ls-tree --full-tree --name-only HEAD)  # non-git-ignored files AND dirs?
+for f in fs; do  # TODO: include $D/.* and $D/*
+  #  f=$(basename $path)
   # TODO: if excluded, skip
   ok=1
   if $ok; then
