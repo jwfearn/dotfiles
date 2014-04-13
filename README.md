@@ -6,9 +6,11 @@
 `git`  See http://git-scm.com/
 
 ### Installation
-#### Mac/Linux
+#### Unix-like (Mac, Linux, Cygwin, MinGW)
 ```bash
-pushd ~; git clone git@github.com:jwfearn/dotfiles; . dotfiles/install.sh; popd
+pushd ~; git clone git@github.com:jwfearn/dotfiles; bash dotfiles/install.sh; popd
 ```
-#### Windows
-*COMING SOON*
+#### Windows (cmd, PowerShell)
+```bat
+pushd %HOMEPATH%; git clone git@github.com:jwfearn/dotfiles; cmd dotfiles/install.bat; popd
+```
