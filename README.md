@@ -1,12 +1,8 @@
 ## dotfiles
 
-### System Requirements
-
- - `git` See: http://git-scm.com/
-
-And one of:
- - `bash` (Mac, Linux, Cygwin, MinGW, etc.)
- - `cmd` (Windows)
+### Requirements
+1. A pre-installed script interpreter: `cmd` on Windows; or `bash` on Unix-like systems (Mac, Linux, Cygwin, MinGW, etc.)
+1. The `git` version control program which you may need to install youself.  See: http://git-scm.com/
 
 ### Installation
 **bash** (Mac, Linux, Cygwin, MinGW, etc.):
