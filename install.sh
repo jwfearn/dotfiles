@@ -9,7 +9,7 @@ T=$(date +%s)            # timestamp
 B=$H/dotfiles_backup_$T  # backup directory
 X=(README.md install.sh install.bat)       # excludes
 
-pushd D
+pushd $D
 
 # TODO: for each non-git-ignored file or directory
 fs=$(git ls-tree --full-tree --name-only HEAD)  # non-git-ignored files AND dirs?
