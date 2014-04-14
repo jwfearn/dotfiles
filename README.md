@@ -22,13 +22,15 @@ Paste the following line into your shell and hit enter:
 cmd /e:on /c "pushd %HOMEPATH% && git clone https://github.com/jwfearn/dotfiles.git && call dotfiles/install.bat && popd"
 ```
 
-The installation code above works in any shell as long as `cmd` or `bash` is
-callable from it.
+The installation code above should work in any shell as long as `cmd` or
+`bash` is callable from it.  For example, you can use `zsh` on the Mac or
+`PowerShell` on Windows.
 
 ### Usage
 *COMING SOON*
 
 ### TODO
-- move `install.bat`, `install.sh` to a separate module?
+- rename `install.bat` to `install.cmd`?
+- move `install.*` to a separate module?
 - add a *refresh* script?
 - tests: cmd/cmd, bash/bash, PowerShell/cmd, bash/cmd, zsh/bash, others?
