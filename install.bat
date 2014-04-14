@@ -6,7 +6,7 @@ set DOTS=%H%\dotfiles
 REM Create a (local) timestamp, format: YYYYMMDDHHMMSS.
 call :timestamp T
 set BAK=%DOTS%_backup_%T%
-set EXCLUDES=.gitignore README.md install.bat install.sh
+set EXCLUDES=".gitignore README.md install.bat install.sh"
 
 pushd %DOTS%
 
@@ -16,7 +16,7 @@ for /f %%f in ('git ls-tree --full-tree --name-only HEAD') do (
   echo %EXCLUDES% | findstr "%%f" > nul & if errorlevel 1 (
     REM If found in home directory
     if exist "%H%\%%f" (
-      echo "%H%\%%f"
+      echo "WOULD DO: move %H%\%%f %BAK%\%%f"
       REM TODO: If not a link, back it up
       rem call :islink "%H%\%%f" L
       rem echo "%L%"
@@ -44,7 +44,7 @@ goto:EOF
 setlocal
 set opt=""
 REM Add /D option if target is a directory
-push %2 2> nul && set opt="/D" & popd
+pushd %2 2> nul && set opt="/D" & popd
 mklink %opt% %1 %2
 endlocal
 goto:EOF
