@@ -30,7 +30,6 @@ The installation code above should work in any shell as long as `cmd` or
 *COMING SOON*
 
 ### TODO
-- rename `install.bat` to `install.cmd`?
 - move `install.*` to a separate module?
 - add a *refresh* script?
 - tests: cmd/cmd, bash/bash, PowerShell/cmd, bash/cmd, zsh/bash, others?
