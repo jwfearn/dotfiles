@@ -37,7 +37,9 @@ function main() {
 
 function timestamp {
   local t=$(date +%Y%m%d%H%M%S)
-  ${$1}=t
+  if [[ $1 ]]; then
+    eval "$1=\$t"
+  fi
 }
 
 function symlink {
