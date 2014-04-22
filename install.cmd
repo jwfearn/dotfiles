@@ -1,13 +1,11 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
-
 goto :start
 
 :main
   setlocal
   set H=%HOMEPATH%
   set DOTS=%H%\dotfiles
-  REM Create a (local) timestamp, format: YYYYMMDDHHMMSS.
   call :timestamp T
   set BAK=%DOTS%_backup_%T%
   set EXCLUDES=".gitignore README.md install.bat install.sh"
@@ -34,6 +32,7 @@ goto:EOF
 
 
 :timestamp
+  REM @param-out %1 Receives a (local) timestamp, format: YYYYMMDDHHMMSS.
   setlocal
   for /f "tokens=1-3 delims=/:." %%a in ("%TIME%") do (set t=%%a%%b%%c)
   for /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set t=%%c%%a%%b%t: =0%)
@@ -42,6 +41,9 @@ goto:EOF
 
 
 :symlink
+  REM Create a soft (symbolic) link.
+  REM @param-in %1 Name of new link to create.
+  REM @param-in %2 Name of existing target file or directory.
   setlocal
   set name=%1
   set target=%2
@@ -62,6 +64,13 @@ goto:EOF
 goto:EOF
 
 
+:start
+call :main
+
+REM ===========================================================================
+REM  scratchpad
+goto:EOF
+
 :xislink
   setlocal
   for %i in ("%1") do set attribs=%~ai
@@ -70,12 +79,6 @@ goto:EOF
 goto:EOF
 
 
-:start
-call :main
-
-REM ===========================================================================
-REM  scratchpad
-goto:EOF
       call :islink "%H%\%%f" L
       echo "%L%    %H%\%%f"
       if %L% neq "1" (

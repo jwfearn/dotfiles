@@ -2,13 +2,10 @@
 set -o nounset
 set -o errexit
 
-
 function main() {
 
   local H=~
   local DOTS=${H}/dotfiles
-  # Create a (local) timestamp, format: YYYYMMDDHHMMSS.
-#  local T=$(date +%Y%m%d%H%M%S)
   timestamp T
   local BAK=${DOTS}_backup_${T}
   local EXCLUDES=".gitignore README.md install.bat install.sh"
@@ -36,6 +33,7 @@ function main() {
 }
 
 function timestamp {
+  # @param-out $1 Receives a (local) timestamp, format: YYYYMMDDHHMMSS.
   local t=$(date +%Y%m%d%H%M%S)
   if [[ $1 ]]; then
     eval "$1=\$t"
@@ -43,8 +41,11 @@ function timestamp {
 }
 
 function symlink {
-  local name=xxx
-  local target=xxx
+  # Create a soft (symbolic) link.
+  # @param-in $1 Name of new link to create.
+  # @param-in $2 Name of existing target file or directory.
+  local name=$1
+  local target=$2
   $(ln -s name target)
 }
 
