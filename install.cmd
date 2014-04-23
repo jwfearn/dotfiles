@@ -41,16 +41,16 @@ goto:EOF
 
 
 :symlink
-  REM Create a soft (symbolic) link.
-  REM @param-in %1 Name of new link to create.
-  REM @param-in %2 Name of existing target file or directory.
+  REM Create a symbolic link.
+  REM @param-in %1 Name (relative) of link being created.
+  REM @param-in %2 Path (relative or absolute) to which new link refers.
   setlocal
-  set name=%1
-  set target=%2
+  set shortcut=%1
+  set original=%2
   set opt=""
-  REM Add /D option if target is a directory
-  pushd %target 2> nul && set opt="/D" & popd
-  mklink %opt% %name %target
+  REM Add /D option if original is a directory
+  pushd %original 2> nul && set opt="/D" & popd
+  mklink %opt% %shortcut %original
   endlocal
 goto:EOF
 

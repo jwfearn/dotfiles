@@ -41,12 +41,12 @@ function timestamp {
 }
 
 function symlink {
-  # Create a soft (symbolic) link.
-  # @param-in $1 Name of new link to create.
-  # @param-in $2 Name of existing target file or directory.
-  local name=$1
-  local target=$2
-  $(ln -s name target)
+  # Create a symbolic link.
+  # @param-in $1 Name (relative) of link being created.
+  # @param-in $2 Path (relative or absolute) to which new link refers.
+  local shortcut=$1
+  local original=$2
+  $(ln -s shortcut original)
 }
 
 function backup {
