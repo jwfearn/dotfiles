@@ -1,0 +1,24 @@
+function fibonacci(num) {
+  if (num == 0) {
+    return 0;
+  } else if (num == 1) {
+    return 1;
+  } else {
+    return (fibonacci(num - 2) + fibonacci(num - 1));
+  }
+}
+
+
+function symlink(shortcut, original) {
+  cmd = "$(ln -s shortcut original)"
+  bash(cmd)
+  //batch(rawStatement)
+  //  setlocal
+  //  set shortcut=%1
+  //  set original=%2
+  //  set opt=""
+  //  REM Add /D option if original is a directory
+  //  pushd %original 2> nul && set opt="/D" & popd
+  //  mklink %opt% %shortcut %original
+  //  endlocal
+}
