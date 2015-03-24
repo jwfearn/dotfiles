@@ -175,15 +175,15 @@ pushd_() { pushd "$@" > /dev/null; }
 popd_() { popd "$@" > /dev/null; }
 
 lk() { open -a ScreenSaverEngine; }
-rc() { e $HOME/jffuncs.sh; }
-src() { source $HOME/jffn.sh; }  # reload function only
-srcx() { source $HOME/jfenv.sh; src; }  # also reload environment variables
+rc() { e ${DOTFILES}/jffuncs.sh; }
+src() { source ${DOTFILES}/jffn.sh; }  # reload function only
+srcx() { source ${DOTFILES}/jfenv.sh; src; }  # also reload environment variables
 path() { echo $PATH; }
 func() { typeset -F; }
 err() { echo $?; }
 rm@() { xattr -cr; }
-colors() { ruby $HOME/bin/colortest.rb; }
-minr() { ruby $HOME/bin/minrails.rb; }
+colors() { ruby ${DOTFILES}/bin/colortest.rb; }
+minr() { ruby ${DOTFILES}/bin/minrails.rb; }
 treef() { tree --dirsfirst "$@"; }
 treef1() { treef -L 1 "$@"; }
 treef2() { treef -L 2 "$@"; }
@@ -270,17 +270,17 @@ vdu() { vd "$@" && vu "$@"; }
 vus() { vu "$@" && vs "$@"; }
 vdus() { vd "$@" && vus "$@"; }
 vrps() { v reload --provision "$@" && vs "$@"; }  # faster than vdus?
-cdvp() { cd "$HOME/vagrant/processing"; vp; }
-cdvd() { cd "$HOME/vagrant/boot2docker"; vp; }
-cdvw() { cd "$HOME/vagrant/vmwtest/"; }
-cdvb() { cd "$HOME/vagrant/vbtest/"; }
+cdvp() { cd "${HOME}/vagrant/processing"; vp; }
+cdvd() { cd "${HOME}/vagrant/boot2docker"; vp; }
+cdvw() { cd "${HOME}/vagrant/vmwtest/"; }
+cdvb() { cd "${HOME}/vagrant/vbtest/"; }
 
 ## Git-related functions
 gp() { git status; git --version; }
 gdiff_() { b0=$1; b1=$2; shift 2; git diff --color --minimal "${b0}..${b1}" "$@"; }
 gstat_() { b0=$1; b1=$2; shift 2; git diff --color --minimal --stat "${b0}..${b1}" "$@"; }
-gdiffl_() { pushd_ "$HOME/github/linkscape"; gdiff_ ${B0:-'crawl-sched-Jul-5-2013'} ${B1:-'sprint-Gordon'} "$@"; popd_; }
-gstatl_() { pushd_ "$HOME/github/linkscape"; gstat_ ${B0:-'crawl-sched-Jul-5-2013'} ${B1:-'sprint-Gordon'} "$@"; popd_; }
+gdiffl_() { pushd_ "${HOME}/github/linkscape"; gdiff_ ${B0:-'crawl-sched-Jul-5-2013'} ${B1:-'sprint-Gordon'} "$@"; popd_; }
+gstatl_() { pushd_ "${HOME}/github/linkscape"; gstat_ ${B0:-'crawl-sched-Jul-5-2013'} ${B1:-'sprint-Gordon'} "$@"; popd_; }
 diffb() { B0='jf_swift_c' B1='jf_swift_p' gdiffl_ 'liblinkscape/batch.cc'; }
 statb() { B0='jf_swift_c' B1='jf_swift_p' gstatl_ 'liblinkscape/batch.cc'; }
 statc() { gstatl_ "cluster"; gstatl_ "processing/cluster"; }
@@ -290,8 +290,8 @@ ggrab() { git co $2 -- $1; }
 # gmm() { git merge master; }
 # grm() { git rebase master; }
 grl() { git reflog --format=format:"%C(yellow)%h %Cblue%aD%Creset %gd %Cgreen%aN%Creset %gs %s"; }
-cdg() { cd $HOME/github/$1; } #bgp $HOME/github/$1; }
-cdot() { cd $HOME/dotfiles; }
+cdg() { cd ${HOME}/github/$1; } #bgp ${HOME}/github/$1; }
+cdot() { cd ${DOTFILES}; }
 cda() { cdg alpha_bits; }
 cdd() { cdg mozdev; }
 cdf() { cdg freya; }
@@ -305,7 +305,7 @@ cdr() { cdg rubyish; }
 cds() { cdg snapr; }
 cdt() { cdg thorsanvil; }
 cdv() { cdg vanguard; }
-# cdt() { cd "$HOME/_out/bhtmp/repo/"; }
+# cdt() { cd "${HOME}/_out/bhtmp/repo/"; }
 
 ## Bundler-related functions
 bcp() { cat ~/.bundle/config; cat .bundle/config; }
@@ -330,8 +330,8 @@ ggp() { cat vendor/bundle/bundler/setup.rb | grep bundler/gems/; }
 bfc() { cdf && bi && br freya:compile; }
 # bgp() { bundle config --delete path; bundle config --global path $1/vendor/bundle; }
 ## Bundler-related aliases for local gem overrides
-bon2_() { bundle config local.$1 $HOME/github/$2; } # use when gem != project ($1 = gem name, $2 = project name)
-bon_() { bundle config local.$1 $HOME/github/$1; } # use when gem == project
+bon2_() { bundle config local.$1 ${HOME}/github/$2; } # use when gem != project ($1 = gem name, $2 = project name)
+bon_() { bundle config local.$1 ${HOME}/github/$1; } # use when gem == project
 bon() { bon2_ $1 $1; bundle config; }
 ona() { bon alpha_bits; }
 ond() { bon mozdev; }
@@ -395,9 +395,9 @@ dfd() { cdf && bx cap dev deploy; }
 adate() { curl -0 -i http://s3.amazonaws.com/; }
 
 ## Vanguard-related functions
-# vcredx_() { cdv && cd config && mv -v credentials.development.yml credentials.test.yml $HOME/_out; }
+# vcredx_() { cdv && cd config && mv -v credentials.development.yml credentials.test.yml ${HOME}/_out; }
 # vcredcp_() { cp -v credentials.development.yml credentials.test.yml; }
-# vcred() { vcredx_ && cp -v $HOME/Downloads/credentials.development.yml . && vcredcp_; }
+# vcred() { vcredx_ && cp -v ${HOME}/Downloads/credentials.development.yml . && vcredcp_; }
 # ## Vanguard test manual prerequisites: 1) mysql running, 2) drop local vanguard* schemas, 3) redis-server running
 # vun_() { echo UNIT TESTS; bspec spec/unit; }
 # vun() { vun_; }
@@ -419,15 +419,15 @@ adate() { curl -0 -i http://s3.amazonaws.com/; }
 # omi() { bx sequel -m db/migrate mysql2://root:crash19spit@localhost/oyez_development; }
 # odu() { unicorn -d; }
 # disabled aliases
-# alias fixdir='ruby $HOME/bin/fixdir.rb' # fixes unzipped Closure Library files
-# alias reclone='ruby $HOME/bin/reclone.rb'
-# alias tp='ruby $HOME/bin/testprj.rb'
-# alias tpl='ruby $HOME/bin/testprjlocal.rb'
-# alias plovr='java -jar $HOME/bin/plovr-4b3caf2b7d84.jar'
-# alias cb='python $HOME/closure-library-read-only/closure/bin/build/closurebuilder.py'
-# alias dw='python $HOME/closure-library-read-only/closure/bin/build/depswriter.py'
-# alias rmpid='rm $HOME/github/freya/tmp/pids/vanguard_stub_app.pid'
-# alias cdlb='cd $HOME/FOWLER/work/tech/external/lb/lbfork'
+# alias fixdir='ruby ${HOME}/bin/fixdir.rb' # fixes unzipped Closure Library files
+# alias reclone='ruby ${HOME}/bin/reclone.rb'
+# alias tp='ruby ${HOME}/bin/testprj.rb'
+# alias tpl='ruby ${HOME}/bin/testprjlocal.rb'
+# alias plovr='java -jar ${HOME}/bin/plovr-4b3caf2b7d84.jar'
+# alias cb='python ${HOME}/closure-library-read-only/closure/bin/build/closurebuilder.py'
+# alias dw='python ${HOME}/closure-library-read-only/closure/bin/build/depswriter.py'
+# alias rmpid='rm ${HOME}/github/freya/tmp/pids/vanguard_stub_app.pid'
+# alias cdlb='cd ${HOME}/FOWLER/work/tech/external/lb/lbfork'
 
 cecho() { tput setab $1 && echo -n $1 && tput setab 0; }
 # setab = Set background color using ANSI escape
@@ -444,7 +444,7 @@ xgrep_in_bash_profiles() {
 }
 
 grep_in_bash_profiles() {
-	profiles="/etc/profile /etc/bash.bashrc $HOME/.bashrc $HOME/.bash_profile $HOME/.bash_login $HOME/.profile"
+	profiles="/etc/profile /etc/bash.bashrc ${HOME}/.bashrc ${HOME}/.bash_profile ${HOME}/.bash_login ${HOME}/.profile"
 	grep -s ${1} ${profiles}
 }
 

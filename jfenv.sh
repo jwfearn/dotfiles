@@ -12,6 +12,7 @@ export EDITOR='subl -w'
 export CLICOLOR=YES
 #export MOZOO_PATH=~/github/mozoo (moved to launchd.conf to support RM)
 export GREP_OPTIONS='--color=auto'
+export DOTFILES="${HOME}/dotfiles"
 
 # pip should only run if there is a virtualenv currently activated
 # export PIP_REQUIRE_VIRTUALENV=true

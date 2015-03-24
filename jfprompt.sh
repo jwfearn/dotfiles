@@ -6,8 +6,14 @@
 # 'PROMPT_COMMAND' is a special environment variable name known to Bash
 [ ${BASH_VERSION} ] && PROMPT_COMMAND=myprompt
 
-
-
+myprompt() {
+  if [ ${ZSH_VERSION} ]; then
+    PS1='%{%F{red}%}%n%{%f%}@%{%F{red}%}%m %{%F{cyan}%}%~ %{%F{white}%}%# %{%f%}'
+    PS2='%_ > '
+  elif [ ${BASH_VERSION} ]; then
+    PS1='\[\e[37m\]\u\[\e[0m\]@\[\e[37m\]\h \[\e[36m\]\w \[\e[37m\]\$ \[\e[0m\]'
+  fi
+}
 
 # if [ -n "${ZSH_VERSION}" ]; then
 #   echo 'installing myprompt (zsh)'
@@ -16,8 +22,6 @@
 # else
 #   PROMPT_COMMAND=precmd
 # fi
-
-
 
 # prompt_special() {
 #   local bash_special="${1}"
@@ -41,18 +45,5 @@
 # TPUT_MAGENTA=5
 # TPUT_CYAN=6
 # TPUT_WHITE=7
-
-
-
-myprompt() {
-  if [ ${ZSH_VERSION} ]; then
-    ## zsh
-    PS1='%{%F{red}%}%n%{%f%}@%{%F{red}%}%m %{%F{cyan}%}%~ %{%F{white}%}%# %{%f%}'
-    PS2='%_ > '
-  elif [ ${BASH_VERSION} ]; then
-    ## assume bash
-    PS1='\[\e[37m\]\u\[\e[0m\]@\[\e[37m\]\h \[\e[36m\]\w \[\e[37m\]\$ \[\e[0m\]'
-  fi
-}
 
 # PS1='\s-\v\$ '  # bash default
