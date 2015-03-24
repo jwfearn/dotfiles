@@ -1,16 +1,16 @@
 # jfprompt.sh
 
 # 'precmd' is a special function name known to Zsh
-[ ${ZSH_VERSION} ] && precmd() { myprompt; }
+[[ ${ZSH_VERSION} ]] && precmd() { myprompt; }
 
 # 'PROMPT_COMMAND' is a special environment variable name known to Bash
-[ ${BASH_VERSION} ] && PROMPT_COMMAND=myprompt
+[[ ${BASH_VERSION} ]] && PROMPT_COMMAND=myprompt
 
 myprompt() {
-  if [ ${ZSH_VERSION} ]; then
+  if [[ ${ZSH_VERSION} ]]; then
     PS1='%{%F{red}%}%n%{%f%}@%{%F{red}%}%m %{%F{cyan}%}%~ %{%F{white}%}%# %{%f%}'
     PS2='%_ > '
-  elif [ ${BASH_VERSION} ]; then
+  elif [[ ${BASH_VERSION} ]]; then
     PS1='\[\e[37m\]\u\[\e[0m\]@\[\e[37m\]\h \[\e[36m\]\w \[\e[37m\]\$ \[\e[0m\]'
   fi
 }

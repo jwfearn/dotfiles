@@ -31,7 +31,7 @@ cck() { cdl && scripts/crawlers_status "$@"; }
 sck() { cdl && scripts/schedulers_status "$@"; }
 
 findbad() {
-	ls -Sr *.lzoc | head -5 | xargs -P$(($(nproc) - 1)) -I^ ../bin/copystream ^ - >& /dev/null && echo 'GOOD: ^' || echo 'BAD: ^';
+  ls -Sr *.lzoc | head -5 | xargs -P$(($(nproc) - 1)) -I^ ../bin/copystream ^ - >& /dev/null && echo 'GOOD: ^' || echo 'BAD: ^';
 }
 
 alias cx_="echo crawl{1..20} | tr ' ' '\n' | xargs -P20 -I^ ssh ^ "
@@ -75,29 +75,29 @@ cps() { echo crawl{1..20} | tr ' ' '\n' | xargs -P20 -I^ scp ~/Save ^:~;  }
 # cps() { cd ~/github/linkscape/scripts/ && scp steps.py requirements.txt crawl1:/mnt/cluster/bh/src/scripts/; }
 
 filterpath() {
-	readonly oldpath=${PATH}
-	local newpath=oldpath
-	export PATH=${newpath}
+  readonly oldpath=${PATH}
+  local newpath=oldpath
+  export PATH=${newpath}
 }
 
 abspath() {
-	readonly p=${1}
-	local absp=''
-	# if [[ -f "${p}" ]]; then
-	# 	absp="$(cd $(dirname "${p}") && pwd)/$(basename "${p}")"
-	# elif [[ -d "${p}" ]]; then
-	# 	absp="$(cd "${p}" && pwd)"
-	# fi
-	echo "${absp}"
+  readonly p=${1}
+  local absp=''
+  # if [[ -f "${p}" ]]; then
+  # 	absp="$(cd $(dirname "${p}") && pwd)/$(basename "${p}")"
+  # elif [[ -d "${p}" ]]; then
+  # 	absp="$(cd "${p}" && pwd)"
+  # fi
+  echo "${absp}"
 }
 
 pathpp() {
-	saveIFS=${IFS}
-	IFS=":"
+  saveIFS=${IFS}
+  IFS=":"
   for segment in ${PATH}; do
   	if [[ -d "${segment}" ]]; then
-  		segment="$(cd ${segment} && pwd)"
-  		echo "${segment}"
+  	  segment="$(cd ${segment} && pwd)"
+  	  echo "${segment}"
   	fi
   done
   IFS=${saveIFS}
@@ -105,17 +105,17 @@ pathpp() {
 
 pathhas() {  # return 0 if path contains d
   local ret=1
-	readonly d=$1  #TODO ensure d is expanded to absolute path
-	saveIFS=${IFS}
-	IFS=":"
+  readonly d=$1  #TODO ensure d is expanded to absolute path
+  saveIFS=${IFS}
+  IFS=":"
   for segment in ${PATH}; do
   	if [[ ${segment}  ]]; then  #TODO ensure segment is expanded to absolute path
-  		ret=0
-  		break
+  	  ret=0
+  	  break
   	fi
   done
   IFS=${saveIFS}
-	return ${ret}
+  return ${ret}
 }
 
 # pathadd() { # add to path only if not already there
@@ -123,15 +123,15 @@ pathhas() {  # return 0 if path contains d
 # }
 
 pathadd() {
-	readonly d="$(cd $1 && pwd)"
-	if [ -d "${d}" ] && [[ ":${PATH}:" != *":${d}:"* ]]; then
-		PATH="${PATH:+"$PATH:"}$1"
-	fi
+  readonly d="$(cd $1 && pwd)"
+  if [[ -d "${d}" ]] && [[ ":${PATH}:" != *":${d}:"* ]]; then
+    PATH="${PATH:+"$PATH:"}$1"
+  fi
 }
 
 
 pathrm() { # remove all path segments matching pattern (filename matching rules)
-	$pattern=$1
+  $pattern=$1
 }
 
 
@@ -170,14 +170,14 @@ e() { subl "$@"; }
 lsl() { ls -lOe; }  # -O is a Mac-specific option
 lsd() { ls -d */ .*/; }
 lsb() { find "$@"; }  # bare directory listing (like DOS: `dir /b`)
-lsapts() { F='/etc/apt/sources.list'; D="${L}.d"; [ -f ${F} ] && lsb ${F}; [ -d ${D} ] && lsb ${D}; }
+lsapts() { F='/etc/apt/sources.list'; D="${L}.d"; [[ -f ${F} ]] && lsb ${F}; [[ -d ${D} ]] && lsb ${D}; }
 pushd_() { pushd "$@" > /dev/null; }
 popd_() { popd "$@" > /dev/null; }
 
 lk() { open -a ScreenSaverEngine; }
 rc() { e ${DOTFILES}/jffuncs.sh; }
-src() { source ${DOTFILES}/jffn.sh; }  # reload function only
-srcx() { source ${DOTFILES}/jfenv.sh; src; }  # also reload environment variables
+src() { . ${DOTFILES}/jffn.sh; }  # reload function only
+srcx() { . ${DOTFILES}/jfenv.sh; src; }  # also reload environment variables
 path() { echo $PATH; }
 func() { typeset -F; }
 err() { echo $?; }
@@ -437,15 +437,15 @@ findcpp() { find . -type f \( -name '' -or -name '*.h' -or -name '*.hpp' -or -na
 findpy() { find . -type f \( -name '' -or -name '*.py' \); }
 
 xgrep_in_bash_profiles() {
-	profiles=('/etc/profile' '/etc/bash.bashrc' "~/.bashrc" "~/.bash_profile" "~/.bash_login" "~/.profile")
-	for profile in ${profiles[@]}; do
-		echo "${profile}"
-	done
+  profiles=('/etc/profile' '/etc/bash.bashrc' "~/.bashrc" "~/.bash_profile" "~/.bash_login" "~/.profile")
+  for profile in ${profiles[@]}; do
+    echo "${profile}"
+  done
 }
 
 grep_in_bash_profiles() {
-	profiles="/etc/profile /etc/bash.bashrc ${HOME}/.bashrc ${HOME}/.bash_profile ${HOME}/.bash_login ${HOME}/.profile"
-	grep -s ${1} ${profiles}
+  profiles="/etc/profile /etc/bash.bashrc ${HOME}/.bashrc ${HOME}/.bash_profile ${HOME}/.bash_login ${HOME}/.profile"
+  grep -s ${1} ${profiles}
 }
 
 fn_code_str() {	echo $(type ${1}); }
