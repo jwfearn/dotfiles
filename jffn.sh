@@ -449,3 +449,66 @@ grep_in_bash_profiles() {
 }
 
 fn_code_str() {	echo $(type ${1}); }
+
+xenvp_() {
+  for k in "$@"; do
+    local v=$(eval \${${k}})
+    if [[ -z "${v}" ]]; then
+      echo "${k}    [not present]"  #TODO: dim not set
+    else
+      echo "${k}='${v}'"
+    fi
+  done
+}
+
+envp_() {
+  # each arg k is an environment variable name
+  # for each k:
+  #   if k has a value, echo k and $k in 'set' setyle
+  #   otherwise echo k 'not set' setyle
+  local DIM='\033[1;32m'
+  local BRIGHT='\033[32m'
+  local RESET='\033[0m'
+  for k in "$@"; do
+    local s=$(env | grep ^${k}=)
+    if [[ -z "${s}" ]]; then
+      echo -e "${DIM}${k}${RESET}"
+    else
+      echo -e "${BRIGHT}${s}${RESET}"
+    fi
+  done
+}
+
+filesp_() {
+  # each arg f is an absolute file path
+  # for each f:
+  #   if f exists, echo f in 'present' style
+  #   otherwise echo f in 'not present'
+  local DIM='\033[1;32m'
+  local BRIGHT='\033[32m'
+  local RESET='\033[0m'
+  for f in "$@"; do
+    local style=${DIM}
+    [[ -f "${f}" ]] && style=${BRIGHT}
+    echo -e "${style}${f}${RESET}"
+  done
+}
+
+bashprofiles_() {
+  echo /etc/profile /etc/bash.bashrc ~/.bashrc ~/.bash_profile ~/.bash_login ~/.profile ~/.bash_logout
+}
+
+zshprofiles_() {
+  echo /etc/zshenv ~/.zshenv /etc/zprofile ~/.zprofile /etc/zshrc ~/.zshrc /etc/zlogin ~/.zlogin ~/.zlogout /etc/zlogout
+}
+
+bashp() {
+  bash --version
+  filesp_ $(bashprofiles_)
+  envp_ BASH_ENV # UNSET BLANK SPACE X
+}
+
+zshp() {
+  zsh --version
+  filesp_ $(zshprofiles_)
+}
