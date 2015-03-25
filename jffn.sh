@@ -40,15 +40,15 @@ alias tx_="echo ctest{A..C} | tr ' ' '\n' | xargs -P10 -I^ ssh ^ "
 alias txk_="echo ctest{A..C} | tr ' ' '\n' | xargs -I^ ssh ^ "
 
 JF_VERSIONS_CMD=' \
-		echo ^: \
-		$(lsb_release -sd), \
-		$(gcc --version | head -1), \
-		$(grep BOOST_LIB_VERSION /usr/include/boost/version.hpp | tail -1) \
+    echo ^: \
+    $(lsb_release -sd), \
+    $(gcc --version | head -1), \
+    $(grep BOOST_LIB_VERSION /usr/include/boost/version.hpp | tail -1) \
 '
-		# $(git --version), \
-		# $(bash --version | head -1), \
-		# $(make --version | head -1), \
-		# $(gdb --version 2> /dev/null | head -1) \
+    # $(git --version), \
+    # $(bash --version | head -1), \
+    # $(make --version | head -1), \
+    # $(gdb --version 2> /dev/null | head -1) \
 
 tcc() { txk_ "${JF_VERSIONS_CMD}"; }
 ccc() { cxk_ "${JF_VERSIONS_CMD}"; }
@@ -84,9 +84,9 @@ abspath() {
   readonly p=${1}
   local absp=''
   # if [[ -f "${p}" ]]; then
-  # 	absp="$(cd $(dirname "${p}") && pwd)/$(basename "${p}")"
+  #   absp="$(cd $(dirname "${p}") && pwd)/$(basename "${p}")"
   # elif [[ -d "${p}" ]]; then
-  # 	absp="$(cd "${p}" && pwd)"
+  #   absp="$(cd "${p}" && pwd)"
   # fi
   echo "${absp}"
 }
@@ -95,10 +95,10 @@ pathpp() {
   saveIFS=${IFS}
   IFS=":"
   for segment in ${PATH}; do
-  	if [[ -d "${segment}" ]]; then
-  	  segment="$(cd ${segment} && pwd)"
-  	  echo "${segment}"
-  	fi
+    if [[ -d "${segment}" ]]; then
+      segment="$(cd ${segment} && pwd)"
+      echo "${segment}"
+    fi
   done
   IFS=${saveIFS}
 }
@@ -109,17 +109,17 @@ pathhas() {  # return 0 if path contains d
   saveIFS=${IFS}
   IFS=":"
   for segment in ${PATH}; do
-  	if [[ ${segment}  ]]; then  #TODO ensure segment is expanded to absolute path
-  	  ret=0
-  	  break
-  	fi
+    if [[ ${segment}  ]]; then  #TODO ensure segment is expanded to absolute path
+      ret=0
+      break
+    fi
   done
   IFS=${saveIFS}
   return ${ret}
 }
 
 # pathadd() { # add to path only if not already there
-# 	readonly d=$1
+#   readonly d=$1
 # }
 
 pathadd() {
