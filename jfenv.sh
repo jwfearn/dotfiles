@@ -11,7 +11,8 @@ export PATH="JFENV-:${PATH}:${HOME}/bin:/usr/local/mysql/bin:/usr/local/packer:-
 export EDITOR='subl -w'
 export CLICOLOR=YES
 #export MOZOO_PATH=~/github/mozoo (moved to launchd.conf to support RM)
-#export GREP_OPTIONS='--color=auto'
+
+[[ -z ${MSYSTEM} ]] && export GREP_OPTIONS='--color=auto'
 
 # pip should only run if there is a virtualenv currently activated
 # export PIP_REQUIRE_VIRTUALENV=true
