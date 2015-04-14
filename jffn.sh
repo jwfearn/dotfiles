@@ -281,9 +281,15 @@ gdiff_() { b0=$1; b1=$2; shift 2; git diff --color --minimal "${b0}..${b1}" "$@"
 gstat_() { b0=$1; b1=$2; shift 2; git diff --color --minimal --stat "${b0}..${b1}" "$@"; }
 gdiffl_() { pushd_ "${HOME}/github/linkscape"; gdiff_ ${B0:-'crawl-sched-Jul-5-2013'} ${B1:-'sprint-Gordon'} "$@"; popd_; }
 gstatl_() { pushd_ "${HOME}/github/linkscape"; gstat_ ${B0:-'crawl-sched-Jul-5-2013'} ${B1:-'sprint-Gordon'} "$@"; popd_; }
-diffb() { B0='jf_swift_c' B1='jf_swift_p' gdiffl_ 'liblinkscape/batch.cc'; }
-statb() { B0='jf_swift_c' B1='jf_swift_p' gstatl_ 'liblinkscape/batch.cc'; }
-statc() { gstatl_ "cluster"; gstatl_ "processing/cluster"; }
+
+diffb() { B0='jf_comp_c' B1='jf_comp_p' gdiffl_ 'liblinkscape/batch.cc'; }
+statb() { B0='jf_comp_c' B1='jf_comp_p' gstatl_ 'liblinkscape/batch.cc'; }
+diffc() { B0='jf_comp_c' B1='jf_comp_p' gdiffl_ 'processing/crawlv2loop.cc'; }
+statc() { B0='jf_comp_c' B1='jf_comp_p' gstatl_ 'processing/crawlv2loop.cc'; }
+difft() { B0='jf_comp_c' B1='jf_comp_p' gdiffl_ 'processing/test/batch_unittest.cc'; }
+statt() { B0='jf_comp_c' B1='jf_comp_p' gstatl_ 'processing/test/batch_unittest.cc'; }
+
+statx() { gstatl_ "cluster"; gstatl_ "processing/cluster"; }
 statl() { gstatl_ .; }
 # grab file from a particular commit.  Usage: ggrab filepath commit
 ggrab() { git co $2 -- $1; }
@@ -359,7 +365,7 @@ rbis() { rbis_ | column; }
 rbu() { rbis_ > rbis0.txt; brew upgrade rbenv; brew upgrade ruby-build; rbis_ > rbis1.txt; git diff -U0 rbis0.txt rbis1.txt; }
 rbs() { rbenv -v; ruby-build --version; rbenv versions; ruby -v; }
 rb1() { rbenv local 1.9.3-p551; rbs; }
-rb2() { rbenv local 2.2.1; rbs; }
+rb2() { rbenv local 2.2.2; rbs; }
 
 ## pyenv-related functions
 pys() { pyenv --version; pyenv versions; echo "CURRENT PYTHON: $(python --version)"; }
