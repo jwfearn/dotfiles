@@ -56,15 +56,15 @@ The installation code above should work in any shell as long as `cmd` or
 - state: `~/.dotz.d`  (dir name ok on Windows?)
 
 
-| COMMAND  | DESCRIPTION                                                      |
-|:--------:|:---------------------------------------------------------------- |
-| version  | Dotz version info (aliases: -v, --version, /v)                   |
-| help     | Usage details (aliases: -h, --help, /h, /?)                      |
-| list     | show known dotfile sets, in use highlighted (alias: ls)          |
-| add      | takes a directory or a git repo                                  |
-| use      | start using one of the sets                                      |
-| outdated | checks if any repo-based sets are outdated ???                   |
-| update   | git pull for outdated repo-based sets  ???, use if necessary     |
+    | COMMAND  | DESCRIPTION                                                      |
+    |:--------:|:---------------------------------------------------------------- |
+    | version  | Dotz version info (aliases: -v, --version, /v)                   |
+    | help     | Usage details (aliases: -h, --help, /h, /?)                      |
+    | list     | show known dotfile sets, in use highlighted (alias: ls)          |
+    | add      | takes a directory or a git repo                                  |
+    | use      | start using one of the sets                                      |
+    | outdated | checks if any repo-based sets are outdated ???                   |
+    | update   | git pull for outdated repo-based sets  ???, use if necessary     |
 
 ### How it works
 `use` takes a *set*.  If set not recognized, emit error.  If set is already
@@ -72,14 +72,14 @@ in use, do nothing.  Otherwise compare set dotfiles with *raw dotfiles*.  If
 they do not match a known set, then do a *set-relative backup* ???
 
 ### State
-~
-└── .dotz/
-    ├── backup_xxx/  ???
-    └── sets/
-        ├── bar/
-        └── foo/
-            ├── myrepoclone/
-            │    ├── .bashrc
-            │    ├── .vimrc
-            │    └── ...
-            └── backup_xxx/  ???
+    ~
+    └── .dotz/
+        ├── backup_xxx/  ???
+        └── sets/
+            ├── bar/
+            └── foo/
+                ├── myrepoclone/
+                │    ├── .bashrc
+                │    ├── .vimrc
+                │    └── ...
+                └── backup_xxx/  ???

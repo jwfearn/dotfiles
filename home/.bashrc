@@ -10,7 +10,7 @@
 #   "\u"             username
 #   "\$"             privilege (# = privilege, $ = no privilege)
 #   " "              space
-#   "\e[m"           clear forground color
+#   "\e[m"           clear foreground color
 
 export PS1="\e[37m\u\e[m@\e[37m\h \e[36m\w \e[37m\$ \e[m"
 # export PS1="\e[0;36m$PS1\e[m"
