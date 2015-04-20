@@ -245,7 +245,15 @@ nr() { npm run "$@"; }
 nt() { npm test "$@"; }
 
 ## Docker-related functions
+d() { docker "$@"; }
 dm() { docker-machine "$@"; }
+dmds() {
+  readonly prefix='Available drivers: '
+  dm help create | grep "${prefix}" | sed -ne "s/^.*${prefix}//p" | sed 's/,//g'
+}
+dp() { d -v && dm -v && dmds; }
+dms() { dm ls; }
+dmsh() { dm ssh "$@"; }
 
 ## Vagrant-related functions
 v() { vagrant "$@"; }
@@ -257,19 +265,19 @@ vbs() { vb list -i "$@"; }
 vbu() { vb update "$@"; }
 vps() { v plugin list "$@"; }
 vpu() { vps && v plugin update "$@"; vv; }
-vs() { v ssh "$@"; }
-# vu() { v up --provider=vmware_fusion && vs "$@"; }
+vsh() { v ssh "$@"; }
+# vu() { v up --provider=vmware_fusion && vsh "$@"; }
 vu() { v up "$@"; }
 vh() { v halt "$@"; }
 vhelp() { v help "$@"; }
-vsu() { v suspend "$@"; }
-vsw() { vsu "$1" && vus "$2"; }
+vsus() { v suspend "$@"; }
+vsw() { vsus "$1" && vush "$2"; }
 vd() { v destroy -f "$@"; }
 vl() { v reload "$@"; }
 vdu() { vd "$@" && vu "$@"; }
-vus() { vu "$@" && vs "$@"; }
-vdus() { vd "$@" && vus "$@"; }
-vrps() { v reload --provision "$@" && vs "$@"; }  # faster than vdus?
+vush() { vu "$@" && vsh "$@"; }
+vdush() { vd "$@" && vush "$@"; }
+vrps() { v reload --provision "$@" && vsh "$@"; }  # faster than vdus?
 cdvp() { cd "${HOME}/vagrant/processing"; vp; }
 cdvd() { cd "${HOME}/vagrant/boot2docker"; vp; }
 cdvw() { cd "${HOME}/vagrant/vmwtest/"; }
@@ -298,19 +306,10 @@ ggrab() { git co $2 -- $1; }
 grl() { git reflog --format=format:"%C(yellow)%h %Cblue%aD%Creset %gd %Cgreen%aN%Creset %gs %s"; }
 cdg() { cd ${HOME}/github/$1; } #bgp ${HOME}/github/$1; }
 cdot() { cd ${DOTFILES}; }
-cda() { cdg alpha_bits; }
-cdd() { cdg mozdev; }
-cdf() { cdg freya; }
-cdi() { cdg interpol; }
-cdlx() { cdg linkscapex; }
-cdl() { cdg linkscape; }
-cdlj() { cdl && cd 'vagrant/john'; }
-cdm() { cdg mozoo; }
-cdo() { cdg oyez; }
-cdr() { cdg rubyish; }
-cds() { cdg snapr; }
-cdt() { cdg thorsanvil; }
-cdv() { cdg vanguard; }
+cdj() { cdg jwfearn/$1; }
+cda() { cdg apptentive/$1; }
+cdw() { cda web; }
+cdr() { cdj rubyish; }
 # cdt() { cd "${HOME}/_out/bhtmp/repo/"; }
 
 ## Bundler-related functions
@@ -366,6 +365,8 @@ rbu() { rbis_ > rbis0.txt; brew upgrade rbenv; brew upgrade ruby-build; rbis_ > 
 rbs() { rbenv -v; ruby-build --version; rbenv versions; ruby -v; }
 rb1() { rbenv local 1.9.3-p551; rbs; }
 rb2() { rbenv local 2.2.2; rbs; }
+rb212() { rbenv local 2.1.2; rbs; }
+rb216() { rbenv local 2.1.6; rbs; }
 
 ## pyenv-related functions
 pys() { pyenv --version; pyenv versions; echo "CURRENT PYTHON: $(python --version)"; }
@@ -394,7 +395,7 @@ myfix() { sudo ln -ssudo ln -s /usr/local/mysql/lib/libmysqlclient.18.dylib /usr
 redd() { redis-server "$@"; }
 red() { redis-cli "$@"; }
 
-## Capistrano-related aliases
+## Capistrano-related functions
 dfd() { cdf && bx cap dev deploy; }
 
 ## Amazon Web Services-related functions
