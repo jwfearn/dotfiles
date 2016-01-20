@@ -75,13 +75,13 @@ cps() { echo crawl{1..20} | tr ' ' '\n' | xargs -P20 -I^ scp ~/Save ^:~;  }
 # cps() { cd ~/github/linkscape/scripts/ && scp steps.py requirements.txt crawl1:/mnt/cluster/bh/src/scripts/; }
 
 filterpath() {
-  readonly oldpath=${PATH}
-  local newpath=oldpath
+  local readonly oldpath=${PATH}
+  local readonly newpath=oldpath
   export PATH=${newpath}
 }
 
 abspath() {
-  readonly p=${1}
+  local readonly p=${1}
   local absp=''
   # if [[ -f "${p}" ]]; then
   #   absp="$(cd $(dirname "${p}") && pwd)/$(basename "${p}")"
@@ -105,7 +105,7 @@ pathpp() {
 
 pathhas() {  # return 0 if path contains d
   local ret=1
-  readonly d=$1  #TODO ensure d is expanded to absolute path
+  local readonly d=$1  #TODO ensure d is expanded to absolute path
   saveIFS=${IFS}
   IFS=":"
   for segment in ${PATH}; do
@@ -119,11 +119,11 @@ pathhas() {  # return 0 if path contains d
 }
 
 # pathadd() { # add to path only if not already there
-#   readonly d=$1
+#   local readonly d=$1
 # }
 
 pathadd() {
-  readonly d="$(cd $1 && pwd)"
+  local readonly d="$(cd $1 && pwd)"
   if [[ -d "${d}" ]] && [[ ":${PATH}:" != *":${d}:"* ]]; then
     PATH="${PATH:+"$PATH:"}$1"
   fi
@@ -143,7 +143,7 @@ smux() { lmux.sh url 10; }
 
 ## Homebrew-related functions
 bod() { brew update && brew outdated && brew doctor; }
-buc() { brew upgrade; brew cleanup; }
+buc() { brew upgrade --all; brew cleanup; }
 
 ## tmux-related functions
 tls() { tmux list-sessions "$@"; }
@@ -166,7 +166,9 @@ dirb() { find "$(pwd)" -depth 1 "$@"; }
 
 ## general purpose shell functions
 vars() { env | sort -V; }
+ep() { env | sort | grep "$@"; }
 e() { subl "$@"; }
+h() { history | tail -"$@"; }
 lsl() { ls -lOe; }  # -O is a Mac-specific option
 lsd() { ls -d */ .*/; }
 lsb() { find "$@"; }  # bare directory listing (like DOS: `dir /b`)
@@ -178,7 +180,7 @@ lk() { open -a ScreenSaverEngine; }
 rc() { e ${DOTFILES}/jffuncs.sh; }
 src() { . ${DOTFILES}/jffn.sh; }  # reload function only
 srcx() { . ${DOTFILES}/jfenv.sh; src; }  # also reload environment variables
-path() { echo $PATH; }
+path() { echo $PATH | tr ':' '\n'; }
 func() { typeset -F; }
 err() { echo $?; }
 rm@() { xattr -cr; }
@@ -188,19 +190,21 @@ treef() { tree --dirsfirst "$@"; }
 treef1() { treef -L 1 "$@"; }
 treef2() { treef -L 2 "$@"; }
 treef3() { treef -L 3 "$@"; }
+treef4() { treef -L 4 "$@"; }
 treed() { treef -d "$@"; }
 treed1() { treed -L 1 "$@"; }
 treed2() { treed -L 2 "$@"; }
 treed3() { treed -L 3 "$@"; }
+treed4() { treed -L 4 "$@"; }
 treed() { treef -d "$@"; }
-wh() { whoami "$@"; }
+wh() { grealpath $(which "$@"); }
 broken() { find -L . -type l -ls; }
 jj() { "$@" | python -mjson.tool; }
 jjs() { while read l; do jj $l; done < "$@"; }
 ipy() { ipython "$@"; }
 psg() { ps -ef | head -1 && ps -ef | grep "$@"; }
-cdiff() { diff -u "$@" | sed "s/^-/`echo -e \"\x1b\"`[41m-/;s/^+/`echo -e \"\x1b\"`[42m+/;s/^@/`echo -e \"\x1b\"`[34m@/;s/$/`echo -e \"\x1b\"`[0m/"; }  # Mac-only
-gdiff() { git diff "$@"; }
+cdiff() { diff -u 0 "$@" | sed "s/^-/`echo -e \"\x1b\"`[41m-/;s/^+/`echo -e \"\x1b\"`[42m+/;s/^@/`echo -e \"\x1b\"`[34m@/;s/$/`echo -e \"\x1b\"`[0m/"; }  # Mac-only
+gdiff() { git diff -U0 --no-index "$@"; }
 mktags() { mkdir -p ./.tags; ctags -R -f ./.tags/tags "$@" .; }
 makels() { make -qp | awk -F':' '/^[a-zA-Z0-9][^$#\/\t=]*:([^=]|$)/ {split($1,A,/ /);for(i in A)print A[i]}' | sort | uniq; }
 
@@ -246,14 +250,20 @@ nt() { npm test "$@"; }
 
 ## Docker-related functions
 d() { docker "$@"; }
+dcalc() { /usr/bin/dc "$@"; }
+dc() { docker-compose "$@"; }
 dm() { docker-machine "$@"; }
 dmds() {
-  readonly prefix='Available drivers: '
+  local readonly prefix='Available drivers: '
   dm help create | grep "${prefix}" | sed -ne "s/^.*${prefix}//p" | sed 's/,//g'
 }
 dp() { d -v && dm -v && dmds; }
 dms() { dm ls; }
 dmsh() { dm ssh "$@"; }
+dmi() { dm inspect "$@" | jq .; }
+dmu() { eval "$(dm env "$@")"; }
+dmc() { dm create -d vmwarefusion --vmwarefusion-boot2docker-url 'https://github.com/cloudnativeapps/boot2docker/releases/download/v1.6.0-vmw/boot2docker-1.6.0-vmw.iso' $1; }
+#dmc() { dm create -d vmwarefusion $1; }
 
 ## Vagrant-related functions
 v() { vagrant "$@"; }
@@ -268,7 +278,6 @@ vpu() { vps && v plugin update "$@"; vv; }
 vsh() { v ssh "$@"; }
 # vu() { v up --provider=vmware_fusion && vsh "$@"; }
 vu() { v up "$@"; }
-vh() { v halt "$@"; }
 vhelp() { v help "$@"; }
 vsus() { v suspend "$@"; }
 vsw() { vsus "$1" && vush "$2"; }
@@ -304,35 +313,65 @@ ggrab() { git co $2 -- $1; }
 # gmm() { git merge master; }
 # grm() { git rebase master; }
 grl() { git reflog --format=format:"%C(yellow)%h %Cblue%aD%Creset %gd %Cgreen%aN%Creset %gs %s"; }
-cdg() { cd ${HOME}/github/$1; } #bgp ${HOME}/github/$1; }
-cdot() { cd ${DOTFILES}; }
+cdg() { pushd_ ${HOME}/github/$1; } #bgp ${HOME}/github/$1; }
+cdot() { pushd_ ${DOTFILES}; }
 cdj() { cdg jwfearn/$1; }
 cda() { cdg apptentive/$1; }
+cdb() { cda bizint; }
+cdc() { cda chef; }
+cdd() { cda dokidoki; }
 cdw() { cda web; }
+cdm() { cda apptentive-mapreduce/clusters/interactions-report; }
+cdq() { cdj qless; }
 cdr() { cdj rubyish; }
 # cdt() { cd "${HOME}/_out/bhtmp/repo/"; }
 
+ngrokw() { ngrok http 3000 "$@"; }
+
+sha_() { cdc; bx knife ssh "role:$1 AND environment:production" -x ec2-user -a ipaddress 'cd /opt/apptentive/current && git rev-parse HEAD'; popd_; }
+shaa() { sha_ 'web'; }
+shab() { sha_ 'web-be'; }
+
+doki() {
+  bundle exec rake templates
+  npm run compile-tests
+  bundle exec foreman start
+}
+
 ## Bundler-related functions
-bcp() { cat ~/.bundle/config; cat .bundle/config; }
+bcp() { cat ~/.bundle/config 2> /dev/null; cat .bundle/config 2> /dev/null; }
 bp() { bundle list; bcp; bundle config "$@"; }
-brm() { rm -rf vendor/bundle bin doc/gem_graph.*; }
-bi() { bundle install --path=vendor/bundle --standalone --binstubs --full-index --jobs 4 "$@"; }
+brm() { rm -rf vendor/bundle binstubs "$@"; }
+xbi() { bundle install --standalone --path=vendor/bundle --binstubs=binstubs --full-index --jobs 4 "$@"; }
+bi() { bundle install --standalone --path=vendor/bundle --binstubs=binstubs "$@"; }
 biu() { rm Gemfile.lock; bi "$@"; }
+#bspec() { binstubs/rspec "$@"; } # why doesn't thins work for 'web' project?
 bx() { bundle exec "$@"; }
-br() { bx rake "$@"; }
+bxprod() { MONGODB_URI='mongodb://mongo/apptentive_production' bx "$@"; }
+# br() { binstubs/rake "$@"; }
+br() { bx rake -G "$@"; }
+brprod() { bxprod rake -G "$@"; }
+spec_() { time bx rspec "$@"; }
+spec() { bx hound "$@" && spec_ "$@"; }
+bjsp() { bx ruby -e 'require "execjs"; ExecJS.runtime'; }
 bt() { br -T "$@"; }
-bo() { bundle outdated; }
+bo() { bundle outdated | grep "  * " | sort > "${HOME}/_out/outdated.txt"; }
 bu() { bundle update "$@"; bi; }
 bv() { bx bundle viz -f doc/gem_graph -F svg "$@"; }
 bco() { bundle console "$@"; }
 brb() { bx irb "$@"; } # use when bco fails
+bra() { bx rails "$@"; }
+brc() { bra console "$@"; }
+brs() { bra server "$@"; }
 bry() { bx pry "$@"; }
-bspec() { bin/rspec "$@"; }
 bli() { br app:moz:lint; }
 bpt() { br app:moz:plovrd_test; }
 byd() { br app:moz:doc_yard; }
 ggp() { cat vendor/bundle/bundler/setup.rb | grep bundler/gems/; }
 bfc() { cdf && bi && br freya:compile; }
+midd() { RAILS_ENV='development' bx rake middleware; }
+midt() { RAILS_ENV='test' bx rake middleware; }
+midp() { RAILS_ENV='production' bx rake middleware; }
 # bgp() { bundle config --delete path; bundle config --global path $1/vendor/bundle; }
 ## Bundler-related aliases for local gem overrides
 bon2_() { bundle config local.$1 ${HOME}/github/$2; } # use when gem != project ($1 = gem name, $2 = project name)
@@ -355,29 +394,63 @@ offm() { boff mozoo; }
 offs() { boff SSSO; }
 offv() { boff_ vanguard-endpoints; boff vanguard-client; }
 
+## Rubocop-related functions
+# cop() { bx rubocop -F -c "$HOME/.rubocop.yml" "$@"; }
+# hound() { cop $(git diff --name-only); }
+
 ## rbenv-related functions
-rbi() { rbenv install $1; }
-rbui() { rbenv uninstall $1; }
-rbig() { local cc=$CC; export CC=gcc; rbi $1; export CC=cc; } # if rbi doesn't work, try this
+rb+() { rbenv install $1; }
+rb-() { rbenv uninstall $1; }
 rbis_() { ruby-build --definitions; }
 rbis() { rbis_ | column; }
-rbu() { rbis_ > rbis0.txt; brew upgrade rbenv; brew upgrade ruby-build; rbis_ > rbis1.txt; git diff -U0 rbis0.txt rbis1.txt; }
-rbs() { rbenv -v; ruby-build --version; rbenv versions; ruby -v; }
+rbup_() { brew upgrade rbenv 2> /dev/null; brew upgrade ruby-build 2> /dev/null; rbenv -v; ruby-build --version; }
+rbup() { rbis_ > rbis0.txt; rbup_; rbis_ > rbis1.txt; gdiff rbis0.txt rbis1.txt; }
+rbs() { rbenv -v; ruby-build --version; rbenv versions; echo "CURRENT RUBY: $(ruby -v)"; }
+rb0() { rbenv local system; rbs; }
 rb1() { rbenv local 1.9.3-p551; rbs; }
-rb2() { rbenv local 2.2.2; rbs; }
+rb2() { rbenv local 2.3.0; rbs; }
 rb212() { rbenv local 2.1.2; rbs; }
-rb216() { rbenv local 2.1.6; rbs; }
+rb218() { rbenv local 2.1.8; rbs; }
+rb224() { rbenv local 2.2.4; rbs; }
+rbe() { rbenv each "$@"; }
+rgs() { rbe -v gem list; }
+rgo() { rbe -v gem outdated; }
+rgu() { rbe -v gem update "$@"; }
+rgc() { rbe -v gem cleanup; }
+rbig() { local cc=$CC; export CC=gcc; rbi $1; export CC=cc; } # if rbi doesn't work, try this
+gi() {
+  gem list > gems0.txt
+  gem update --no-document
+  # install global bundler gem
+  gem install --no-document bundler
+  # install global gems needed for JetBrains debugging
+  gem install --no-document debase debase-ruby_core_source ruby-debug-ide
+  gem cleanup
+  rbenv rehash
+  hash -r
+  gem list > gems1.txt
+  gdiff gems0.txt gems1.txt
+}
+
+## jenv-related functions
+js() { jenv --version; jenv versions; echo 'CURRENT JAVA:'; java -version; }
+j0() { jenv local system; js; }
+j8() { jenv local oracle64-1.8.0.60; js; }
 
 ## pyenv-related functions
-pys() { pyenv --version; pyenv versions; echo "CURRENT PYTHON: $(python --version)"; }
+pys() { pyenv --version; pyenv versions; echo "CURRENT PYTHON: $(python --version 2>&1)"; }
 pyis_() { pyenv install --list "$@"; }
 pyis() { pyis_ | column; }
 pyi() { pyenv install $1; }
 pyui() { pyenv uninstall $1; }
-pyu() { pyis_ > pyis0.txt; brew upgrade pyenv; pyis_ > pyis1.txt; git diff -U0 pyis0.txt pyis1.txt; }
-py2() { pyenv local 2.7.7; pys; }
-py3() { pyenv local 3.4.1; pys; }
-pyl() { pyenv local linkscape; }
+pyup() { pyis_ > pyis0.txt; brew upgrade pyenv; pyis_ > pyis1.txt; gdiff pyis0.txt pyis1.txt; }
+py0() { pyenv local system; pys; }
+py2() { pyenv local 2.7.11; pys; }
+py343() { pyenv local 3.4.3; pys; }
+py3() { pyenv local 3.5.1; pys; }
+pya() { pyenv local anaconda3-2.3.0; pys; }
+
+#pyl() { pyenv local linkscape; }
 syspip() { PIP_REQUIRE_VIRTUALENV='' pip "$@"; }
 pyx() { local cmd="$@"; local py="from subprocess import check_output as x; o = x('$cmd'); print(o)"; echo $py; python -c"$py"; }
 pea() { pyenv activate "$@"; }
@@ -394,6 +467,21 @@ myfix() { sudo ln -ssudo ln -s /usr/local/mysql/lib/libmysqlclient.18.dylib /usr
 ## Redis-related functions
 redd() { redis-server "$@"; }
 red() { redis-cli "$@"; }
+
+## MongoDB-related functions
+mdbs() { mongo --eval show dbs; }
+mprod() { mongo mongo.corp.apptentive.com:27017/apptentive_production "$@"; }
+mdev() { mongo localhost:27017/apptentive_development "$@"; }
+xmprod() { mongo --host mongo.corp.apptentive.com --port 27017 apptentive_production "$@"; }
+rr() { bx railroady -vbamM | sed -E 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g' | dot -Tsvg > rr.svg; }
+
+## JetBrains-related functions
+ul_() { s="$@"; echo -e "\n$(tput smul)${s}$(tput sgr0)"; }
+jbplugins() { d=$(cd ~/Library/Application\ Support/IntelliJIdea*; pwd); ul_ "JetBrains Plugins: ${d}"; ls "$@" "${d}" ; }
+jbprefs() { d=$(cd ~/Library/Preferences/IntelliJIdea*; pwd); ul_ "JetBrains Preferences: ${d}"; ls "$@" "${d}" ; }
+jbcaches() { d=$(cd ~/Library/Caches/IntelliJIdea*; pwd); ul_ "JetBrains Caches: ${d}"; ls "$@" "${d}" ; }
+jblogs() { d=$(cd ~/Library/Logs/IntelliJIdea*; pwd); ul_ "JetBrains Logs: ${d}"; ls "$@" "${d}" ; }
+jbfiles() { jbplugins "$@"; jbprefs "$@"; jbcaches "$@"; jblogs "$@"; }
 
 ## Capistrano-related functions
 dfd() { cdf && bx cap dev deploy; }
@@ -440,8 +528,10 @@ cecho() { tput setab $1 && echo -n $1 && tput setab 0; }
 # setab = Set background color using ANSI escape
 # setaf = Set foreground color using ANSI escape
 
+findname()  { find . -type f \( -name '' -or -name "$@" \); }
+findpy() { findname '*.py'; }
+# TODO: refactor findcpp
 findcpp() { find . -type f \( -name '' -or -name '*.h' -or -name '*.hpp' -or -name '*.hxx' -or -name '*.c' -or -name '*.cc' -or -name '*.cpp' -or -name '*.cxx' \); }
-findpy() { find . -type f \( -name '' -or -name '*.py' \); }
 
 xgrep_in_bash_profiles() {
   profiles=('/etc/profile' '/etc/bash.bashrc' "~/.bashrc" "~/.bash_profile" "~/.bash_login" "~/.profile")
