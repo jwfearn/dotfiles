@@ -24,7 +24,7 @@ export APPTENTIVE_CLUSTER_TEST=1
 export CLICOLOR=1 # use colors in supported commands (ls, others?)
 
 # load secrets
-# O=$(set +o) && set -o allexport && . "${HOME}/.env"; eval "${O}"
+O=$(set +o) && set -o allexport && . "${HOME}/.env"; eval "${O}"
 
 ## environment variables for ec2-api-tools
 #export AWS_ACCESS_KEY="${AMAZON_ACCESS_KEY_ID}" # still needed?

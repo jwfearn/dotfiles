@@ -1,6 +1,7 @@
 # jffn.sh - may be exectued by bash OR zsh
 
 # cd /mnt/cluster/bh/work/; s=$(cat shard.id); ls -d xA*/*.stack 2> /dev/null | xargs -I% egrep -o -m1 '"bestPartitions":"[^"]*"' % | sed "s/\"//g" | sed "s/bestPartitions://g" | xargs -I% echo "$(cat %)"
+amexample() { curl -u "$APP_MONSTA_KEY:X" 'https://api.appmonsta.com/v1/stores/itunes/details/450432947.json?country=ALL' | jq '.'; }
 
 ## aliases
 alias ls='ls -aF' # cannot be a function or it would infinitely recurse
@@ -320,6 +321,7 @@ cda() { cdg apptentive/$1; }
 cdb() { cda bizint; }
 cdc() { cda chef; }
 cdd() { cda dokidoki; }
+cde() { cda ekg; }
 cdw() { cda web; }
 cdm() { cda apptentive-mapreduce/clusters/interactions-report; }
 cdq() { cdj qless; }
@@ -342,33 +344,39 @@ doki() {
 bcp() { cat ~/.bundle/config 2> /dev/null; cat .bundle/config 2> /dev/null; }
 bp() { bundle list; bcp; bundle config "$@"; }
 brm() { rm -rf vendor/bundle binstubs "$@"; }
-xbi() { bundle install --standalone --path=vendor/bundle --binstubs=binstubs --full-index --jobs 4 "$@"; }
+# bi() { bundle install --standalone --path=vendor/bundle --binstubs=binstubs --full-index --jobs 4 "$@"; }
 bi() { bundle install --standalone --path=vendor/bundle --binstubs=binstubs "$@"; }
 biu() { rm Gemfile.lock; bi "$@"; }
 #bspec() { binstubs/rspec "$@"; } # why doesn't thins work for 'web' project?
 bx() { bundle exec "$@"; }
 bxprod() { MONGODB_URI='mongodb://mongo/apptentive_production' bx "$@"; }
-# br() { binstubs/rake "$@"; }
-br() { bx rake -G "$@"; }
-brprod() { bxprod rake -G "$@"; }
-spec_() { time bx rspec "$@"; }
-spec() { bx hound "$@" && spec_ "$@"; }
-bjsp() { bx ruby -e 'require "execjs"; ExecJS.runtime'; }
-bt() { br -T "$@"; }
 bo() { bundle outdated | grep "  * " | sort > "${HOME}/_out/outdated.txt"; }
 bu() { bundle update "$@"; bi; }
 bv() { bx bundle viz -f doc/gem_graph -F svg "$@"; }
 bco() { bundle console "$@"; }
 brb() { bx irb "$@"; } # use when bco fails
-bra() { bx rails "$@"; }
-brc() { bra console "$@"; }
-brs() { bra server "$@"; }
 bry() { bx pry "$@"; }
-bli() { br app:moz:lint; }
-bpt() { br app:moz:plovrd_test; }
-byd() { br app:moz:doc_yard; }
+
+## Rake-related functions
+rk() { bx rake -G "$@"; }
+rkt() { rk -T "$@"; }
+rkta() { rkt -A "$@"; }
+rkprod() { bxprod rake -G "$@"; }
+# bli() { rk app:moz:lint; }
+# bpt() { rk app:moz:plovrd_test; }
+# byd() { rk app:moz:doc_yard; }
+
+spec_() { time bx rspec "$@"; }
+spec() { bx hound "$@" && spec_ "$@"; }
+bjsp() { bx ruby -e 'require "execjs"; ExecJS.runtime'; }
+
+## Rails-related functions
+ra() { bx rails "$@"; }
+rac() { ra console "$@"; }
+ras() { ra server "$@"; }
+
 ggp() { cat vendor/bundle/bundler/setup.rb | grep bundler/gems/; }
-bfc() { cdf && bi && br freya:compile; }
+bfc() { cdf && bi && rk freya:compile; }
 midd() { RAILS_ENV='development' bx rake middleware; }
 midt() { RAILS_ENV='test' bx rake middleware; }
 midp() { RAILS_ENV='production' bx rake middleware; }
@@ -530,8 +538,15 @@ cecho() { tput setab $1 && echo -n $1 && tput setab 0; }
 
 findname()  { find . -type f \( -name '' -or -name "$@" \); }
 findpy() { findname '*.py'; }
+findrb() { findname '*.rb'; }
 # TODO: refactor findcpp
 findcpp() { find . -type f \( -name '' -or -name '*.h' -or -name '*.hpp' -or -name '*.hxx' -or -name '*.c' -or -name '*.cc' -or -name '*.cpp' -or -name '*.cxx' \); }
+
+_grb() { grep -r --include "*.rb" "$@" .; }
+# grb() { _grb --exclude-dir=vendor "$@"; }
+# grbv() { _grb --include-dir=vendor "$@"; } # TODO
+grb() { ag --stats --ruby "$@" .; } # honors .gitignore, et al
+# grbv() { "$@"; } # TODO
 
 xgrep_in_bash_profiles() {
   profiles=('/etc/profile' '/etc/bash.bashrc' "~/.bashrc" "~/.bash_profile" "~/.bash_login" "~/.profile")
