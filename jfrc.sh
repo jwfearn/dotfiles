@@ -16,17 +16,26 @@ main() {
 #    fi
   fi
 
-  ## enable rbenv shims and autocompletion
-  if which rbenv > /dev/null; then eval "$(rbenv init - ${shell})"; fi
+  ## enable rbenv
+  if which rbenv > /dev/null; then
+    eval "$(rbenv init - ${shell})"
+  fi
 
-  ## enable pyenv shims and other features
+  ## enable pyenv
   if which pyenv > /dev/null; then  # brew install pyenv pyenv-virtualenv
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
   fi
 
-  ## enable jenv shims and autocompletion
-  if which jenv > /dev/null; then eval "$(jenv init -)"; fi
+  ## enable jenv
+  if which jenv > /dev/null; then
+    eval "$(jenv init -)"
+  fi
+
+  ## enable docker
+  if which docker-machine > /dev/null; then
+    eval "$(docker-machine env default)"
+  fi
 
   . ${DOTFILES}/jfenv.sh
   . ${DOTFILES}/jfprompt.sh
