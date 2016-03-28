@@ -3,7 +3,7 @@
 ### Requirements
 - Either `cmd` on Windows; or `bash` on Unix-like systems (Mac, Linux,
 MinGW, Cygwin, etc.)  Typically pre-installed.
-- The `git` version control program.  You may need to install this youself.
+- The `git` version control program.  You may need to install this yourself.
 See: http://git-scm.com/
 
 ### Installation
