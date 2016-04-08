@@ -366,7 +366,7 @@ rkprod() { bxprod rake -G "$@"; }
 # bpt() { rk app:moz:plovrd_test; }
 # byd() { rk app:moz:doc_yard; }
 
-spec_() { time bx rspec "$@"; }
+spec_() { time bx rspec --color "$@"; }
 spec() { bx hound "$@" && spec_ "$@"; }
 bjsp() { bx ruby -e 'require "execjs"; ExecJS.runtime'; }
 
@@ -454,7 +454,7 @@ pyui() { pyenv uninstall $1; }
 pyup() { pyis_ > pyis0.txt; brew upgrade pyenv; pyis_ > pyis1.txt; gdiff pyis0.txt pyis1.txt; }
 py0() { pyenv local system; pys; }
 py2() { pyenv local 2.7.11; pys; }
-py343() { pyenv local 3.4.3; pys; }
+py344() { pyenv local 3.4.4; pys; }
 py3() { pyenv local 3.5.1; pys; }
 pya() { pyenv local anaconda3-2.3.0; pys; }
 
