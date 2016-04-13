@@ -37,6 +37,9 @@ main() {
     eval "$(docker-machine env default)"
   fi
 
+  ## enable iterm2 shell integration
+  test -e ${HOME}/.iterm2_shell_integration.bash && source ${HOME}/.iterm2_shell_integration.bash
+
   . ${DOTFILES}/jfenv.sh
   . ${DOTFILES}/jfprompt.sh
   [[ ! "${ZSH_VERSION}" ]] && . ${DOTFILES}/jffn.sh
