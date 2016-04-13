@@ -49,4 +49,4 @@ export ATLAS_TOKEN=xDqPJadMbAnySVCqwdLaRKVrokxSq26M8pXqg_By_hMHqv8-KEFKjGs4YLyHy
 
 # export PATH=JFENV-:/usr/local/Cellar/gnu-getopt/1.1.5/bin:$PATH:${HOME}/bin:/usr/local/mysql/bin:/usr/local/packer:-JFENV
 # export PATH="JFENV-:${PATH}:${HOME}/bin:/usr/local/mysql/bin:/usr/local/packer:-JFENV"
-export PATH="${PATH}:${HOME}/bin:${SPARK_HOME}/ec2"
+export PATH="/usr/local/sbin:${PATH}:${HOME}/bin:${SPARK_HOME}/ec2"
