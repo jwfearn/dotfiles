@@ -449,8 +449,8 @@ j8() { jenv local oracle64-1.8.0.60; js; }
 pys() { pyenv --version; pyenv versions; echo "CURRENT PYTHON: $(python --version 2>&1)"; }
 pyis_() { pyenv install --list "$@"; }
 pyis() { pyis_ | column; }
-pyi() { pyenv install $1; }
-pyui() { pyenv uninstall $1; }
+py+() { pyenv install $1; }
+py-() { pyenv uninstall $1; }
 pyup() { pyis_ > pyis0.txt; brew upgrade pyenv; pyis_ > pyis1.txt; gdiff pyis0.txt pyis1.txt; }
 py0() { pyenv local system; pys; }
 py2() { pyenv local 2.7.11; pys; }
