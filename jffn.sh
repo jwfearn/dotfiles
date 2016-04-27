@@ -251,8 +251,7 @@ nt() { npm test "$@"; }
 
 ## Docker-related functions
 d() { docker "$@"; }
-dcalc() { /usr/bin/dc "$@"; }
-dc() { docker-compose "$@"; }
+dcomp() { docker-compose "$@"; }
 dm() { docker-machine "$@"; }
 dmds() {
   local readonly prefix='Available drivers: '
@@ -322,10 +321,10 @@ cdb() { cda bizint; }
 cdc() { cda chef; }
 cdd() { cda dokidoki; }
 cde() { cda ekg; }
-cdw() { cda web; }
+cdw() { cdj whiteboard; }
 cdm() { cda apptentive-mapreduce/clusters/interactions-report; }
 cdq() { cdj qless; }
-cdr() { cdj rubyish; }
+cdr() { cdj resume; }
 # cdt() { cd "${HOME}/_out/bhtmp/repo/"; }
 
 ngrokw() { ngrok http 3000 "$@"; }
@@ -415,11 +414,8 @@ rbup_() { brew upgrade rbenv 2> /dev/null; brew upgrade ruby-build 2> /dev/null;
 rbup() { rbis_ > rbis0.txt; rbup_; rbis_ > rbis1.txt; gdiff rbis0.txt rbis1.txt; }
 rbs() { rbenv -v; ruby-build --version; rbenv versions; echo "CURRENT RUBY: $(ruby -v)"; }
 rb0() { rbenv local system; rbs; }
-rb1() { rbenv local 1.9.3-p551; rbs; }
 rb2() { rbenv local 2.3.0; rbs; }
-rb212() { rbenv local 2.1.2; rbs; }
-rb218() { rbenv local 2.1.8; rbs; }
-rb224() { rbenv local 2.2.4; rbs; }
+rb225() { rbenv local 2.2.5; rbs; }
 rbe() { rbenv each "$@"; }
 rgs() { rbe -v gem list; }
 rgo() { rbe -v gem outdated; }
