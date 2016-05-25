@@ -32,13 +32,8 @@ main() {
     eval "$(jenv init -)"
   fi
 
-  ## enable docker
-  if which docker-machine > /dev/null; then
-    eval "$(docker-machine env default)"
-  fi
-
   ## enable iterm2 shell integration
-  test -e ${HOME}/.iterm2_shell_integration.bash && source ${HOME}/.iterm2_shell_integration.bash
+  test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
 
   . ${DOTFILES}/jfenv.sh
   . ${DOTFILES}/jfprompt.sh
