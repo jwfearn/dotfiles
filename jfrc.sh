@@ -1,6 +1,9 @@
 # jfrc.sh - to be called by .bashrc, .zshrc
 
 main() {
+  . ${DOTFILES}/jfenv.sh
+  . ${DOTFILES}/jfprompt.sh
+  
   local shell='sh'
   if [[ -n "${ZSH_VERSION}" ]]; then
     shell='zsh'
@@ -35,8 +38,6 @@ main() {
   ## enable iterm2 shell integration
   test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
 
-  . ${DOTFILES}/jfenv.sh
-  . ${DOTFILES}/jfprompt.sh
   [[ ! "${ZSH_VERSION}" ]] && . ${DOTFILES}/jffn.sh
 }
 main
