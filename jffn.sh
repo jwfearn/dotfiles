@@ -257,7 +257,7 @@ dmds() {
   local readonly prefix='Available drivers: '
   dm help create | grep "${prefix}" | sed -ne "s/^.*${prefix}//p" | sed 's/,//g'
 }
-dp() { d -v && dm -v && dmds; }
+dp() { d -v && dm -v && dcomp -v; }
 dms() { dm ls; }
 dmsh() { dm ssh "$@"; }
 dmi() { dm inspect "$@" | jq .; }
