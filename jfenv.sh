@@ -13,11 +13,11 @@ export EDITOR='subl -w'
 # export PIP_REQUIRE_VIRTUALENV=true
 
 ## Spark-related variables
-export PYSPARK_PYTHON="${HOME}/.pyenv/shims/python"
-export SPARK_HOME="$(dirname $(dirname $(grealpath $(which pyspark))))/libexec"
-export IPYTHON=1  # use ipython shell for spark interactive shell
-export SPARK_PEM="${HOME}/.ssh/apptentive.pem"
-export APPTENTIVE_CLUSTER_TEST=1
+# export PYSPARK_PYTHON="${HOME}/.pyenv/shims/python"
+# export SPARK_HOME="$(dirname $(dirname $(grealpath $(which pyspark))))/libexec"
+# export IPYTHON=1  # use ipython shell for spark interactive shell
+# export SPARK_PEM="${HOME}/.ssh/apptentive.pem"
+# export APPTENTIVE_CLUSTER_TEST=1
 
 # export LS_COLORS='' # Linux
 # export LSCOLORS='' # OS X,
@@ -36,17 +36,17 @@ O=$(set +o) && set -o allexport && . "${HOME}/.env"; eval "${O}"
 
 # required by brew-installed ec2-api-tools
 # export JAVA_HOME="$(/usr/libexec/java_home)"
-export JAVA_HOME="$(jenv javahome)"
-export EC2_HOME="$(dirname $(dirname $(grealpath $(which ec2ver))))/libexec"
+# export JAVA_HOME="$(jenv javahome)"
+# export EC2_HOME="$(dirname $(dirname $(grealpath $(which ec2ver))))/libexec"
 
 # export FLAGS_GETOPT_CMD="/usr/local/opt/gnu-getopt"
 
-export QMAKE='/usr/local/opt/qt5/bin/qmake' # default brew install qt5 location
-export CHEF_CLIENT_NAME='john'
+# export QMAKE='/usr/local/opt/qt5/bin/qmake' # default brew install qt5 location
+# export CHEF_CLIENT_NAME='john'
 
 #TODO: should ATLAS_TOKEN be secret?
-export ATLAS_TOKEN=xDqPJadMbAnySVCqwdLaRKVrokxSq26M8pXqg_By_hMHqv8-KEFKjGs4YLyHyssLYcY
+# export ATLAS_TOKEN=xDqPJadMbAnySVCqwdLaRKVrokxSq26M8pXqg_By_hMHqv8-KEFKjGs4YLyHyssLYcY
 
 # export PATH=JFENV-:/usr/local/Cellar/gnu-getopt/1.1.5/bin:$PATH:${HOME}/bin:/usr/local/mysql/bin:/usr/local/packer:-JFENV
 # export PATH="JFENV-:${PATH}:${HOME}/bin:/usr/local/mysql/bin:/usr/local/packer:-JFENV"
-export PATH="/usr/local/sbin:${PATH}:${HOME}/bin:${SPARK_HOME}/ec2"
+export PATH="/usr/local/sbin:${PATH}:${HOME}/bin" #:${SPARK_HOME}/ec2"
