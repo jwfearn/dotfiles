@@ -198,7 +198,7 @@ treed2() { treed -L 2 "$@"; }
 treed3() { treed -L 3 "$@"; }
 treed4() { treed -L 4 "$@"; }
 treed() { treef -d "$@"; }
-wh() { grealpath $(which "$@"); }
+wh() { grealpath $(which "$@"); } # requires 'brew install coreutils'
 broken() { find -L . -type l -ls; }
 jj() { "$@" | python -mjson.tool; }
 jjs() { while read l; do jj $l; done < "$@"; }
@@ -313,17 +313,17 @@ ggrab() { git co $2 -- $1; }
 # gmm() { git merge master; }
 # grm() { git rebase master; }
 grl() { git reflog --format=format:"%C(yellow)%h %Cblue%aD%Creset %gd %Cgreen%aN%Creset %gs %s"; }
-cdg() { pushd_ ${HOME}/github/$1; } #bgp ${HOME}/github/$1; }
-cdot() { pushd_ ${DOTFILES}; }
-cdj() { cdg jwfearn/$1; }
-cda() { cdg apptentive/$1; }
-cdb() { cda bizint; }
-cdc() { cda chef; }
-cdd() { cda dokidoki; }
-cde() { cda ekg; }
+cdg() { pushd_ "${HOME}/github/$1"; } #bgp ${HOME}/github/$1; }
+cdot() { pushd_ "${DOTFILES}"; }
+cda_() { pushd_ "${HOME}/gitlab/avvo/$1"; }
+cda() { cda_ avvo; }
+cdbb() { cda_ billboard; }
+cdbs() { cda_ banana_stand; }
+cdl() { cda_ ledger; }
+cdq() { cda_ quasi; }
+cds() { cda_ soca; }
+cdj() { cdg "jwfearn/$1"; }
 cdw() { cdj whiteboard; }
-cdm() { cda apptentive-mapreduce/clusters/interactions-report; }
-cdq() { cdj qless; }
 cdr() { cdj resume; }
 # cdt() { cd "${HOME}/_out/bhtmp/repo/"; }
 
@@ -414,7 +414,7 @@ rbup_() { brew upgrade rbenv 2> /dev/null; brew upgrade ruby-build 2> /dev/null;
 rbup() { rbis_ > rbis0.txt; rbup_; rbis_ > rbis1.txt; gdiff rbis0.txt rbis1.txt; }
 rbs() { rbenv -v; ruby-build --version; rbenv versions; echo "CURRENT RUBY: $(ruby -v)"; }
 rb0() { rbenv local system; rbs; }
-rb2() { rbenv local 2.3.0; rbs; }
+rb2() { rbenv local 2.3.1; rbs; }
 rb225() { rbenv local 2.2.5; rbs; }
 rbe() { rbenv each "$@"; }
 rgs() { rbe -v gem list; }
