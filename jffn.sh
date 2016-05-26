@@ -1,7 +1,7 @@
 # jffn.sh - may be exectued by bash OR zsh
 
 # cd /mnt/cluster/bh/work/; s=$(cat shard.id); ls -d xA*/*.stack 2> /dev/null | xargs -I% egrep -o -m1 '"bestPartitions":"[^"]*"' % | sed "s/\"//g" | sed "s/bestPartitions://g" | xargs -I% echo "$(cat %)"
-amexample() { curl -u "$APP_MONSTA_KEY:X" 'https://api.appmonsta.com/v1/stores/itunes/details/450432947.json?country=ALL' | jq '.'; }
+# amexample() { curl -u "$APP_MONSTA_KEY:X" 'https://api.appmonsta.com/v1/stores/itunes/details/450432947.json?country=ALL' | jq '.'; }
 
 ## aliases
 alias ls='ls -aF' # cannot be a function or it would infinitely recurse
@@ -13,66 +13,65 @@ alias 'cd..'='cdup' # 'cd..' cannot be a function name
 
 ## Linkscape-related functions
 # alias sx_="echo url{1..10} | tr ' ' '\n' | xargs -P10 -I^ ssh ^ "
-alias sx_="echo url{1..10} | tr ' ' '\n' | xargs -P10 -I^ ssh ^ "
-alias sxk_="echo url{1..10} | tr ' ' '\n' | xargs -I^ ssh ^ "
+# alias sxk_="echo url{1..10} | tr ' ' '\n' | xargs -I^ ssh ^ "
 # schk() { sx_ 'echo "${HOSTNAME}: jshd: $(pgrep -c jshd), script: $(pgrep -c start_urlsched)  $(cd /mnt/cluster/bh/work && ls -C STOP Stop Quit Restart Start 2> /dev/null)"'; }
-sstop() { sx_ 	; }
-sstart() { sx_ 'cd /mnt/cluster/bh/work && ./start_crawler'; }
-srestart() { sx_ 'cd /mnt/cluster/bh/work && touch Restart && ./start_crawler'; }
+# sstop() { sx_ 	; }
+# sstart() { sx_ 'cd /mnt/cluster/bh/work && ./start_crawler'; }
+# srestart() { sx_ 'cd /mnt/cluster/bh/work && touch Restart && ./start_crawler'; }
 # sxf_() { parallel --no-notice -k --bar "parallel --no-notice -S url{} -n0 --transfer ::: 1" ::: {1..10}; }
-sxf_() { local f=$1; shift; parallel --no-notice "$@" "parallel --no-notice -S 1/url{} --transfer --cleanup bash ::: $f" ::: {1..10}; }
-cxf_() { local f=$1; shift; parallel --no-notice -k "$@" "parallel --no-notice -S 1/crawl{} --transfer --cleanup bash ::: $f" ::: {1..20}; }
+# sxf_() { local f=$1; shift; parallel --no-notice "$@" "parallel --no-notice -S 1/url{} --transfer --cleanup bash ::: $f" ::: {1..10}; }
+# cxf_() { local f=$1; shift; parallel --no-notice -k "$@" "parallel --no-notice -S 1/crawl{} --transfer --cleanup bash ::: $f" ::: {1..20}; }
 # sxfn_() { local fn=$1 && export -f $fn && parallel --no-notice -k --bar "parallel --no-notice -S 1/url{} -n0 --env $fn $fn ::: 1" ::: {1..10}; }
 # cxfn_() { local fn=$1 && export -f $fn && parallel --no-notice -k --bar "parallel --no-notice -S 1/crawl{} -n0 --env $fn $fn ::: 1" ::: {1..20}; }
 # cck() { date; cxfn_ cstat; }
 # sck() { date; sxfn_ sstat; }
 # cck() { date; pushd . > /dev/null; cdl; cxf_ scripts/cstat.sh "$@"; popd > /dev/null; }
 # sck() { date; pushd . > /dev/null; cdl; sxf_ scripts/sstat.sh "$@"; popd > /dev/null; }
-cck() { cdl && scripts/crawlers_status "$@"; }
-sck() { cdl && scripts/schedulers_status "$@"; }
+# cck() { cdl && scripts/crawlers_status "$@"; }
+# sck() { cdl && scripts/schedulers_status "$@"; }
 
 findbad() {
   ls -Sr *.lzoc | head -5 | xargs -P$(($(nproc) - 1)) -I^ ../bin/copystream ^ - >& /dev/null && echo 'GOOD: ^' || echo 'BAD: ^';
 }
 
-alias cx_="echo crawl{1..20} | tr ' ' '\n' | xargs -P20 -I^ ssh ^ "
-alias cxk_="echo crawl{1..20} | tr ' ' '\n' | xargs -I^ ssh ^ "
-alias tx_="echo ctest{A..C} | tr ' ' '\n' | xargs -P10 -I^ ssh ^ "
-alias txk_="echo ctest{A..C} | tr ' ' '\n' | xargs -I^ ssh ^ "
+# alias cx_="echo crawl{1..20} | tr ' ' '\n' | xargs -P20 -I^ ssh ^ "
+# alias cxk_="echo crawl{1..20} | tr ' ' '\n' | xargs -I^ ssh ^ "
+# alias tx_="echo ctest{A..C} | tr ' ' '\n' | xargs -P10 -I^ ssh ^ "
+# alias txk_="echo ctest{A..C} | tr ' ' '\n' | xargs -I^ ssh ^ "
 
-JF_VERSIONS_CMD=' \
-    echo ^: \
-    $(lsb_release -sd), \
-    $(gcc --version | head -1), \
-    $(grep BOOST_LIB_VERSION /usr/include/boost/version.hpp | tail -1) \
-'
-    # $(git --version), \
-    # $(bash --version | head -1), \
-    # $(make --version | head -1), \
-    # $(gdb --version 2> /dev/null | head -1) \
+# JF_VERSIONS_CMD=' \
+#     echo ^: \
+#     $(lsb_release -sd), \
+#     $(gcc --version | head -1), \
+#     $(grep BOOST_LIB_VERSION /usr/include/boost/version.hpp | tail -1) \
+# '
+#     # $(git --version), \
+#     # $(bash --version | head -1), \
+#     # $(make --version | head -1), \
+#     # $(gdb --version 2> /dev/null | head -1) \
 
-tcc() { txk_ "${JF_VERSIONS_CMD}"; }
-ccc() { cxk_ "${JF_VERSIONS_CMD}"; }
-scc() { sxk_ "${JF_VERSIONS_CMD}"; }
+# tcc() { txk_ "${JF_VERSIONS_CMD}"; }
+# ccc() { cxk_ "${JF_VERSIONS_CMD}"; }
+# scc() { sxk_ "${JF_VERSIONS_CMD}"; }
 
 cpi() { cxk_ 'echo ^: $(initctl status procinfo >& | xargs)'; }
-spi() { sxk_ 'echo ^: $(initctl status procinfo >& | xargs)'; }
-cpyenvs() { cxk_ 'echo ^: $(ls -d /mnt/cluster/bh/work/.pyenv/bin ~/.pyenv/bin 2> /dev/null)'; }
-spyenvs() { sxk_ 'echo ^: $(ls -d /mnt/cluster/bh/work/.pyenv/bin ~/.pyenv/bin 2> /dev/null)'; }
+# spi() { sxk_ 'echo ^: $(initctl status procinfo >& | xargs)'; }
+# cpyenvs() { cxk_ 'echo ^: $(ls -d /mnt/cluster/bh/work/.pyenv/bin ~/.pyenv/bin 2> /dev/null)'; }
+# spyenvs() { sxk_ 'echo ^: $(ls -d /mnt/cluster/bh/work/.pyenv/bin ~/.pyenv/bin 2> /dev/null)'; }
 # alias cxs_="echo crawl{1..20} | tr ' ' '\n' | xargs -I^ ssh ^ "
 # cchk() { date; cx_ 'echo "${HOSTNAME}: jshd: $(pgrep -c jshd), script: $(pgrep -c start_crawler), async-dirs: $(ls -ld /mnt/cluster/bh/work/Async-* 2> /dev/null | wc -l), async-ps: $(ps -ef | grep -v grep | grep crawlv2loop | grep Async | wc -l)  $(cd /mnt/cluster/bh/work && ls -C STOP Stop Quit Restart Start 2> /dev/null)"'; }
 # cchk() { date; cx_ 'echo "${HOSTNAME}: jshd: $(pgrep -c jshd), script: $(pgrep -c start_crawler), async-dirs: $(find Async-* -maxdepth 0 -type d -print 2> /dev/null | wc -l), async-ps: $(ps -ef | grep -v grep | grep crawlv2loop | grep Async | wc -l)  $(cd /mnt/cluster/bh/work && ls -C STOP Stop Quit Restart Start 2> /dev/null)"'; }
 # cchk() { cx_ 'echo "${HOSTNAME}: jshd: $(pgrep -c jshd), script: $(pgrep -c start_crawler)"'; }
-casynp() { cx_ 'a=$(ls -d /mnt/cluster/bh/work/Asy* 2>/dev/null | wc -l);echo "^ $a"'; }
-cstop() { cx_ 'touch /mnt/cluster/bh/work/Stop'; }
-cstart() { cx_ 'cd /mnt/cluster/bh/work && ./start_crawler'; }
-lln() { cx_ 'cd /mnt/cluster/bh/bin && ln -s ../src/release/processing/canonicalize .'; }
-lbr() { cx_ 'cd /mnt/cluster/bh/src && git branch'; }
-alias fx_="echo dfix{0..9} | tr ' ' '\n' | xargs -P10 -I^ ssh ^ "
-fxpull() { fx_ 'cd /mnt/cluster/bh/src && git checkout SAVANNA-2737-transfer-fix-script && git pull'; }
+# casynp() { cx_ 'a=$(ls -d /mnt/cluster/bh/work/Asy* 2>/dev/null | wc -l);echo "^ $a"'; }
+# cstop() { cx_ 'touch /mnt/cluster/bh/work/Stop'; }
+# cstart() { cx_ 'cd /mnt/cluster/bh/work && ./start_crawler'; }
+# lln() { cx_ 'cd /mnt/cluster/bh/bin && ln -s ../src/release/processing/canonicalize .'; }
+# lbr() { cx_ 'cd /mnt/cluster/bh/src && git branch'; }
+# alias fx_="echo dfix{0..9} | tr ' ' '\n' | xargs -P10 -I^ ssh ^ "
+# fxpull() { fx_ 'cd /mnt/cluster/bh/src && git checkout SAVANNA-2737-transfer-fix-script && git pull'; }
 #  echo fixer{0..9} | tr ' ' '\n' | xargs -P10 -I^ scp root@^:/mnt/log/fixtransfers_*.log ./^logs/
 # cps() { cd ~/github/linkscape/scripts/ && scp steps.py requirements.txt va:/mnt/cluster/bh/src/scripts/; }
-cps() { echo crawl{1..20} | tr ' ' '\n' | xargs -P20 -I^ scp ~/Save ^:~;  }
+# cps() { echo crawl{1..20} | tr ' ' '\n' | xargs -P20 -I^ scp ~/Save ^:~;  }
 # cps() { cd ~/github/linkscape/scripts/ && scp steps.py requirements.txt crawl1:/mnt/cluster/bh/src/scripts/; }
 
 filterpath() {
@@ -296,18 +295,18 @@ cdvb() { cd "${HOME}/vagrant/vbtest/"; }
 gp() { git status; git --version; }
 gdiff_() { b0=$1; b1=$2; shift 2; git diff --color --minimal "${b0}..${b1}" "$@"; }
 gstat_() { b0=$1; b1=$2; shift 2; git diff --color --minimal --stat "${b0}..${b1}" "$@"; }
-gdiffl_() { pushd_ "${HOME}/github/linkscape"; gdiff_ ${B0:-'crawl-sched-Jul-5-2013'} ${B1:-'sprint-Gordon'} "$@"; popd_; }
-gstatl_() { pushd_ "${HOME}/github/linkscape"; gstat_ ${B0:-'crawl-sched-Jul-5-2013'} ${B1:-'sprint-Gordon'} "$@"; popd_; }
+# gdiffl_() { pushd_ "${HOME}/github/linkscape"; gdiff_ ${B0:-'crawl-sched-Jul-5-2013'} ${B1:-'sprint-Gordon'} "$@"; popd_; }
+# gstatl_() { pushd_ "${HOME}/github/linkscape"; gstat_ ${B0:-'crawl-sched-Jul-5-2013'} ${B1:-'sprint-Gordon'} "$@"; popd_; }
 
-diffb() { B0='jf_comp_c' B1='jf_comp_p' gdiffl_ 'liblinkscape/batch.cc'; }
-statb() { B0='jf_comp_c' B1='jf_comp_p' gstatl_ 'liblinkscape/batch.cc'; }
-diffc() { B0='jf_comp_c' B1='jf_comp_p' gdiffl_ 'processing/crawlv2loop.cc'; }
-statc() { B0='jf_comp_c' B1='jf_comp_p' gstatl_ 'processing/crawlv2loop.cc'; }
-difft() { B0='jf_comp_c' B1='jf_comp_p' gdiffl_ 'processing/test/batch_unittest.cc'; }
-statt() { B0='jf_comp_c' B1='jf_comp_p' gstatl_ 'processing/test/batch_unittest.cc'; }
+# diffb() { B0='jf_comp_c' B1='jf_comp_p' gdiffl_ 'liblinkscape/batch.cc'; }
+# statb() { B0='jf_comp_c' B1='jf_comp_p' gstatl_ 'liblinkscape/batch.cc'; }
+# diffc() { B0='jf_comp_c' B1='jf_comp_p' gdiffl_ 'processing/crawlv2loop.cc'; }
+# statc() { B0='jf_comp_c' B1='jf_comp_p' gstatl_ 'processing/crawlv2loop.cc'; }
+# difft() { B0='jf_comp_c' B1='jf_comp_p' gdiffl_ 'processing/test/batch_unittest.cc'; }
+# statt() { B0='jf_comp_c' B1='jf_comp_p' gstatl_ 'processing/test/batch_unittest.cc'; }
 
-statx() { gstatl_ "cluster"; gstatl_ "processing/cluster"; }
-statl() { gstatl_ .; }
+# statx() { gstatl_ "cluster"; gstatl_ "processing/cluster"; }
+# statl() { gstatl_ .; }
 # grab file from a particular commit.  Usage: ggrab filepath commit
 ggrab() { git co $2 -- $1; }
 # gmm() { git merge master; }
@@ -329,9 +328,9 @@ cdr() { cdj resume; }
 
 ngrokw() { ngrok http 3000 "$@"; }
 
-sha_() { cdc; bx knife ssh "role:$1 AND environment:production" -x ec2-user -a ipaddress 'cd /opt/apptentive/current && git rev-parse HEAD'; popd_; }
-shaa() { sha_ 'web'; }
-shab() { sha_ 'web-be'; }
+# sha_() { cdc; bx knife ssh "role:$1 AND environment:production" -x ec2-user -a ipaddress 'cd /opt/apptentive/current && git rev-parse HEAD'; popd_; }
+# shaa() { sha_ 'web'; }
+# shab() { sha_ 'web-be'; }
 
 doki() {
   bundle exec rake templates
@@ -348,7 +347,7 @@ bi() { bundle install --standalone --path=vendor/bundle --binstubs=binstubs "$@"
 biu() { rm Gemfile.lock; bi "$@"; }
 #bspec() { binstubs/rspec "$@"; } # why doesn't thins work for 'web' project?
 bx() { bundle exec "$@"; }
-bxprod() { MONGODB_URI='mongodb://mongo/apptentive_production' bx "$@"; }
+# bxprod() { MONGODB_URI='mongodb://mongo/apptentive_production' bx "$@"; }
 bo() { bundle outdated | grep "  * " | sort > "${HOME}/_out/outdated.txt"; }
 bu() { bundle update "$@"; bi; }
 bv() { bx bundle viz -f doc/gem_graph -F svg "$@"; }
@@ -360,7 +359,7 @@ bry() { bx pry "$@"; }
 rk() { bx rake -G "$@"; }
 rkt() { rk -T "$@"; }
 rkta() { rkt -A "$@"; }
-rkprod() { bxprod rake -G "$@"; }
+# rkprod() { bxprod rake -G "$@"; }
 # bli() { rk app:moz:lint; }
 # bpt() { rk app:moz:plovrd_test; }
 # byd() { rk app:moz:doc_yard; }
@@ -375,31 +374,31 @@ rac() { ra console "$@"; }
 ras() { ra server "$@"; }
 
 ggp() { cat vendor/bundle/bundler/setup.rb | grep bundler/gems/; }
-bfc() { cdf && bi && rk freya:compile; }
+# bfc() { cdf && bi && rk freya:compile; }
 midd() { RAILS_ENV='development' bx rake middleware; }
 midt() { RAILS_ENV='test' bx rake middleware; }
 midp() { RAILS_ENV='production' bx rake middleware; }
 # bgp() { bundle config --delete path; bundle config --global path $1/vendor/bundle; }
 ## Bundler-related aliases for local gem overrides
-bon2_() { bundle config local.$1 ${HOME}/github/$2; } # use when gem != project ($1 = gem name, $2 = project name)
-bon_() { bundle config local.$1 ${HOME}/github/$1; } # use when gem == project
+bon2_() { bundle config local.$1 "${HOME}/github/$2"; } # use when gem != project ($1 = gem name, $2 = project name)
+bon_() { bundle config local.$1 "${HOME}/github/$1"; } # use when gem == project
 bon() { bon2_ $1 $1; bundle config; }
-ona() { bon alpha_bits; }
-ond() { bon mozdev; }
-oni() { bon interpol; }
+# ona() { bon alpha_bits; }
+# ond() { bon mozdev; }
+# oni() { bon interpol; }
 # onl() { bon2_ legion legion-gem; bundle config; }
-onm() { bon mozoo; }
-ons() { bon SSSO; }
-onv() { bon2_ vanguard-client vanguard; bon2_ vanguard-endpoints vanguard; bundle config; }
+# onm() { bon mozoo; }
+# ons() { bon SSSO; }
+# onv() { bon2_ vanguard-client vanguard; bon2_ vanguard-endpoints vanguard; bundle config; }
 boff_() { bundle config --delete local.$1; }
 boff() { boff_ $1; bundle config; }
-offa() { boff alpha_bits; }
-offd() { boff mozdev; }
-offi() { boff interpol; }
+# offa() { boff alpha_bits; }
+# offd() { boff mozdev; }
+# offi() { boff interpol; }
 # offl() { boff legion; }
-offm() { boff mozoo; }
-offs() { boff SSSO; }
-offv() { boff_ vanguard-endpoints; boff vanguard-client; }
+# offm() { boff mozoo; }
+# offs() { boff SSSO; }
+# offv() { boff_ vanguard-endpoints; boff vanguard-client; }
 
 ## Rubocop-related functions
 # cop() { bx rubocop -F -c "$HOME/.rubocop.yml" "$@"; }
@@ -474,9 +473,9 @@ red() { redis-cli "$@"; }
 
 ## MongoDB-related functions
 mdbs() { mongo --eval show dbs; }
-mprod() { mongo mongo.corp.apptentive.com:27017/apptentive_production "$@"; }
-mdev() { mongo localhost:27017/apptentive_development "$@"; }
-xmprod() { mongo --host mongo.corp.apptentive.com --port 27017 apptentive_production "$@"; }
+# mprod() { mongo mongo.corp.apptentive.com:27017/apptentive_production "$@"; }
+# mdev() { mongo localhost:27017/apptentive_development "$@"; }
+# xmprod() { mongo --host mongo.corp.apptentive.com --port 27017 apptentive_production "$@"; }
 rr() { bx railroady -vbamM | sed -E 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g' | dot -Tsvg > rr.svg; }
 
 ## JetBrains-related functions
