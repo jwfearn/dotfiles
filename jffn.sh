@@ -250,13 +250,15 @@ nt() { npm test "$@"; }
 
 ## Docker-related functions
 d() { docker "$@"; }
-dcomp() { docker-compose "$@"; }
+dco() { docker-compose "$@"; }
 dm() { docker-machine "$@"; }
-dmds() {
-  local readonly prefix='Available drivers: '
-  dm help create | grep "${prefix}" | sed -ne "s/^.*${prefix}//p" | sed 's/,//g'
-}
-dp() { d -v && dm -v && dcomp -v; }
+dp() { d -v && dm -v && dco -v; }
+# dmds() {
+#   local readonly prefix='Available drivers: '
+#   dm help create | grep "${prefix}" | sed -ne "s/^.*${prefix}//p" | sed 's/,//g'
+# }
+dps() { d ps "$@"; }
+dis() { d images "$@"; }
 dms() { dm ls; }
 dmsh() { dm ssh "$@"; }
 dmi() { dm inspect "$@" | jq .; }
