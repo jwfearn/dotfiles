@@ -1,12 +1,24 @@
-# IO.inspect __ENV__.file
+# IEx.Options.set(:colors, enabled: true)
 
 IEx.configure(
-  default_prompt: IO.ANSI.format([
-      "\e[G",
-      :magenta,
+  colors: [
+    enabled: true,
+    eval_result: [:cyan, :bright]
+  ],
+  # default_prompt: IO.ANSI.format([
+  #     "\e[G", # move to column 1
+  #     :magenta,
+  #     "%prefix",
+  #     ">"
+  #   ]) |> IO.chardata_to_string,
+  default_prompt: [
+      "\e[G", # move to column 1
+      "\e[35m", # magenta
+      # :magenta,
       "%prefix",
-      ">"
-    ]) |> IO.chardata_to_string,
+      ">",
+      "\e[0m"
+    ] |> IO.chardata_to_string,
   alive_prompt: IO.ANSI.format([
       "\e[G",
       :magenta,
@@ -14,10 +26,7 @@ IEx.configure(
       "%prefix(%node)",
       ">"        # 
     ]) |> IO.chardata_to_string,
-  history_size: -1,
-  colors: [
-    eval_result: [:cyan, :bright]
-  ]
+  history_size: -1
 )
 
 # ELIXIR TIPS:
