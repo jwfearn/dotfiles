@@ -177,7 +177,7 @@ pushd_() { pushd "$@" > /dev/null; }
 popd_() { popd "$@" > /dev/null; }
 
 lk() { open -a ScreenSaverEngine; }
-rc() { e ${DOTFILES}/jffuncs.sh; }
+rc() { e ${DOTFILES}/jffn.sh; }
 src() { . ${DOTFILES}/jffn.sh; }  # reload function only
 srcx() { . ${DOTFILES}/jfenv.sh; src; }  # also reload environment variables
 path() { echo $PATH | tr ':' '\n'; }
@@ -244,6 +244,10 @@ cores() { system_profiler SPHardwareDataType | grep 'Total Number of Cores' | cu
 ## cron-related functions
 cronp() { ls -ldF /etc/cron* /var/spool/cron/crontabs/* 2> /dev/null; }
 
+## Elixir-related functions
+myip() { ipconfig getifaddr en0; }
+myiex() { iex --name "john@$(myip)" --cookie game; }
+
 ## Node-relate functions
 nr() { npm run "$@"; }
 nt() { npm test "$@"; }
@@ -257,7 +261,7 @@ dp() { d -v && dm -v && dco -v; }
 #   local readonly prefix='Available drivers: '
 #   dm help create | grep "${prefix}" | sed -ne "s/^.*${prefix}//p" | sed 's/,//g'
 # }
-dps() { d ps "$@"; }
+dps() { d ps -a "$@"; }
 dis() { d images "$@"; }
 dms() { dm ls; }
 dmsh() { dm ssh "$@"; }
@@ -314,19 +318,43 @@ ggrab() { git co $2 -- $1; }
 # gmm() { git merge master; }
 # grm() { git rebase master; }
 grl() { git reflog --format=format:"%C(yellow)%h %Cblue%aD%Creset %gd %Cgreen%aN%Creset %gs %s"; }
-cdg() { pushd_ "${HOME}/github/$1"; } #bgp ${HOME}/github/$1; }
+cdg_() { pushd_ "${HOME}/github/$1"; } #bgp ${HOME}/github/$1; }
 cdot() { pushd_ "${DOTFILES}"; }
-cda_() { pushd_ "${HOME}/gitlab/avvo/$1"; }
+cda_() { cdg_ "avvo/$1"; }
 cda() { cda_ avvo; }
 cdbb() { cda_ billboard; }
 cdbs() { cda_ banana_stand; }
 cdl() { cda_ ledger; }
+cdn() { cda_ nrt; }
 cdq() { cda_ quasi; }
 cds() { cda_ soca; }
-cdj() { cdg "jwfearn/$1"; }
+cdg() { cda_ gnomon; }
+cdj() { cdg_ "jwfearn/$1"; }
 cdw() { cdj whiteboard; }
 cdr() { cdj resume; }
+cdul_() { cd "/usr/local/$1"; }
+cdull() { cdul_ "lib/$1"; }
+cdulb() { cdul_ "bin/$1"; }
 # cdt() { cd "${HOME}/_out/bhtmp/repo/"; }
+
+## Avvo-related functions
+amig_() { bundle exec rake db:migrate && RAILS_ENV=test bundle exec rake db:migrate; }
+amig() {
+  pushd_
+  # local prjs=(account avvo banana_stand billboard content gnomon ledger nrt quasi soca solicitor)
+  local prjs=(account)
+  for prj in ${prjs[@]}; do
+    cda_ "${prj}" && amig_
+  done
+  popd_
+}
+kp() {
+  pidfiles=($(find . -name 'server.pid'))
+  for pidfile in ${pidfiles[@]}; do
+    read pid <"${pidfile}"
+    kill "${pid}" && echo "killed: ${pid}"
+  done
+}
 
 ngrokw() { ngrok http 3000 "$@"; }
 
@@ -358,7 +386,8 @@ brb() { bx irb "$@"; } # use when bco fails
 bry() { bx pry "$@"; }
 
 ## Rake-related functions
-rk() { bx rake -G "$@"; }
+rk_() { bx rake "$@"; }
+rk() { rk_ -G "$@"; }
 rkt() { rk -T "$@"; }
 rkta() { rkt -A "$@"; }
 # rkprod() { bxprod rake -G "$@"; }
@@ -366,8 +395,23 @@ rkta() { rkt -A "$@"; }
 # bpt() { rk app:moz:plovrd_test; }
 # byd() { rk app:moz:doc_yard; }
 
+## Test-related functions
 spec_() { time bx rspec --color "$@"; }
 spec() { bx hound "$@" && spec_ "$@"; }
+# bprep() { RAILS_ENV=test bundle exec rake db:prepare; }
+rtest() { bx ruby -I"lib:test" "$@"; }
+rtesta() { RAILS_ENV=test time bundle exec rake test; }
+# rtesta() { RAILS_ENV=test TESTOPTS='--profile' time bundle exec rake test; }
+t() {
+  if [[ -d 'spec' ]]; then
+    local cmd='rspec --color' # Rspec
+  elif [[ -d 'test' ]]; then
+    local cmd='rake test' # minitest
+  fi
+  [[ -z "${cmd}" ]] && echo -e 'no tests found' && return 1
+  RAILS_ENV=test time bundle exec "${cmd} $@"
+}
+
 bjsp() { bx ruby -e 'require "execjs"; ExecJS.runtime'; }
 
 ## Rails-related functions
@@ -403,6 +447,7 @@ boff() { boff_ $1; bundle config; }
 # offv() { boff_ vanguard-endpoints; boff vanguard-client; }
 
 ## Rubocop-related functions
+bcop() { bx rubocop "$@"; bx rubocop --format fi "$@" | wc -l; }
 # cop() { bx rubocop -F -c "$HOME/.rubocop.yml" "$@"; }
 # hound() { cop $(git diff --name-only); }
 
@@ -416,7 +461,9 @@ rbup() { rbis_ > rbis0.txt; rbup_; rbis_ > rbis1.txt; gdiff rbis0.txt rbis1.txt;
 rbs() { rbenv -v; ruby-build --version; rbenv versions; echo "CURRENT RUBY: $(ruby -v)"; }
 rb0() { rbenv local system; rbs; }
 rb2() { rbenv local 2.3.1; rbs; }
-rb225() { rbenv local 2.2.5; rbs; }
+rb222() { rbenv local 2.2.2; rbs; }
+rb212() { rbenv local 2.1.2; rbs; }
+rb2110() { rbenv local 2.1.10; rbs; }
 rbe() { rbenv each "$@"; }
 rgs() { rbe -v gem list; }
 rgo() { rbe -v gem outdated; }
