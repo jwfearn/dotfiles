@@ -37,7 +37,7 @@ main() {
     eval "$(jenv init -)"
   fi
 
-  [[ ! "${ZSH_VERSION}" ]] && source ${DOTFILES}/jffn.sh
+  [[ ! "${ZSH_VERSION}" ]] && source "${DOTFILES}/jffn.bash"
 }
 main
 unset -f main

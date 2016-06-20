@@ -1,4 +1,4 @@
-# jffn.sh - may be exectued by bash OR zsh
+# jffn.bash - may be exectued by bash
 
 # cd /mnt/cluster/bh/work/; s=$(cat shard.id); ls -d xA*/*.stack 2> /dev/null | xargs -I% egrep -o -m1 '"bestPartitions":"[^"]*"' % | sed "s/\"//g" | sed "s/bestPartitions://g" | xargs -I% echo "$(cat %)"
 # amexample() { curl -u "$APP_MONSTA_KEY:X" 'https://api.appmonsta.com/v1/stores/itunes/details/450432947.json?country=ALL' | jq '.'; }
@@ -177,15 +177,15 @@ pushd_() { pushd "$@" > /dev/null; }
 popd_() { popd "$@" > /dev/null; }
 
 lk() { open -a ScreenSaverEngine; }
-rc() { e ${DOTFILES}/jffn.sh; }
-src() { . ${DOTFILES}/jffn.sh; }  # reload function only
-srcx() { . ${DOTFILES}/jfenv.sh; src; }  # also reload environment variables
+rc() { e "${DOTFILES}/jffn.bash"; }
+src() { . "${DOTFILES}/jffn.bash"; }  # reload function only
+srcx() { . "${DOTFILES}/jfenv.sh"; src; }  # also reload environment variables
 path() { echo $PATH | tr ':' '\n'; }
 func() { typeset -F; }
 err() { echo $?; }
 rm@() { xattr -cr; }
-colors() { bash ${DOTFILES}/bin/colortest.sh; }
-minr() { ruby ${DOTFILES}/bin/minrails.rb; }
+colors() { bash "${DOTFILES}/bin/colortest.sh"; }
+minr() { ruby "${DOTFILES}/bin/minrails.rb"; }
 treef() { tree --dirsfirst "$@"; }
 treef1() { treef -L 1 "$@"; }
 treef2() { treef -L 2 "$@"; }

@@ -14,18 +14,17 @@ IEx.configure(
   default_prompt: [
       "\e[G", # move to column 1
       "\e[35m", # magenta
-      # :magenta,
       "%prefix",
+      ">",
+      "\e[0m" # reset
+    ] |> IO.chardata_to_string,
+  alive_prompt: [
+      "\e[G",
+      "\e[1;35m", # bright magenta
+      "%prefix(%node)",
       ">",
       "\e[0m"
     ] |> IO.chardata_to_string,
-  alive_prompt: IO.ANSI.format([
-      "\e[G",
-      :magenta,
-      :bright,
-      "%prefix(%node)",
-      ">"        # 
-    ]) |> IO.chardata_to_string,
   history_size: -1
 )
 
