@@ -246,7 +246,7 @@ cronp() { ls -ldF /etc/cron* /var/spool/cron/crontabs/* 2> /dev/null; }
 
 ## Elixir-related functions
 myip() { ipconfig getifaddr en0; }
-myiex() { iex --name "john@$(myip)" --cookie game; }
+myiex() { RESISTANCE_MAIN=10.3.17.89 iex --name "john@$(myip)" --cookie la_resistance -S mix; }
 
 ## Node-relate functions
 nr() { npm run "$@"; }
@@ -329,9 +329,11 @@ cdn() { cda_ nrt; }
 cdq() { cda_ quasi; }
 cds() { cda_ soca; }
 cdg() { cda_ gnomon; }
+cdr() { cda_ resistance-game; }
 cdj() { cdg_ "jwfearn/$1"; }
+cdo() { cdg_ "other/$1"; }
 cdw() { cdj whiteboard; }
-cdr() { cdj resume; }
+# cdr() { cdj resume; }
 cdul_() { cd "/usr/local/$1"; }
 cdull() { cdul_ "lib/$1"; }
 cdulb() { cdul_ "bin/$1"; }

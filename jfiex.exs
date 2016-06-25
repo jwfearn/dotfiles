@@ -14,15 +14,13 @@ IEx.configure(
   default_prompt: [
       "\e[G", # move to column 1
       "\e[35m", # magenta
-      "%prefix",
-      ">",
+      "%prefix>",
       "\e[0m" # reset
     ] |> IO.chardata_to_string,
   alive_prompt: [
       "\e[G",
       "\e[1;35m", # bright magenta
-      "%prefix(%node)",
-      ">",
+      "%prefix(%node)>",
       "\e[0m"
     ] |> IO.chardata_to_string,
   history_size: -1

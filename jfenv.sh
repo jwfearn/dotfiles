@@ -7,6 +7,18 @@
 
 export EDITOR='subl -w'
 
+export CPLUS_INCLUDE_PATH='/usr/local/opt/openssl/include'
+export OBJCPLUS_INCLUDE_PATH='/usr/local/opt/openssl/lib'
+export STDOUT_SYNC=1
+# base_url port numbers should agree with Procfile else will default to stag
+export ACCOUNT_BASE_URL='http://localhost:5029/'
+export BILLBOARD_BASE_URL='http://localhost:5008/'
+export CONTENT_BASE_URL='http://localhost:5004/'
+export GNOMON_BASE_URL='http://localhost:5005/'
+export LEDGER_BASE_URL='http://localhost:5002/'
+export QUASI_BASE_URL='http://localhost:5001/'
+export SOLICITOR_BASE_URL='http://localhost:5007/'
+
 [[ -z ${MSYSTEM} ]] && export GREP_OPTIONS='--color=auto'
 
 # pip should only run if there is a virtualenv currently activated

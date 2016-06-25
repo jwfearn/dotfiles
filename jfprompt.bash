@@ -1,11 +1,18 @@
 # jfprompt.bash
 
-# 'PROMPT_COMMAND' is a special environment variable name known to Bash
-PROMPT_COMMAND=myprompt
-
-myprompt() {
+prompt_jf() {
   PS1='\[\e[37m\]\u\[\e[0m\]@\[\e[37m\]\h \[\e[36m\]\w \[\e[37m\]\$ \[\e[0m\]'
 }
+
+prompt_minimal() {
+  PS1='\$ '
+}
+
+# 'PROMPT_COMMAND' is a special environment variable name known to Bash
+pjf() { PROMPT_COMMAND=prompt_jf; }
+pmin() { PROMPT_COMMAND=prompt_minimal; }
+
+pjf
 
 # if [ -n "${ZSH_VERSION}" ]; then
 #   echo 'installing myprompt (zsh)'
@@ -39,3 +46,4 @@ myprompt() {
 # TPUT_WHITE=7
 
 # PS1='\s-\v\$ '  # bash default
+# PS1='\$ '
