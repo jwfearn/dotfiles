@@ -357,6 +357,19 @@ kp() {
     kill "${pid}" && echo "killed: ${pid}"
   done
 }
+mrm() {
+  git checkout release \
+    && git remote update -p \
+    && git merge --ff-only @{u} \
+    && git checkout master \
+    && git merge --ff-only @{u} \
+    && git merge --no-ff release -m "Merge branch 'release' into 'master'" \
+    && git checkout release \
+    && git merge master \
+    && git push \
+    && git checkout master \
+    && git push;
+}
 
 ngrokw() { ngrok http 3000 "$@"; }
 
