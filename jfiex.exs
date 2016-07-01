@@ -1,4 +1,4 @@
-# IEx.Options.set(:colors, enabled: true)
+Application.put_env(:elixir, :ansi_enabled, true)
 
 IEx.configure(
   colors: [
@@ -13,16 +13,17 @@ IEx.configure(
   #   ]) |> IO.chardata_to_string,
   default_prompt: [
       "\e[G", # move to column 1
-      "\e[35m", # magenta
+      :bright,
+      :magenta,
       "%prefix>",
-      "\e[0m" # reset
-    ] |> IO.chardata_to_string,
+      :reset
+    ] |> IO.ANSI.format |> IO.chardata_to_string,
   alive_prompt: [
       "\e[G",
       "\e[1;35m", # bright magenta
       "%prefix(%node)>",
-      "\e[0m"
-    ] |> IO.chardata_to_string,
+      :reset
+    ] |> IO.ANSI.format |> IO.chardata_to_string,
   history_size: -1
 )
 
