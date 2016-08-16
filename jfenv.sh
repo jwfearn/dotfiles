@@ -58,7 +58,12 @@ O=$(set +o) && set -o allexport && . "${HOME}/.env"; eval "${O}"
 
 #TODO: should ATLAS_TOKEN be secret?
 # export ATLAS_TOKEN=xDqPJadMbAnySVCqwdLaRKVrokxSq26M8pXqg_By_hMHqv8-KEFKjGs4YLyHyssLYcY
-
+export GOPATH="${HOME}/gocode"
+export PATH="${PATH}:${GOPATH}/bin"
+export PATH="${PATH}:/usr/local/sbin"
+export PATH="${PATH}:/usr/local/opt/go/libexec/bin"
+export PATH="${PATH}:${HOME}/bin"
 # export PATH=JFENV-:/usr/local/Cellar/gnu-getopt/1.1.5/bin:$PATH:${HOME}/bin:/usr/local/mysql/bin:/usr/local/packer:-JFENV
 # export PATH="JFENV-:${PATH}:${HOME}/bin:/usr/local/mysql/bin:/usr/local/packer:-JFENV"
-export PATH="/usr/local/sbin:${PATH}:${HOME}/bin" #:${SPARK_HOME}/ec2"
+#:${SPARK_HOME}/ec2"
+

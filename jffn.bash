@@ -4,11 +4,25 @@
 # amexample() { curl -u "$APP_MONSTA_KEY:X" 'https://api.appmonsta.com/v1/stores/itunes/details/450432947.json?country=ALL' | jq '.'; }
 
 ## aliases
-alias ls='ls -aF' # cannot be a function or it would infinitely recurse
-alias tree='tree -CF' # cannot be a function or it would infinitely recurse
+alias 'cd..'='cd ..' # 'cd..' cannot be a function name
+alias 'cd-'='cd -'
 # alias irb='irb --'
-alias 'cd..'='cdup' # 'cd..' cannot be a function name
-# alias 'cd/'='cdroot' # 'cd..' cannot be a function name
+
+
+ls() { env ls -aF "$@"; }
+tree() { env tree -CF "$@"; }
+
+man() {
+  env \
+    LESS_TERMCAP_mb=$(printf "\e[1;31m") \
+    LESS_TERMCAP_md=$(printf "\e[1;31m") \
+    LESS_TERMCAP_me=$(printf "\e[0m") \
+    LESS_TERMCAP_se=$(printf "\e[0m") \
+    LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
+    LESS_TERMCAP_ue=$(printf "\e[0m") \
+    LESS_TERMCAP_us=$(printf "\e[1;32m") \
+    man "$@"
+}
 
 
 ## Linkscape-related functions
@@ -29,11 +43,9 @@ alias 'cd..'='cdup' # 'cd..' cannot be a function name
 # sck() { date; pushd . > /dev/null; cdl; sxf_ scripts/sstat.sh "$@"; popd > /dev/null; }
 # cck() { cdl && scripts/crawlers_status "$@"; }
 # sck() { cdl && scripts/schedulers_status "$@"; }
-
-findbad() {
-  ls -Sr *.lzoc | head -5 | xargs -P$(($(nproc) - 1)) -I^ ../bin/copystream ^ - >& /dev/null && echo 'GOOD: ^' || echo 'BAD: ^';
-}
-
+# findbad() {
+#   ls -Sr *.lzoc | head -5 | xargs -P$(($(nproc) - 1)) -I^ ../bin/copystream ^ - >& /dev/null && echo 'GOOD: ^' || echo 'BAD: ^';
+# }
 # alias cx_="echo crawl{1..20} | tr ' ' '\n' | xargs -P20 -I^ ssh ^ "
 # alias cxk_="echo crawl{1..20} | tr ' ' '\n' | xargs -I^ ssh ^ "
 # alias tx_="echo ctest{A..C} | tr ' ' '\n' | xargs -P10 -I^ ssh ^ "
@@ -54,7 +66,7 @@ findbad() {
 # ccc() { cxk_ "${JF_VERSIONS_CMD}"; }
 # scc() { sxk_ "${JF_VERSIONS_CMD}"; }
 
-cpi() { cxk_ 'echo ^: $(initctl status procinfo >& | xargs)'; }
+# cpi() { cxk_ 'echo ^: $(initctl status procinfo >& | xargs)'; }
 # spi() { sxk_ 'echo ^: $(initctl status procinfo >& | xargs)'; }
 # cpyenvs() { cxk_ 'echo ^: $(ls -d /mnt/cluster/bh/work/.pyenv/bin ~/.pyenv/bin 2> /dev/null)'; }
 # spyenvs() { sxk_ 'echo ^: $(ls -d /mnt/cluster/bh/work/.pyenv/bin ~/.pyenv/bin 2> /dev/null)'; }
@@ -142,8 +154,11 @@ smux() { lmux.sh url 10; }
 
 
 ## Homebrew-related functions
+o() { vpu && rgo && bod; }
 bod() { brew update && brew outdated && brew doctor; }
 buc() { brew upgrade --all; brew cleanup; }
+bs() { brew services "$@"; }
+bss() { brew services list "$@"; }
 
 ## tmux-related functions
 tls() { tmux list-sessions "$@"; }
@@ -169,8 +184,8 @@ vars() { env | sort -V; }
 ep() { env | sort | grep "$@"; }
 e() { subl "$@"; }
 h() { history | tail -"$@"; }
-lsl() { ls -lOe; }  # -O is a Mac-specific option
-lsd() { ls -d */ .*/; }
+lsl() { env ls -lOe; }  # -O is a Mac-specific option
+lsd() { env ls -d .*/; }
 lsb() { find "$@"; }  # bare directory listing (like DOS: `dir /b`)
 lsapts() { F='/etc/apt/sources.list'; D="${L}.d"; [[ -f ${F} ]] && lsb ${F}; [[ -d ${D} ]] && lsb ${D}; }
 pushd_() { pushd "$@" > /dev/null; }
@@ -247,6 +262,8 @@ cronp() { ls -ldF /etc/cron* /var/spool/cron/crontabs/* 2> /dev/null; }
 ## Elixir-related functions
 myip() { ipconfig getifaddr en0; }
 myiex() { RESISTANCE_MAIN=10.3.17.89 iex --name "john@$(myip)" --cookie la_resistance -S mix; }
+mi() { mix deps.get "$@"; } # like bi for mix
+mrm() { echo TODO; } # like brm for mix
 
 ## Node-relate functions
 nr() { npm run "$@"; }
@@ -255,8 +272,13 @@ nt() { npm test "$@"; }
 ## Docker-related functions
 d() { docker "$@"; }
 dco() { docker-compose "$@"; }
+dcup() { docker-compose up "$@"; }
 dm() { docker-machine "$@"; }
-dp() { d -v && dm -v && dco -v; }
+dp() {
+  which docker && docker -v
+  which docker-machine && docker-machine -v
+  which docker-compose && docker-compose -v
+}
 # dmds() {
 #   local readonly prefix='Available drivers: '
 #   dm help create | grep "${prefix}" | sed -ne "s/^.*${prefix}//p" | sed 's/,//g'
@@ -320,16 +342,6 @@ ggrab() { git co $2 -- $1; }
 grl() { git reflog --format=format:"%C(yellow)%h %Cblue%aD%Creset %gd %Cgreen%aN%Creset %gs %s"; }
 cdg_() { pushd_ "${HOME}/github/$1"; } #bgp ${HOME}/github/$1; }
 cdot() { pushd_ "${DOTFILES}"; }
-cda_() { cdg_ "avvo/$1"; }
-cda() { cda_ avvo; }
-cdbb() { cda_ billboard; }
-cdbs() { cda_ banana_stand; }
-cdl() { cda_ ledger; }
-cdn() { cda_ nrt; }
-cdq() { cda_ quasi; }
-cds() { cda_ soca; }
-cdg() { cda_ gnomon; }
-cdr() { cda_ resistance-game; }
 cdj() { cdg_ "jwfearn/$1"; }
 cdo() { cdg_ "other/$1"; }
 cdw() { cdj whiteboard; }
@@ -339,7 +351,23 @@ cdull() { cdul_ "lib/$1"; }
 cdulb() { cdul_ "bin/$1"; }
 # cdt() { cd "${HOME}/_out/bhtmp/repo/"; }
 
-## Avvo-related functions
+## BEGIN: Avvo-related functions
+ef() { exercism fetch elixir; }
+et() { elixir *_test.exs; }
+cda_() { cdg_ "avvo/$1"; }
+cda() { cda_ avvo; }
+cdaw() { cda_ avvo_app_works; }
+cdawl() { cda_ avvo_app_works-logging; }
+cdbb() { cda_ billboard; }
+cdbs() { cda_ banana_stand; }
+cdl() { cda_ ledger; }
+cdn() { cda_ nrt; }
+cdp() { cda_ pbx; }
+cdq() { cda_ quasi; }
+cds() { cda_ soca; }
+cdg() { cda_ gnomon; }
+cdr() { cda_ resistance-game; }
+snapup() { cda && rk avvo:db:prepare; } # copy weekly data snapshot to local mysql, use "Windows" password
 amig_() { bundle exec rake db:migrate && RAILS_ENV=test bundle exec rake db:migrate; }
 amig() {
   pushd_
@@ -357,7 +385,7 @@ kp() {
     kill "${pid}" && echo "killed: ${pid}"
   done
 }
-mrm() {
+mrel() {
   git checkout release \
     && git remote update -p \
     && git merge --ff-only @{u} \
@@ -370,6 +398,7 @@ mrm() {
     && git checkout master \
     && git push;
 }
+## END: Avvo-related functions
 
 ngrokw() { ngrok http 3000 "$@"; }
 
@@ -525,11 +554,21 @@ ped() { pyenv deactivate "$@"; }
 pyv() { pyenv virtualenv "$@"; }
 
 ## MySQL-related functions
-my() { /usr/local/mysql/bin/mysql; }
-myd() { /usr/local/mysql/bin/mysql server start; }
-myad() { /usr/local/mysql/bin/mysqladmin; }
-myp() { /usr/local/mysql/bin/mysqladmin -u root -p status; }
-myfix() { sudo ln -ssudo ln -s /usr/local/mysql/lib/libmysqlclient.18.dylib /usr/lib/libmysqlclient.18.dylib; }
+mystart_dot() { mysql.server start "$@"; }
+mystop_dot() { mysql.server start "$@"; }
+myrestart_dot() { mysql.server start "$@"; }
+mystart_brew() { brew services start mysql56 "$@"; }
+mystop_brew() { brew services stop mysql56 "$@"; }
+myrestart_brew() { brew services restart mysql56 "$@"; }
+mystart() { mystart_brew "$@"; }
+mystop() { mystop_brew "$@"; }
+myrestart() { myrestart_brew "$@"; }
+my() { mysql -uroot -p "$@"; }
+# my() { /usr/local/mysql/bin/mysql; }
+# myd() { /usr/local/mysql/bin/mysql server start; }
+# myad() { /usr/local/mysql/bin/mysqladmin; }
+# myp() { /usr/local/mysql/bin/mysqladmin -u root -p status; }
+# myfix() { sudo ln -ssudo ln -s /usr/local/mysql/lib/libmysqlclient.18.dylib /usr/lib/libmysqlclient.18.dylib; }
 
 ## Redis-related functions
 redd() { redis-server "$@"; }
@@ -555,41 +594,6 @@ dfd() { cdf && bx cap dev deploy; }
 
 ## Amazon Web Services-related functions
 adate() { curl -0 -i http://s3.amazonaws.com/; }
-
-## Vanguard-related functions
-# vcredx_() { cdv && cd config && mv -v credentials.development.yml credentials.test.yml ${HOME}/_out; }
-# vcredcp_() { cp -v credentials.development.yml credentials.test.yml; }
-# vcred() { vcredx_ && cp -v ${HOME}/Downloads/credentials.development.yml . && vcredcp_; }
-# ## Vanguard test manual prerequisites: 1) mysql running, 2) drop local vanguard* schemas, 3) redis-server running
-# vun_() { echo UNIT TESTS; bspec spec/unit; }
-# vun() { vun_; }
-# vun_full() { echo UNIT PREREQUISITES; cdv && bi && br db:recreate_master && vun_; }
-#
-# vin_() { echo INTEGRATION TESTS; bspec spec/integration; }
-# vin() { vun && vin_; }
-# vin_full() { vun_full && vin_; }
-#
-# vsc_() { echo SHARD CREATION TESTS; ulimit -Sn 2048 && bspec spec/acceptance/shard_creation_spec.rb; }
-# vsc() { vin && vsc_; }
-# vsc_full() { vin_full && vsc_; }
-#
-# vac_() { echo ACCEPTANCE TESTS; br spec:server:acceptance; }
-# vac() { vsc && vac_; }
-# vac_full() { vsc_full && vac_; }
-
-## Oyez-related aliases
-# omi() { bx sequel -m db/migrate mysql2://root:crash19spit@localhost/oyez_development; }
-# odu() { unicorn -d; }
-# disabled aliases
-# alias fixdir='ruby ${HOME}/bin/fixdir.rb' # fixes unzipped Closure Library files
-# alias reclone='ruby ${HOME}/bin/reclone.rb'
-# alias tp='ruby ${HOME}/bin/testprj.rb'
-# alias tpl='ruby ${HOME}/bin/testprjlocal.rb'
-# alias plovr='java -jar ${HOME}/bin/plovr-4b3caf2b7d84.jar'
-# alias cb='python ${HOME}/closure-library-read-only/closure/bin/build/closurebuilder.py'
-# alias dw='python ${HOME}/closure-library-read-only/closure/bin/build/depswriter.py'
-# alias rmpid='rm ${HOME}/github/freya/tmp/pids/vanguard_stub_app.pid'
-# alias cdlb='cd ${HOME}/FOWLER/work/tech/external/lb/lbfork'
 
 cecho() { tput setab $1 && echo -n $1 && tput setab 0; }
 # setab = Set background color using ANSI escape
@@ -683,3 +687,39 @@ zshp() {
   zsh --version
   filesp_ $(zshprofiles_)
 }
+
+## Vanguard-related functions
+# vcredx_() { cdv && cd config && mv -v credentials.development.yml credentials.test.yml ${HOME}/_out; }
+# vcredcp_() { cp -v credentials.development.yml credentials.test.yml; }
+# vcred() { vcredx_ && cp -v ${HOME}/Downloads/credentials.development.yml . && vcredcp_; }
+# ## Vanguard test manual prerequisites: 1) mysql running, 2) drop local vanguard* schemas, 3) redis-server running
+# vun_() { echo UNIT TESTS; bspec spec/unit; }
+# vun() { vun_; }
+# vun_full() { echo UNIT PREREQUISITES; cdv && bi && br db:recreate_master && vun_; }
+#
+# vin_() { echo INTEGRATION TESTS; bspec spec/integration; }
+# vin() { vun && vin_; }
+# vin_full() { vun_full && vin_; }
+#
+# vsc_() { echo SHARD CREATION TESTS; ulimit -Sn 2048 && bspec spec/acceptance/shard_creation_spec.rb; }
+# vsc() { vin && vsc_; }
+# vsc_full() { vin_full && vsc_; }
+#
+# vac_() { echo ACCEPTANCE TESTS; br spec:server:acceptance; }
+# vac() { vsc && vac_; }
+# vac_full() { vsc_full && vac_; }
+
+## Oyez-related aliases
+# omi() { bx sequel -m db/migrate mysql2://root:crash19spit@localhost/oyez_development; }
+# odu() { unicorn -d; }
+# disabled aliases
+# alias fixdir='ruby ${HOME}/bin/fixdir.rb' # fixes unzipped Closure Library files
+# alias reclone='ruby ${HOME}/bin/reclone.rb'
+# alias tp='ruby ${HOME}/bin/testprj.rb'
+# alias tpl='ruby ${HOME}/bin/testprjlocal.rb'
+# alias plovr='java -jar ${HOME}/bin/plovr-4b3caf2b7d84.jar'
+# alias cb='python ${HOME}/closure-library-read-only/closure/bin/build/closurebuilder.py'
+# alias dw='python ${HOME}/closure-library-read-only/closure/bin/build/depswriter.py'
+# alias rmpid='rm ${HOME}/github/freya/tmp/pids/vanguard_stub_app.pid'
+# alias cdlb='cd ${HOME}/FOWLER/work/tech/external/lb/lbfork'
+
