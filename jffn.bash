@@ -24,7 +24,6 @@ man() {
     man "$@"
 }
 
-
 ## Linkscape-related functions
 # alias sx_="echo url{1..10} | tr ' ' '\n' | xargs -P10 -I^ ssh ^ "
 # alias sxk_="echo url{1..10} | tr ' ' '\n' | xargs -I^ ssh ^ "
@@ -156,7 +155,7 @@ smux() { lmux.sh url 10; }
 ## Homebrew-related functions
 o() { vpu && rgo && bod; }
 bod() { brew update && brew outdated && brew doctor; }
-buc() { brew upgrade --all; brew cleanup; }
+buc() { brew upgrade; brew cleanup; }
 bs() { brew services "$@"; }
 bss() { brew services list "$@"; }
 
@@ -184,12 +183,13 @@ vars() { env | sort -V; }
 ep() { env | sort | grep "$@"; }
 e() { subl "$@"; }
 h() { history | tail -"$@"; }
-lsl() { env ls -lOe; }  # -O is a Mac-specific option
-lsd() { env ls -d .*/; }
+lsl() { env ls -lOeF "$@"; }  # -O is a Mac-specific option
+lsd() { env ls -d .*/ "$@"; }
 lsb() { find "$@"; }  # bare directory listing (like DOS: `dir /b`)
 lsapts() { F='/etc/apt/sources.list'; D="${L}.d"; [[ -f ${F} ]] && lsb ${F}; [[ -d ${D} ]] && lsb ${D}; }
 pushd_() { pushd "$@" > /dev/null; }
 popd_() { popd "$@" > /dev/null; }
+posh() { powershell "$@"; }
 
 lk() { open -a ScreenSaverEngine; }
 rc() { e "${DOTFILES}/jffn.bash"; }
@@ -292,6 +292,9 @@ dmu() { eval "$(dm env "$@")"; }
 dmc() { dm create -d vmwarefusion --vmwarefusion-boot2docker-url 'https://github.com/cloudnativeapps/boot2docker/releases/download/v1.6.0-vmw/boot2docker-1.6.0-vmw.iso' $1; }
 #dmc() { dm create -d vmwarefusion $1; }
 
+## Avro-related functions
+avt() { avro-tools "$@"; }
+
 ## Vagrant-related functions
 v() { vagrant "$@"; }
 vv() { v version; }
@@ -360,6 +363,9 @@ cdaw() { cda_ avvo_app_works; }
 cdawl() { cda_ avvo_app_works-logging; }
 cdbb() { cda_ billboard; }
 cdbs() { cda_ banana_stand; }
+cde() { cda_ avvo_events; }
+cdf() { cda_ stranger_forces/apps/salesforce; }
+cdk() { cda_ kafkamon; }
 cdl() { cda_ ledger; }
 cdn() { cda_ nrt; }
 cdp() { cda_ pbx; }
@@ -367,6 +373,7 @@ cdq() { cda_ quasi; }
 cds() { cda_ soca; }
 cdg() { cda_ gnomon; }
 cdr() { cda_ resistance-game; }
+cdu() { cda_ avvo_ui; }
 snapup() { cda && rk avvo:db:prepare; } # copy weekly data snapshot to local mysql, use "Windows" password
 amig_() { bundle exec rake db:migrate && RAILS_ENV=test bundle exec rake db:migrate; }
 amig() {
@@ -504,8 +511,8 @@ rbup_() { brew upgrade rbenv 2> /dev/null; brew upgrade ruby-build 2> /dev/null;
 rbup() { rbis_ > rbis0.txt; rbup_; rbis_ > rbis1.txt; gdiff rbis0.txt rbis1.txt; }
 rbs() { rbenv -v; ruby-build --version; rbenv versions; echo "CURRENT RUBY: $(ruby -v)"; }
 rb0() { rbenv local system; rbs; }
-rb2() { rbenv local 2.3.1; rbs; }
-rb222() { rbenv local 2.2.2; rbs; }
+rb2() { rbenv local 2.3.2; rbs; }
+rb226() { rbenv local 2.2.6; rbs; }
 rb212() { rbenv local 2.1.2; rbs; }
 rb2110() { rbenv local 2.1.10; rbs; }
 rbe() { rbenv each "$@"; }
@@ -599,6 +606,11 @@ cecho() { tput setab $1 && echo -n $1 && tput setab 0; }
 # setab = Set background color using ANSI escape
 # setaf = Set foreground color using ANSI escape
 
+## SEARCH FUNCTIONS
+the_silver_searcher() {
+  echo "use the 'ag' command to use the_silver_searcher.  See also: https://github.com/ggreer/the_silver_searcher"
+}
+
 findname()  { find . -type f \( -name '' -or -name "$@" \); }
 findpy() { findname '*.py'; }
 findrb() { findname '*.rb'; }
@@ -610,6 +622,7 @@ _grb() { grep -r --include "*.rb" "$@" .; }
 # grbv() { _grb --include-dir=vendor "$@"; } # TODO
 grb() { ag --stats --ruby "$@" .; } # honors .gitignore, et al
 # grbv() { "$@"; } # TODO
+ge() { env | sort | grep "$@"; }
 
 xgrep_in_bash_profiles() {
   profiles=('/etc/profile' '/etc/bash.bashrc' "~/.bashrc" "~/.bash_profile" "~/.bash_login" "~/.profile")

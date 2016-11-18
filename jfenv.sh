@@ -11,13 +11,19 @@ export CPLUS_INCLUDE_PATH='/usr/local/opt/openssl/include'
 export OBJCPLUS_INCLUDE_PATH='/usr/local/opt/openssl/lib'
 export STDOUT_SYNC=1
 # base_url port numbers should agree with Procfile else will default to stag
-export ACCOUNT_BASE_URL='http://localhost:5029/'
+# export ACCOUNT_BASE_URL='http://localhost:5029/'
+export ACCOUNT_BASE_URL='http://sv1stag.corp.avvo.com:4028/' # stag
 export BILLBOARD_BASE_URL='http://localhost:5008/'
 export CONTENT_BASE_URL='http://localhost:5004/'
-export GNOMON_BASE_URL='http://localhost:5005/'
+# export GNOMON_BASE_URL='http://localhost:5005/'
+export GNOMON_BASE_URL='http://gnomonstag.corp.avvo.com/' # stag
 export LEDGER_BASE_URL='http://localhost:5002/'
 export QUASI_BASE_URL='http://localhost:5001/'
-export SOLICITOR_BASE_URL='http://localhost:5007/'
+# export SOLICITOR_BASE_URL='http://localhost:5007/'
+export SOLICITOR_BASE_URL='http://solicitorstag.corp.avvo.com/' # stag
+export KAFKA_HOSTS='127.0.0.1:9092'
+
+# export STRANGER_FORCES_TRACE=0
 
 [[ -z ${MSYSTEM} ]] && export GREP_OPTIONS='--color=auto'
 
@@ -36,7 +42,7 @@ export SOLICITOR_BASE_URL='http://localhost:5007/'
 export CLICOLOR=1 # use colors in supported commands (ls, others?)
 
 # load secrets
-O=$(set +o) && set -o allexport && . "${HOME}/.env"; eval "${O}"
+O=$(set +o) && set -o allexport && . "${HOME}/.env.secret.sh"; eval "${O}"
 
 ## environment variables for ec2-api-tools
 #export AWS_ACCESS_KEY="${AMAZON_ACCESS_KEY_ID}" # still needed?
@@ -62,8 +68,8 @@ export GOPATH="${HOME}/gocode"
 export PATH="${PATH}:${GOPATH}/bin"
 export PATH="${PATH}:/usr/local/sbin"
 export PATH="${PATH}:/usr/local/opt/go/libexec/bin"
+export PATH="${PATH}:${HOME}/Library/Android/sdk/platform-tools"
 export PATH="${PATH}:${HOME}/bin"
 # export PATH=JFENV-:/usr/local/Cellar/gnu-getopt/1.1.5/bin:$PATH:${HOME}/bin:/usr/local/mysql/bin:/usr/local/packer:-JFENV
 # export PATH="JFENV-:${PATH}:${HOME}/bin:/usr/local/mysql/bin:/usr/local/packer:-JFENV"
 #:${SPARK_HOME}/ec2"
-
