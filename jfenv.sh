@@ -1,14 +1,45 @@
+#! /usr/bin/env sh
+# shellcheck disable=SC1090
+
 # jfenv.sh - may be exectued by bash OR zsh
 
 # NOTE: environment variables used by both shell and non-shell programs
 # are set in /etc/launchd.conf (and ~/.launchd.conf?)
 
 # environment variables used by multiple shells
+export SHELLCHECK_OPTS='--exclude=SC1090,SC2164'
+
+export ERL_AFLAGS='-kernel shell_history enabled'
 
 export EDITOR='subl -w'
+export MANPATH="${MANPATH}:/usr/local/opt/erlang/lib/erlang/man"
 
-export CPLUS_INCLUDE_PATH='/usr/local/opt/openssl/include'
-export OBJCPLUS_INCLUDE_PATH='/usr/local/opt/openssl/lib'
+libs=( \
+  'gettext' \
+  'icu4c' \
+  'imagemagick@6' \
+  'libxml2' \
+  'mysql@5.6' \
+  'openssl' \
+  'qt' \
+  'readline' \
+)
+for lib in ${libs[@]}; do
+  # libpath=$(brew --prefix ${lib}) # safer
+  libpath="/usr/local/opt/${lib}" # faster
+  # headers
+  export C_INCLUDE_PATH="${C_INCLUDE_PATH}:${libpath}/include"
+  export CPLUS_INCLUDE_PATH="${CPLUS_INCLUDE_PATH}:${libpath}/include"
+  export OBJC_INCLUDE_PATH="${OBJC_INCLUDE_PATH}:${libpath}/include"
+  export OBJCPLUS_INCLUDE_PATH="${OBJCPLUS_INCLUDE_PATH}:${libpath}/include"
+  # linkables
+  export LDFLAGS="${LDFLAGS} -L${libpath}/lib"
+  # packages
+  export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${libpath}/lib/pkgconfig"
+  # executables
+  export PATH="${PATH}:${libpath}/bin"
+done
+
 export STDOUT_SYNC=1
 # base_url port numbers should agree with Procfile else will default to stag
 # export ACCOUNT_BASE_URL='http://localhost:5029/'
@@ -22,10 +53,12 @@ export QUASI_BASE_URL='http://localhost:5001/'
 # export SOLICITOR_BASE_URL='http://localhost:5007/'
 export SOLICITOR_BASE_URL='http://solicitorstag.corp.avvo.com/' # stag
 export KAFKA_HOSTS='127.0.0.1:9092'
+export ZOOKEEPER_HOSTS='127.0.0.1:2181'
+# export ZOOKEEPER_HOSTS='nn1test.prod.avvo.com:2181,nn2test.prod.avvo.com:2181,dn3test.prod.avvo.com:2181' # stag
 
 # export STRANGER_FORCES_TRACE=0
 
-[[ -z ${MSYSTEM} ]] && export GREP_OPTIONS='--color=auto'
+[ -z "${MSYSTEM}" ] && export GREP_OPTIONS='--color=auto'
 
 # pip should only run if there is a virtualenv currently activated
 # export PIP_REQUIRE_VIRTUALENV=true
@@ -64,12 +97,12 @@ O=$(set +o) && set -o allexport && . "${HOME}/.env.secret.sh"; eval "${O}"
 
 #TODO: should ATLAS_TOKEN be secret?
 # export ATLAS_TOKEN=xDqPJadMbAnySVCqwdLaRKVrokxSq26M8pXqg_By_hMHqv8-KEFKjGs4YLyHyssLYcY
-export GOPATH="${HOME}/gocode"
 export PATH="${PATH}:${GOPATH}/bin"
 export PATH="${PATH}:/usr/local/sbin"
 export PATH="${PATH}:/usr/local/opt/go/libexec/bin"
 export PATH="${PATH}:${HOME}/Library/Android/sdk/platform-tools"
 export PATH="${PATH}:${HOME}/bin"
+export PATH="${PATH}:/usr/local/Cellar/zookeeper/3.4.9/bin"
 # export PATH=JFENV-:/usr/local/Cellar/gnu-getopt/1.1.5/bin:$PATH:${HOME}/bin:/usr/local/mysql/bin:/usr/local/packer:-JFENV
 # export PATH="JFENV-:${PATH}:${HOME}/bin:/usr/local/mysql/bin:/usr/local/packer:-JFENV"
 #:${SPARK_HOME}/ec2"
