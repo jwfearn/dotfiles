@@ -14,7 +14,7 @@ t() {
   if [ -f 'mix.exs' ]; then # ExUnit
     time MIX_ENV='test' mix test "$@"
   else
-    if [ -n "$(find spec -type f -name '*_spec.rb' 2> /dev/null | head -1)" ]; then # Rspec
+    if [ -n "$(find spec -type f -name '*_spec.rb' \( -exec echo {} \; -quit \))" ]; then # Rspec
       local cmd="rspec --color $@"
     elif [ -d 'test' ]; then # Minitest
       if [ -z "$@" ]; then # no args
