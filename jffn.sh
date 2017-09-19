@@ -14,7 +14,7 @@ t() {
   if [ -f 'mix.exs' ]; then # ExUnit
     time MIX_ENV='test' mix test "$@"
   else
-    if [ -n "$(find spec -type f -name '*_spec.rb' \( -exec echo {} \; -quit \))" ]; then # Rspec
+    if [ -n "$(find spec -type f -name '*_spec.rb' \( -exec echo {} \; -quit \) 2> /dev/null)" ]; then # Rspec
       local cmd="rspec --color $@"
     elif [ -d 'test' ]; then # Minitest
       if [ -z "$@" ]; then # no args
@@ -591,12 +591,18 @@ rbup_() { brew upgrade rbenv 2> /dev/null; brew upgrade ruby-build 2> /dev/null;
 rbup() { rbis_ > rbis0.txt; rbup_; rbis_ > rbis1.txt; gdiff rbis0.txt rbis1.txt; }
 rbs() { rbenv -v; ruby-build --version; rbenv versions; echo "CURRENT RUBY: $(ruby -v)"; }
 rb0() { rbenv local system; rbs; }
-rb2() { rbenv local 2.4.1; rbs; }
+rb2() { rbenv local 2.4.2; rbs; }
+rb24() { rbenv local 2.4.2; rbs; }
+rb242() { rbenv local 2.4.2; rbs; }
 rb23() { rbenv local 2.3.5; rbs; }
+rb235() { rbenv local 2.3.5; rbs; }
 rb22() { rbenv local 2.2.8; rbs; }
 rb221() { rbenv local 2.2.1; rbs; }
 rb223() { rbenv local 2.2.3; rbs; }
 rb226() { rbenv local 2.2.6; rbs; }
+rb228() { rbenv local 2.2.8; rbs; }
+rb21() { rbenv local 2.1.10; rbs; }
+rb2110() { rbenv local 2.1.10; rbs; }
 rbj() { rbenv local jruby-9.1.13.0; rbs; }
 rbe() { rbenv each "$@"; }
 rgs() { rbenv each -v gem list; }
