@@ -23,6 +23,7 @@ libs=( \
   'openssl' \
   'qt' \
   'readline' \
+  'zlib' \
 )
 for lib in ${libs[@]}; do
   # libpath=$(brew --prefix ${lib}) # safer
