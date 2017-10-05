@@ -10,6 +10,8 @@ alias 'cd..'='cd ..' # 'cd..' cannot be a function name
 alias 'cd-'='cd -'
 # alias irb='irb --'
 
+q() { mysql -uroot -p; }
+
 t() {
   if [ -f 'mix.exs' ]; then # ExUnit
     time MIX_ENV='test' mix test "$@"
@@ -638,9 +640,9 @@ py+() { pyenv install "$1"; }
 py-() { pyenv uninstall "$1"; }
 pyup() { pyis_ > pyis0.txt; brew upgrade pyenv; pyis_ > pyis1.txt; gdiff pyis0.txt pyis1.txt; }
 py0() { pyenv local system; pys; }
-py2() { pyenv local 2.7.13; pys; }
-py3() { pyenv local 3.6.2; pys; }
-pya() { pyenv local anaconda3-4.4.0; pys; }
+py2() { pyenv local 2.7.14; pys; }
+py3() { pyenv local 3.6.3; pys; }
+pya() { pyenv local anaconda3-5.0.0; pys; }
 
 #pyl() { pyenv local linkscape; }
 syspip() { PIP_REQUIRE_VIRTUALENV='' pip "$@"; }
