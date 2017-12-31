@@ -9,8 +9,11 @@
 alias 'cd..'='cd ..' # 'cd..' cannot be a function name
 alias 'cd-'='cd -'
 # alias irb='irb --'
+hs() { HardwareSimulator.sh "$1.tst"; }
+ce() { Assembler.sh "$1.asm" && CPUEmulator.sh "$1.tst"; }
+#ktopics() { ; }
 
-q() { mysql -uroot -p; }
+q() { mysql -p -uroot "$@"; }
 
 t() {
   if [ -f 'mix.exs' ]; then # ExUnit
@@ -25,7 +28,7 @@ t() {
         local cmd="ruby -Ilib:test $@"
       fi
     fi
-    [ -z "${cmd}" ] && printf 'no tests found' && return 1
+    [ -z "${cmd}" ] && printf "no tests found\n" && return 1
     time LOGGER_LEVEL='debug' RAILS_ENV='test' bundle exec "${cmd}"
   fi
 }
@@ -295,18 +298,19 @@ mycnfs() {
 }
 
 ## Elixir-related functions
+exf() { docker run --rm -it -v $(pwd):/app -w /app leifg/elixir:edge mix format "$@"; }
 iexv() { iex --logger-sasl-reports true "$@"; }
 myip() { ipconfig getifaddr en0; }
 myiex() { RESISTANCE_MAIN=10.3.17.89 iex --name "john@$(myip)" --cookie la_resistance -S mix; }
 mi() { mix deps.get "$@"; } # like bi for mix
-mrm() { rm -rf deps/ _build/ rel/ tarballs/ "$@"; } # like brm for mix
+mrm() { rm -rf deps/ _build/ tarballs/ "$@"; } # like brm for mix
 mix_each() {
-  pushd . &> /dev/null
-  local apps=("$(pwd)/apps/*")
-  for app in ${apps[@]}; do
-    [ -d "${app}" ] && cd "${app}" && pwd && mix "$@" && echo ''
+  local project_dir=$(pwd)
+  local app_dirs=($(env ls -d1 $PWD/apps/*/))
+  for app_dir in ${app_dirs[@]}; do
+    cd "${app_dir}" && pwd && mix "$@" && echo ''
   done
-  popd &> /dev/null
+  cd "${project_dir}"
   pwd && mix "$@"
 }
 mho() { mix_each hex.outdated "$@"; }
@@ -393,6 +397,7 @@ cdot() { pushd_ "${DOTFILES}"; }
 cdj() { cdr "jwfearn/$1"; }
 cdh() { cdj 'hotpot'; }
 cdo() { cdr "other/$1"; }
+cdn() { cdo "nand2tetris2017/jwfearn"; }
 # cdr() { cdj resume; }
 cdul_() { cd "/usr/local/$1"; }
 cdull() { cdul_ "lib/$1"; }
@@ -458,10 +463,10 @@ cdf() { cda_ stranger_forces/apps/salesforce; }
 cdi() { cda_ inception; }
 cdk() { cda_ kafkamon; }
 cdl() { cda_ ledger; }
-cdn() { cda_ nrt; }
 cdp() { cda_ pbx; }
 cdq() { cda_ quasi; }
-cds() { cda_ switchboard; }
+cdqc() { cda_ quasi_client_ex; }
+cds() { cda_ scooter/apps/scooter; }
 cdg() { cda_ gregor; }
 cdw() { cda_ "$@"; }
 # cdr() { cda_ resistance-game; }
@@ -593,16 +598,17 @@ rbup_() { brew upgrade rbenv 2> /dev/null; brew upgrade ruby-build 2> /dev/null;
 rbup() { rbis_ > rbis0.txt; rbup_; rbis_ > rbis1.txt; gdiff rbis0.txt rbis1.txt; }
 rbs() { rbenv -v; ruby-build --version; rbenv versions; echo "CURRENT RUBY: $(ruby -v)"; }
 rb0() { rbenv local system; rbs; }
-rb2() { rbenv local 2.4.2; rbs; }
-rb24() { rbenv local 2.4.2; rbs; }
-rb242() { rbenv local 2.4.2; rbs; }
-rb23() { rbenv local 2.3.5; rbs; }
-rb235() { rbenv local 2.3.5; rbs; }
-rb22() { rbenv local 2.2.8; rbs; }
+rb2() { rbenv local 2.5.0; rbs; }
+rb25() { rbenv local 2.5.0; rbs; }
+rb24() { rbenv local 2.4.3; rbs; }
+rb243() { rbenv local 2.4.3; rbs; }
+rb23() { rbenv local 2.3.6; rbs; }
+rb236() { rbenv local 2.3.6; rbs; }
+rb22() { rbenv local 2.2.9; rbs; }
 rb221() { rbenv local 2.2.1; rbs; }
 rb223() { rbenv local 2.2.3; rbs; }
 rb226() { rbenv local 2.2.6; rbs; }
-rb228() { rbenv local 2.2.8; rbs; }
+rb229() { rbenv local 2.2.9; rbs; }
 rb21() { rbenv local 2.1.10; rbs; }
 rb2110() { rbenv local 2.1.10; rbs; }
 rbj() { rbenv local jruby-9.1.13.0; rbs; }
@@ -642,7 +648,7 @@ pyup() { pyis_ > pyis0.txt; brew upgrade pyenv; pyis_ > pyis1.txt; gdiff pyis0.t
 py0() { pyenv local system; pys; }
 py2() { pyenv local 2.7.14; pys; }
 py3() { pyenv local 3.6.3; pys; }
-pya() { pyenv local anaconda3-5.0.0; pys; }
+pya() { pyenv local anaconda3-5.0.1; pys; }
 
 #pyl() { pyenv local linkscape; }
 syspip() { PIP_REQUIRE_VIRTUALENV='' pip "$@"; }

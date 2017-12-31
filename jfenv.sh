@@ -12,7 +12,7 @@ export SHELLCHECK_OPTS='--exclude=SC1090,SC2164'
 export ERL_AFLAGS='-kernel shell_history enabled'
 
 export EDITOR='subl -w'
-export MANPATH="${MANPATH}:/usr/local/opt/erlang/lib/erlang/man"
+export WWW_HOME='google.com'
 
 libs=( \
   'gettext' \
@@ -104,6 +104,10 @@ export PATH="${PATH}:/usr/local/opt/go/libexec/bin"
 export PATH="${PATH}:${HOME}/Library/Android/sdk/platform-tools"
 export PATH="${PATH}:${HOME}/bin"
 export PATH="${PATH}:/usr/local/Cellar/zookeeper/3.4.9/bin"
+export PATH="${PATH}:${HOME}/nand2tetris/tools"
 # export PATH=JFENV-:/usr/local/Cellar/gnu-getopt/1.1.5/bin:$PATH:${HOME}/bin:/usr/local/mysql/bin:/usr/local/packer:-JFENV
 # export PATH="JFENV-:${PATH}:${HOME}/bin:/usr/local/mysql/bin:/usr/local/packer:-JFENV"
 #:${SPARK_HOME}/ec2"
+
+export MANPATH="${MANPATH}:/usr/local/opt/erlang/lib/erlang/man"
+export MANPATH="${MANPATH}:/usr/local/opt/coreutils/libexec/gnuman"
