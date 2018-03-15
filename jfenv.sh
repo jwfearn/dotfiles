@@ -42,17 +42,48 @@ for lib in ${libs[@]}; do
 done
 
 export STDOUT_SYNC=1
+
+export TWILIO_ACCOUNT_SID="${TEST_TWILIO_ACCOUNT_SID}"
+export TWILIO_AUTH_TOKEN="${TEST_TWILIO_AUTH_TOKEN}"
+
 # base_url port numbers should agree with Procfile else will default to stag
-# export ACCOUNT_BASE_URL='http://localhost:5029/'
-export ACCOUNT_BASE_URL='http://sv1stag.corp.avvo.com:4028/' # stag
-export BILLBOARD_BASE_URL='http://localhost:5008/'
-export CONTENT_BASE_URL='http://localhost:5004/'
-# export GNOMON_BASE_URL='http://localhost:5005/'
-export GNOMON_BASE_URL='http://gnomonstag.corp.avvo.com/' # stag
-export LEDGER_BASE_URL='http://localhost:5002/'
-export QUASI_BASE_URL='http://localhost:5001/'
-# export SOLICITOR_BASE_URL='http://localhost:5007/'
-export SOLICITOR_BASE_URL='http://solicitorstag.corp.avvo.com/' # stag
+
+export ACCOUNT_BASE_URL_LOCAL='http://localhost:5029/'
+export ACCOUNT_BASE_URL_STAG='http://sv1stag.corp.avvo.com:4028/'
+export ACCOUNT_BASE_URL="${ACCOUNT_BASE_URL_STAG}"
+
+export AMOS_BASE_URL_LOCAL='http://localhost:3000/' # is this a thing?
+export AMOS_BASE_URL_STAG='https://stag.avvo.com/'
+export AMOS_BASE_URL="${AMOS_BASE_URL_STAG}"
+
+export BILLBOARD_BASE_URL_LOCAL='http://localhost:5024/' # was 5008
+export BILLBOARD_BASE_URL_STAG='xxx'
+export BILLBOARD_BASE_URL="${BILLBOARD_BASE_URL_LOCAL}"
+
+export CONTENT_BASE_URL_LOCAL='http://localhost:5004/'
+export CONTENT_BASE_URL_STAG='xxx'
+export CONTENT_BASE_URL="${CONTENT_BASE_URL_LOCAL}"
+
+export GNOMON_BASE_URL_LOCAL='http://localhost:5005/'
+export GNOMON_BASE_URL_STAG='http://gnomonstag.corp.avvo.com/'
+export GNOMON_BASE_URL="${GNOMON_BASE_URL_STAG}"
+
+export INCEPTION_BASE_URL_LOCAL='http://localhost:5090/'
+export INCEPTION_BASE_URL_STAG='https://api.stag.avvo.com/'
+export INCEPTION_BASE_URL="${INCEPTION_BASE_URL_STAG}"
+
+export LEDGER_BASE_URL_LOCAL='http://localhost:5002/'
+export LEDGER_BASE_URL_STAG='xxx'
+export LEDGER_BASE_URL="${LEDGER_BASE_URL_LOCAL}"
+
+export QUASI_BASE_URL_LOCAL='http://localhost:5001/'
+export QUASI_BASE_URL_STAG='xxx'
+export QUASI_BASE_URL="${QUASI_BASE_URL_LOCAL}"
+
+export SOLICITOR_BASE_URL_LOCAL='http://localhost:5007/'
+export SOLICITOR_BASE_URL_STAG='http://solicitorstag.corp.avvo.com/' # stag
+export SOLICITOR_BASE_URL="${SOLICITOR_BASE_URL_STAG}"
+
 export KAFKA_HOSTS='127.0.0.1:9092'
 export ZOOKEEPER_HOSTS='127.0.0.1:2181'
 # export ZOOKEEPER_HOSTS='nn1test.prod.avvo.com:2181,nn2test.prod.avvo.com:2181,dn3test.prod.avvo.com:2181' # stag

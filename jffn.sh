@@ -7,19 +7,37 @@
 
 ## aliases
 alias 'cd..'='cd ..' # 'cd..' cannot be a function name
+alias 'cd...'='cd ../..'
+alias 'cd....'='cd ../../..'
+alias 'cd.....'='cd ../../../..'
 alias 'cd-'='cd -'
 # alias irb='irb --'
 hs() { HardwareSimulator.sh "$1.tst"; }
 ce() { Assembler.sh "$1.asm" && CPUEmulator.sh "$1.tst"; }
 #ktopics() { ; }
 
+## formatters
+exf() { mix format "$@"; }
+mdf() {
+  local f="${1:-README.md}"
+  prettier --prose-wrap=always --print-width=80 "${f}" | sponge "${f}"
+}
+
+myip() { ipconfig getifaddr en0; }
+mycores() { sysctl -n hw.physicalcpu; }
+
 q() { mysql -p -uroot "$@"; }
+
+anyrspec1() { find "${1:-.}" -type f -name '*_spec.rb' | head -1; } # fast
+anyrspec2() { find "${1:-.}" -type f -name '*_spec.rb' \( -exec echo {} \; -quit \) 2> /dev/null; } # faster
+anyrspec3() { find "${1:-.}" -name '*_spec.rb' -print -quit; } # faster, simpler
+anyrspec4() { compgen -G 'spec/**/*_spec.rb'; } # fastest but not ZShell-compatible
 
 t() {
   if [ -f 'mix.exs' ]; then # ExUnit
     time MIX_ENV='test' mix test "$@"
   else
-    if [ -n "$(find spec -type f -name '*_spec.rb' \( -exec echo {} \; -quit \) 2> /dev/null)" ]; then # Rspec
+    if [ -n "$(find 'spec' -name '*_spec.rb' -print -quit 2> /dev/null)" ]; then # Rspec
       local cmd="rspec --color $@"
     elif [ -d 'test' ]; then # Minitest
       if [ -z "$@" ]; then # no args
@@ -33,10 +51,19 @@ t() {
   fi
 }
 
+yt() {
+  pushd "${HOME}/repos/avvo/scooter/apps/scooter_web/assets"
+  yarn test "$@"
+  popd
+}
+
+whilepass() { while $1; do :; done; }
+whilefail() { while ! $1 ; do :; done; }
+
 vt() { TESTOPTS='--verbose' t "$@"; }
 
 ls() { env ls -aF "$@"; }
-tree() { env tree -CF "$@"; }
+tree() { env tree -CFa --dirsfirst "$@"; }
 
 man() {
   env \
@@ -247,11 +274,12 @@ broken() { find -L . -type l -ls; }
 jj() { "$@" | python -mjson.tool; }
 jjs() { while read l; do jj $l; done < "$@"; }
 ipy() { ipython "$@"; }
-psg() { ps -ef | head -1 && ps -ef | grep "$@"; }
+psg() { ps -ef | head -1 && ps -ef | grep -v grep | grep "$@"; }
 # cdiff() { diff -U0 "$@" | sed "s/^-/`echo -e \"\x1b\"`[41m-/;s/^+/`echo -e \"\x1b\"`[42m+/;s/^@/`echo -e \"\x1b\"`[34m@/;s/$/`echo -e \"\x1b\"`[0m/"; }  # Mac-only
 gdiff() { git diff -U0 --no-index "$@"; }
 mktags() { mkdir -p ./.tags; ctags -R -f ./.tags/tags "$@" .; }
 makels() { make -qp | awk -F':' '/^[a-zA-Z0-9][^$#\/\t=]*:([^=]|$)/ {split($1,A,/ /);for(i in A)print A[i]}' | sort | uniq; }
+csha() { curl -fSL "$@" | shasum -a 256 --; }
 
 # modo() {}  # TODO: get permissions as octal string
 
@@ -298,11 +326,9 @@ mycnfs() {
 }
 
 ## Elixir-related functions
-exf() { docker run --rm -it -v $(pwd):/app -w /app leifg/elixir:edge mix format "$@"; }
+ism() { iex -S mix "$@"; }
 iexv() { iex --logger-sasl-reports true "$@"; }
-myip() { ipconfig getifaddr en0; }
 myiex() { RESISTANCE_MAIN=10.3.17.89 iex --name "john@$(myip)" --cookie la_resistance -S mix; }
-mi() { mix deps.get "$@"; } # like bi for mix
 mrm() { rm -rf deps/ _build/ tarballs/ "$@"; } # like brm for mix
 mix_each() {
   local project_dir=$(pwd)
@@ -313,14 +339,81 @@ mix_each() {
   cd "${project_dir}"
   pwd && mix "$@"
 }
+mdg() { mix deps.get "$@"; }
+mdu() { mix deps.update "$@"; }
 mho() { mix_each hex.outdated "$@"; }
-mdu() { mix_each deps.update "$@"; }
+mps() { mix phx.server "$@"; }
+ips() { iex -S mix phx.server "$@"; }
+
+killport() { kill -9 $(lsof -t -i:"$@"); }
+
+scoot() {
+  cdw scooter
+  DB_HOST="${STAG_DB_HOST}" \
+  DB_USER="${STAG_DB_USER}" \
+  DB_PASS="${STAG_DB_PASS}" \
+  DB_PORT="${STAG_DB_PORT}" \
+  JWT_LOGIN_SECRET="${STAG_JWT_LOGIN_SECRET}" \
+  iex -S mix phx.server "$@";
+}
+
+amyz() {
+  cdw amos
+  unset ACCOUNT_BASE_URL
+  unset AMOS_BASE_URL
+  unset BILLBOARD_BASE_URL
+  unset CONTENT_BASE_URL
+  unset GNOMON_BASE_URL
+  unset INCEPTION_BASE_URL
+  unset LEDGER_BASE_URL
+  unset QUASI_BASE_URL
+  unset SOLICITOR_BASE_URL
+  bundle exec rails s "$@";
+}
+
+amyt() {
+  cdw amos
+  unset ACCOUNT_BASE_URL
+  unset AMOS_BASE_URL
+  unset BILLBOARD_BASE_URL
+  unset CONTENT_BASE_URL
+  unset GNOMON_BASE_URL
+  unset INCEPTION_BASE_URL
+  unset LEDGER_BASE_URL
+  unset QUASI_BASE_URL
+  unset SOLICITOR_BASE_URL
+  export AMOS_BASE_URL='http://localhost:3000/'
+  export INCEPTION_BASE_URL='http://localhost:4000/'
+  export SCOOTER_BASE_URL='http://localhost:4001/'
+  bundle exec rails s "$@";
+}
+
+amyy() {
+  cdw amos
+  unset ACCOUNT_BASE_URL
+  unset AMOS_BASE_URL
+  unset BILLBOARD_BASE_URL
+  unset CONTENT_BASE_URL
+  unset GNOMON_BASE_URL
+  unset INCEPTION_BASE_URL
+  unset LEDGER_BASE_URL
+  unset QUASI_BASE_URL
+  unset SOLICITOR_BASE_URL
+  export QUASI_BASE_URL='http://localhost:5001/'
+  export LEDGER_BASE_URL='http://localhost:5002/'
+  bundle exec rails s "$@";
+}
+
+yfd() { yarn foreman:dev "$@"; }
+yfp() { yarn foreman:prod "$@"; }
 
 ## Node-relate functions
 nr() { npm run "$@"; }
 nt() { npm test "$@"; }
 
 ## Docker-related functions
+rr() { docker run -d --restart=unless-stopped -p 8080:8080 rancher/server:preview; }
+rr1() { docker run -d --restart=unless-stopped -p 8080:8080 rancher/server:stable; }
 dsh() { docker exec -it "$@" /bin/sh; }
 dlogs() { docker logs "$@"; }
 dco() { docker-compose "$@"; }
@@ -405,10 +498,17 @@ cdulb() { cdul_ "bin/$1"; }
 # cdt() { cd "${HOME}/_out/bhtmp/repo/"; }
 
 ## BEGIN: Avvo-related functions
+agems() {
+  gem list \
+    --remote \
+    --clear-sources \
+    --source "https://${PACKAGECLOUD_READ_TOKEN}@packagecloud.io/avvo/gems" \
+    "$@";
+}
 
 
 # xprods() {
-#   parallel -q -j 8 \
+#   parallel -q -j 7 \
 #   ssh -i ~/.ssh/id_rsa.deployer deployer@{}.prod.avvo.com sh -c \
 #   'hostname && /usr/local/rvm/bin/rvm-exec -- ' "$@" \
 #   ::: sv1wow sv2wow sv3wow sv4wow amos5wow amos6wow amos7wow amos8wow
@@ -418,7 +518,7 @@ hosts_() {
   local HOSTS="$1"; shift
   local SUFFIX="$1"; shift
   local CMD="$@"
-  parallel -q -j 8 \
+  parallel -q -j 7 \
     ssh -i ~/.ssh/id_rsa.deployer "deployer@{}${SUFFIX}" sh -c \
     'hostname;' "${CMD}" \
     ::: ${HOSTS}
@@ -537,7 +637,7 @@ bry() { bx pry "$@"; }
 rk() { bundle exec rake -G "$@"; }
 rkt() { bundle exec rake -T "$@"; }
 rkta() { bundle exec rake -T -A "$@"; }
-trk() { RAILS_ENV=test bundle exec rake -G "$@"; }
+trk() { RAILS_ENV=test bundle exec rake "$@"; } # -G?
 
 ## Test-related functions
 spec_() { time bx rspec --color "$@"; }
@@ -668,6 +768,14 @@ mystart() { mystart_brew "$@"; }
 mystop() { mystop_brew "$@"; }
 myrestart() { myrestart_brew "$@"; }
 my() { mysql -uroot -p "$@"; }
+mystag() {
+  mysql \
+    "--host=${DB_HOST_STAG}" \
+    "--port=${DB_PORT_STAG}" \
+    "--user=${DB_USER_STAG}" \
+    "--password=${DB_PASS_STAG}" \
+    "$@";
+}
 # my() { /usr/local/mysql/bin/mysql; }
 # myd() { /usr/local/mysql/bin/mysql server start; }
 # myad() { /usr/local/mysql/bin/mysqladmin; }
@@ -683,7 +791,7 @@ mdbs() { mongo --eval show dbs; }
 # mprod() { mongo mongo.corp.apptentive.com:27017/apptentive_production "$@"; }
 # mdev() { mongo localhost:27017/apptentive_development "$@"; }
 # xmprod() { mongo --host mongo.corp.apptentive.com --port 27017 apptentive_production "$@"; }
-rr() { bx railroady -vbamM | sed -E 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g' | dot -Tsvg > rr.svg; }
+# rr() { bx railroady -vbamM | sed -E 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g' | dot -Tsvg > rr.svg; }
 
 ## JetBrains-related functions
 ul_() { s="$@"; echo -e "\n$(tput smul)${s}$(tput sgr0)"; }
