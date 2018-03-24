@@ -27022,6 +27022,8 @@
 	<true/>
 	<key>MaxVertically</key>
 	<false/>
+	<key>NSFontPanelAttributes</key>
+	<string>1, 4</string>
 	<key>NSNavLastRootDirectory</key>
 	<string>~/dotfiles/iterm2_profile</string>
 	<key>NSNavPanelExpandedSizeForOpenMode</key>
@@ -27063,15 +27065,15 @@
 		<integer>1</integer>
 	</dict>
 	<key>NSWindow Frame NSFontPanel</key>
-	<string>1169 110 445 273 0 0 1680 1027 </string>
+	<string>1169 110 445 655 0 0 1680 1027 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
 	<string>530 476 620 392 0 0 1680 1027 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>269 266 918 401 0 0 1680 1027 </string>
+	<string>269 338 918 401 0 0 1680 1027 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>842 563 650 452 0 0 1680 1027 </string>
+	<string>842 513 570 502 0 0 1680 1027 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>573 324 570 452 0 0 1680 1027 </string>
+	<string>639 412 914 452 0 0 1680 1027 </string>
 	<key>New Bookmarks</key>
 	<array>
 		<dict>
@@ -27637,7 +27639,7 @@
 			<key>Non-ASCII Anti Aliased</key>
 			<true/>
 			<key>Normal Font</key>
-			<string>Menlo-Regular 13</string>
+			<string>Iosevka-Term 14</string>
 			<key>Option Key Sends</key>
 			<integer>0</integer>
 			<key>Prompt Before Closing 2</key>
