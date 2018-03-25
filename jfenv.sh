@@ -15,15 +15,10 @@ export EDITOR='subl -w'
 export WWW_HOME='google.com'
 
 libs=( \
-  'gettext' \
-  'icu4c' \
-  'imagemagick@6' \
-  'libxml2' \
-  'mysql@5.6' \
+  'libpng' \
+  'libtiff' \
   'openssl' \
-  'qt' \
   'readline' \
-  'zlib' \
 )
 for lib in ${libs[@]}; do
   # libpath=$(brew --prefix ${lib}) # safer
@@ -43,64 +38,7 @@ done
 
 export STDOUT_SYNC=1
 
-export TWILIO_ACCOUNT_SID="${TEST_TWILIO_ACCOUNT_SID}"
-export TWILIO_AUTH_TOKEN="${TEST_TWILIO_AUTH_TOKEN}"
-
-# base_url port numbers should agree with Procfile else will default to stag
-
-export ACCOUNT_BASE_URL_LOCAL='http://localhost:5029/'
-export ACCOUNT_BASE_URL_STAG='http://sv1stag.corp.avvo.com:4028/'
-export ACCOUNT_BASE_URL="${ACCOUNT_BASE_URL_STAG}"
-
-export AMOS_BASE_URL_LOCAL='http://localhost:3000/' # is this a thing?
-export AMOS_BASE_URL_STAG='https://stag.avvo.com/'
-export AMOS_BASE_URL="${AMOS_BASE_URL_STAG}"
-
-export BILLBOARD_BASE_URL_LOCAL='http://localhost:5024/' # was 5008
-export BILLBOARD_BASE_URL_STAG='xxx'
-export BILLBOARD_BASE_URL="${BILLBOARD_BASE_URL_LOCAL}"
-
-export CONTENT_BASE_URL_LOCAL='http://localhost:5004/'
-export CONTENT_BASE_URL_STAG='xxx'
-export CONTENT_BASE_URL="${CONTENT_BASE_URL_LOCAL}"
-
-export GNOMON_BASE_URL_LOCAL='http://localhost:5005/'
-export GNOMON_BASE_URL_STAG='http://gnomonstag.corp.avvo.com/'
-export GNOMON_BASE_URL="${GNOMON_BASE_URL_STAG}"
-
-export INCEPTION_BASE_URL_LOCAL='http://localhost:5090/'
-export INCEPTION_BASE_URL_STAG='https://api.stag.avvo.com/'
-export INCEPTION_BASE_URL="${INCEPTION_BASE_URL_STAG}"
-
-export LEDGER_BASE_URL_LOCAL='http://localhost:5002/'
-export LEDGER_BASE_URL_STAG='xxx'
-export LEDGER_BASE_URL="${LEDGER_BASE_URL_LOCAL}"
-
-export QUASI_BASE_URL_LOCAL='http://localhost:5001/'
-export QUASI_BASE_URL_STAG='xxx'
-export QUASI_BASE_URL="${QUASI_BASE_URL_LOCAL}"
-
-export SOLICITOR_BASE_URL_LOCAL='http://localhost:5007/'
-export SOLICITOR_BASE_URL_STAG='http://solicitorstag.corp.avvo.com/' # stag
-export SOLICITOR_BASE_URL="${SOLICITOR_BASE_URL_STAG}"
-
-export KAFKA_HOSTS='127.0.0.1:9092'
-export ZOOKEEPER_HOSTS='127.0.0.1:2181'
-# export ZOOKEEPER_HOSTS='nn1test.prod.avvo.com:2181,nn2test.prod.avvo.com:2181,dn3test.prod.avvo.com:2181' # stag
-
-# export STRANGER_FORCES_TRACE=0
-
 [ -z "${MSYSTEM}" ] && export GREP_OPTIONS='--color=auto'
-
-# pip should only run if there is a virtualenv currently activated
-# export PIP_REQUIRE_VIRTUALENV=true
-
-## Spark-related variables
-# export PYSPARK_PYTHON="${HOME}/.pyenv/shims/python"
-# export SPARK_HOME="$(dirname $(dirname $(grealpath $(which pyspark))))/libexec"
-# export IPYTHON=1  # use ipython shell for spark interactive shell
-# export SPARK_PEM="${HOME}/.ssh/apptentive.pem"
-# export APPTENTIVE_CLUSTER_TEST=1
 
 # export LS_COLORS='' # Linux
 # export LSCOLORS='' # OS X,
@@ -127,8 +65,6 @@ O=$(set +o) && set -o allexport && . "${HOME}/.env.secret.sh"; eval "${O}"
 # export QMAKE='/usr/local/opt/qt5/bin/qmake' # default brew install qt5 location
 # export CHEF_CLIENT_NAME='john'
 
-#TODO: should ATLAS_TOKEN be secret?
-# export ATLAS_TOKEN=xDqPJadMbAnySVCqwdLaRKVrokxSq26M8pXqg_By_hMHqv8-KEFKjGs4YLyHyssLYcY
 export PATH="${PATH}:${GOPATH}/bin"
 export PATH="${PATH}:/usr/local/sbin"
 export PATH="${PATH}:/usr/local/opt/go/libexec/bin"
@@ -136,9 +72,6 @@ export PATH="${PATH}:${HOME}/Library/Android/sdk/platform-tools"
 export PATH="${PATH}:${HOME}/bin"
 export PATH="${PATH}:/usr/local/Cellar/zookeeper/3.4.9/bin"
 export PATH="${PATH}:${HOME}/nand2tetris/tools"
-# export PATH=JFENV-:/usr/local/Cellar/gnu-getopt/1.1.5/bin:$PATH:${HOME}/bin:/usr/local/mysql/bin:/usr/local/packer:-JFENV
-# export PATH="JFENV-:${PATH}:${HOME}/bin:/usr/local/mysql/bin:/usr/local/packer:-JFENV"
-#:${SPARK_HOME}/ec2"
 
 export MANPATH="${MANPATH}:/usr/local/opt/erlang/lib/erlang/man"
 export MANPATH="${MANPATH}:/usr/local/opt/coreutils/libexec/gnuman"
