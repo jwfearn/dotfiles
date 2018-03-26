@@ -36,3 +36,6 @@
   # def foo; 'foo' end
   # bar = ->() { 'bar' } # local
 end.()
+
+# # ~/.irbrc
+# require_relative './dotfiles/jfirb'

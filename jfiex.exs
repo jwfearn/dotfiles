@@ -20,3 +20,6 @@ IEx.configure(
     ] |> IO.ANSI.format |> IO.chardata_to_string,
   history_size: -1
 )
+
+# # ~/.iex.exs
+# Code.require_file("dotfiles/jfiex.exs", __DIR__)
