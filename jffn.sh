@@ -485,13 +485,12 @@ ggrab() { git co "$2" -- "$1"; }
 # gmm() { git merge master; }
 # grm() { git rebase master; }
 grl() { git reflog --format=format:"%C(yellow)%h %Cblue%aD%Creset %gd %Cgreen%aN%Creset %gs %s"; }
-cdr() { pushd_ "${HOME}/repos/$1"; } #bgp ${HOME}/github/$1; }
 cdot() { pushd_ "${DOTFILES}"; }
-cdj() { cdr "jwfearn/$1"; }
+cdj() { pushd_ "${HOME}/repos/jwfearn/$1"; }
+cdo() { pushd_ "${HOME}/repos/other/$1"; }
 cdh() { cdj 'hotpot'; }
-cdo() { cdr "other/$1"; }
 cdn() { cdo "nand2tetris2017/jwfearn"; }
-# cdr() { cdj resume; }
+cdr() { cdj resume; }
 cdul_() { cd "/usr/local/$1"; }
 cdull() { cdul_ "lib/$1"; }
 cdulb() { cdul_ "bin/$1"; }
@@ -535,9 +534,7 @@ stagsb() { stags '/usr/local/rvm/bin/rvm-exec -- bundle -v'; }
 stagsrb() { stags '/usr/local/rvm/bin/rvm-exec -- ruby -v'; }
 stagsbash() { stags 'bash --version | head -1'; }
 
-
 uatmon() { open 'xxx' "$@"; } # kafkamon for UAT
-cdc() { cda_ avvo_chef; }
 ec2ssh_() { cdc && "bin/deploy" vpc ssh "$1" "$2"; }
 uatdb() { ec2ssh_ henry61 db; } # mysql, kafka, ...
 uatfe() { ec2ssh_ henry61 frontend; } # switchboard, ...
@@ -551,37 +548,6 @@ zstag() { "$@"; }
 kstag() { "$@"; }
 ef() { exercism fetch elixir; }
 et() { elixir ./*_test.exs; }
-cda_() { cdr "avvo/$1"; }
-cda() { cda_ amos; }
-cdc() { cda_ avvo_chef; }
-cdaw() { cda_ avvo_app_works; }
-cdawl() { cda_ avvo_app_works-logging; }
-cdbb() { cda_ billboard; }
-cdbs() { cda_ banana_stand; }
-cde() { cda_ avvo_events; }
-cdf() { cda_ stranger_forces/apps/salesforce; }
-cdi() { cda_ inception; }
-cdk() { cda_ kafkamon; }
-cdl() { cda_ ledger; }
-cdp() { cda_ pbx; }
-cdq() { cda_ quasi; }
-cdqc() { cda_ quasi_client_ex; }
-cds() { cda_ scooter/apps/scooter; }
-cdg() { cda_ gregor; }
-cdw() { cda_ "$@"; }
-# cdr() { cda_ resistance-game; }
-cdu() { cda_ avvo_ui; }
-snapup() { cda && rk avvo:db:prepare; } # copy weekly data snapshot to local mysql, use "Windows" password
-amig_() { bundle exec rake db:migrate && RAILS_ENV=test bundle exec rake db:migrate; }
-amig() {
-  pushd_
-  # local prjs=(account avvo banana_stand billboard content gnomon ledger nrt quasi soca solicitor)
-  local prjs=(account)
-  for prj in ${prjs[@]}; do
-    cda_ "${prj}" && amig_
-  done
-  popd_
-}
 kp() {
   pidfiles=($(find . -name 'server.pid'))
   for pidfile in ${pidfiles[@]}; do
