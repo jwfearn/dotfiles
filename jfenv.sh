@@ -15,6 +15,7 @@ export EDITOR='subl -w'
 export WWW_HOME='google.com'
 
 libs=( \
+  'icu4c' \
   'libpng' \
   'libtiff' \
   'openssl' \
