@@ -347,63 +347,6 @@ ips() { iex -S mix phx.server "$@"; }
 
 killport() { kill -9 $(lsof -t -i:"$@"); }
 
-scoot() {
-  cdw scooter
-  DB_HOST="${STAG_DB_HOST}" \
-  DB_USER="${STAG_DB_USER}" \
-  DB_PASS="${STAG_DB_PASS}" \
-  DB_PORT="${STAG_DB_PORT}" \
-  JWT_LOGIN_SECRET="${STAG_JWT_LOGIN_SECRET}" \
-  iex -S mix phx.server "$@";
-}
-
-amyz() {
-  cdw amos
-  unset ACCOUNT_BASE_URL
-  unset AMOS_BASE_URL
-  unset BILLBOARD_BASE_URL
-  unset CONTENT_BASE_URL
-  unset GNOMON_BASE_URL
-  unset INCEPTION_BASE_URL
-  unset LEDGER_BASE_URL
-  unset QUASI_BASE_URL
-  unset SOLICITOR_BASE_URL
-  bundle exec rails s "$@";
-}
-
-amyt() {
-  cdw amos
-  unset ACCOUNT_BASE_URL
-  unset AMOS_BASE_URL
-  unset BILLBOARD_BASE_URL
-  unset CONTENT_BASE_URL
-  unset GNOMON_BASE_URL
-  unset INCEPTION_BASE_URL
-  unset LEDGER_BASE_URL
-  unset QUASI_BASE_URL
-  unset SOLICITOR_BASE_URL
-  export AMOS_BASE_URL='http://localhost:3000/'
-  export INCEPTION_BASE_URL='http://localhost:4000/'
-  export SCOOTER_BASE_URL='http://localhost:4001/'
-  bundle exec rails s "$@";
-}
-
-amyy() {
-  cdw amos
-  unset ACCOUNT_BASE_URL
-  unset AMOS_BASE_URL
-  unset BILLBOARD_BASE_URL
-  unset CONTENT_BASE_URL
-  unset GNOMON_BASE_URL
-  unset INCEPTION_BASE_URL
-  unset LEDGER_BASE_URL
-  unset QUASI_BASE_URL
-  unset SOLICITOR_BASE_URL
-  export QUASI_BASE_URL='http://localhost:5001/'
-  export LEDGER_BASE_URL='http://localhost:5002/'
-  bundle exec rails s "$@";
-}
-
 yfd() { yarn foreman:dev "$@"; }
 yfp() { yarn foreman:prod "$@"; }
 
@@ -488,9 +431,11 @@ grl() { git reflog --format=format:"%C(yellow)%h %Cblue%aD%Creset %gd %Cgreen%aN
 cdot() { pushd_ "${DOTFILES}"; }
 cdj() { pushd_ "${HOME}/repos/jwfearn/$1"; }
 cdo() { pushd_ "${HOME}/repos/other/$1"; }
+cdg() { cdj 'graph-ruby'; }
 cdh() { cdj 'hotpot'; }
-cdn() { cdo "nand2tetris2017/jwfearn"; }
-cdr() { cdj resume; }
+cdn() { cdo 'nand2tetris2017/jwfearn'; }
+cdr() { cdj 'resume'; }
+cdw() { cdj 'whiteboard'; }
 cdul_() { cd "/usr/local/$1"; }
 cdull() { cdul_ "lib/$1"; }
 cdulb() { cdul_ "bin/$1"; }
@@ -587,7 +532,7 @@ bcinfo() { cat ~/.bundle/config 2> /dev/null; cat .bundle/config 2> /dev/null; }
 binfo() { bundle list; bcinfo; bundle config "$@"; }
 brm() { rm -rf vendor/bundle binstubs "$@"; }
 # bi() { bundle install --standalone --path=vendor/bundle --binstubs=binstubs --full-index --jobs 4 "$@"; }
-bi() { bundle install --standalone --path=vendor/bundle --binstubs=false "$@"; }
+bi() { bundle install --standalone --path=vendor/bundle --binstubs=binstubs "$@"; }
 biu() { rm Gemfile.lock; bi "$@"; }
 #bspec() { binstubs/rspec "$@"; } # why doesn't thins work for 'web' project?
 bx() { bundle exec "$@"; }
@@ -664,8 +609,8 @@ rbup_() { brew upgrade rbenv 2> /dev/null; brew upgrade ruby-build 2> /dev/null;
 rbup() { rbis_ > rbis0.txt; rbup_; rbis_ > rbis1.txt; gdiff rbis0.txt rbis1.txt; }
 rbs() { rbenv -v; ruby-build --version; rbenv versions; echo "CURRENT RUBY: $(ruby -v)"; }
 rb0() { rbenv local system; rbs; }
-rb2() { rbenv local 2.5.0; rbs; }
-rb25() { rbenv local 2.5.0; rbs; }
+rb2() { rbenv local 2.5.1; rbs; }
+rb25() { rbenv local 2.5.1; rbs; }
 rb24() { rbenv local 2.4.3; rbs; }
 rb243() { rbenv local 2.4.3; rbs; }
 rb23() { rbenv local 2.3.6; rbs; }

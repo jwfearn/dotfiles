@@ -1,4 +1,10 @@
+# To add this as a global .gitignore file:
+#   git config --global core.excludesfile ~/dotfiles/.gitignore
+
 *.iml
 .DS_Store
 .idea/
 .ruby-version
+vendor/bundle/
+.bundle/
+binstubs/
