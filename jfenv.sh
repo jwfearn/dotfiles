@@ -14,6 +14,10 @@ export ERL_AFLAGS='-kernel shell_history enabled'
 export EDITOR='subl -w'
 export WWW_HOME='google.com'
 
+## Roku
+export ROKU_DEV_TARGET=192.168.1.230
+export DEVPASSWORD='dubbs'
+
 libs=( \
   'icu4c' \
   'libpng' \

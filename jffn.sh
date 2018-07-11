@@ -259,16 +259,17 @@ path() { echo "${PATH}" | tr ':' '\n'; }
 func() { typeset -F; }
 err() { echo $?; }
 rmat() { xattr -cr; } # remove the @ attribute in macOS
-treef() { tree -aF --dirsfirst "$@"; }
-treef1() { tree -aF --dirsfirst -L 1 "$@"; }
-treef2() { tree -aF --dirsfirst -L 2 "$@"; }
-treef3() { tree -aF --dirsfirst -L 3 "$@"; }
-treef4() { tree -aF --dirsfirst -L 4 "$@"; }
-treed() { tree -aF -d "$@"; }
-treed1() { tree -aF -d -L 1 "$@"; }
-treed2() { tree -aF -d -L 2 "$@"; }
-treed3() { tree -aF -d -L 3 "$@"; }
-treed4() { tree -aF -d -L 4 "$@"; }
+treef() { tree -Fa --prune --dirsfirst -I '.git|.idea|_build|assets|deps|vendor' "$@"; }
+treef1() { treef -L 1 "$@"; }
+treef2() { treef -L 2 "$@"; }
+treef3() { treef -L 3 "$@"; }
+treef4() { treef -L 4 "$@"; }
+treed() { tree -Fad --prune -I '.git|.idea|_build|assets|deps|vendor' "$@"; }
+treed1() { treed -L 1 "$@"; }
+treed2() { treed -L 2 "$@"; }
+treed3() { treed -L 3 "$@"; }
+treed4() { treed -L 4 "$@"; }
+treeg() { tree -fi -I '.git|.idea|_build|assets|deps|vendor' | grep "$@"; }
 wh() { grealpath "$(which "$@")"; } # requires 'brew install coreutils'
 broken() { find -L . -type l -ls; }
 jj() { "$@" | python -mjson.tool; }
@@ -324,6 +325,11 @@ mycnfs() {
     ls -la "${cnf/#\~/$HOME}"
   done
 }
+
+## Roku-related functions
+roco() { telnet "${ROKU_DEV_TARGET}" 8085 "$@"; }
+rodb() { telnet "${ROKU_DEV_TARGET}" 8080 "$@"; }
+ross() { telnet "${ROKU_DEV_TARGET}" 8087 "$@"; }
 
 ## Elixir-related functions
 ism() { iex -S mix "$@"; }
@@ -433,6 +439,7 @@ cdj() { pushd_ "${HOME}/repos/jwfearn/$1"; }
 cdo() { pushd_ "${HOME}/repos/other/$1"; }
 cdg() { cdj 'graph-ruby'; }
 cdh() { cdj 'hotpot'; }
+cdi() { cdj 'interview-john-fearnside'; }
 cdn() { cdo 'nand2tetris2017/jwfearn'; }
 cdr() { cdj 'resume'; }
 cdw() { cdj 'whiteboard'; }
@@ -440,6 +447,8 @@ cdul_() { cd "/usr/local/$1"; }
 cdull() { cdul_ "lib/$1"; }
 cdulb() { cdul_ "bin/$1"; }
 # cdt() { cd "${HOME}/_out/bhtmp/repo/"; }
+
+pgi() { cdi; psql -W -U postgres termfront_dev "$@"; }
 
 ## BEGIN: Avvo-related functions
 agems() {
@@ -628,7 +637,7 @@ rgs() { rbenv each -v gem list; }
 rg+() { rbenv each -v gem install "$@"; }
 rg-() { rbenv each -v gem uninstall "$@"; }
 rgo() { rbenv each -v gem outdated; }
-rgu() { rbenv each -v gem update "$@"; rbenv each -v gem cleanup; }
+rgu() { rbenv each -v gem update "$@"; rbenv each -v gem cleanup "$@"; }
 rbig() { local cc=$CC; export CC=gcc; rbi "$1"; export CC="${cc}"; } # if rbi doesn't work, try this
 gup() {
   gem list > gems0.txt

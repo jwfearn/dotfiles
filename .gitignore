@@ -1,10 +1,32 @@
 # To add this as a global .gitignore file:
 #   git config --global core.excludesfile ~/dotfiles/.gitignore
 
-*.iml
+# Personal preference
+scratch/
+
+# Mac
 .DS_Store
+
+# JetBrains IDE
+*.iml
 .idea/
-.ruby-version
-vendor/bundle/
+
+# Erlang/Elixir/Phoenix
+*.ez
+_build/
+config/*.secret.exs
+cover/
+db/
+deps/
+erl_crash.dump
+priv/static/
+
+# Node
+assets/node_modules/
+npm-debug.log
+
+# Ruby
 .bundle/
+.ruby-version
 binstubs/
+vendor/bundle/
