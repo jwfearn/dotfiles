@@ -9,25 +9,25 @@
 # environment variables used by multiple shells
 export SHELLCHECK_OPTS='--exclude=SC1090,SC2164'
 
+# load secrets
+O=$(set +o) && set -o allexport && . "${HOME}/.env.secret.sh"; eval "${O}"
+
 export ERL_AFLAGS='-kernel shell_history enabled'
 
 export EDITOR='subl -w'
 export WWW_HOME='google.com'
 
 ## Roku
-export ROKU_DEV_TARGET=192.168.1.230
-export DEVPASSWORD='dubbs'
+export ROKU_DEV_IP_ADDRESS_HOME=192.168.1.230
+export ROKU_DEV_IP_ADDRESS_WORK=10.30.0.159
+export ROKU_DEV_USER="rokudev:${ROKU_DEV_PASSWORD_WORK}"
+export DEVPASSWORD="${ROKU_DEV_PASSWORD_WORK}"
+# export ROKU_DEV_TARGET="${ROKU_DEV_IP_ADDRESS_HOME};${ROKU_DEV_IP_ADDRESS_WORK}"
+export ROKU_DEV_TARGET="${ROKU_DEV_IP_ADDRESS_WORK}"
 
-libs=( \
-  'icu4c' \
-  'libpng' \
-  'libtiff' \
-  'openssl' \
-  'readline' \
-)
-for lib in ${libs[@]}; do
-  # libpath=$(brew --prefix ${lib}) # safer
-  libpath="/usr/local/opt/${lib}" # faster
+add_libpath() {
+  local libpath="$1"
+
   # headers
   export C_INCLUDE_PATH="${C_INCLUDE_PATH}:${libpath}/include"
   export CPLUS_INCLUDE_PATH="${CPLUS_INCLUDE_PATH}:${libpath}/include"
@@ -39,7 +39,27 @@ for lib in ${libs[@]}; do
   export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${libpath}/lib/pkgconfig"
   # executables
   export PATH="${PATH}:${libpath}/bin"
+}
+
+libs=( \
+  'icu4c' \
+  'jpeg-turbo' \
+  'libidn2' \
+  'libjpg' \
+  'libpng' \
+  'libtiff' \
+  'libunistring' \
+  'openssl' \
+  'readline' \
+  'zlib' \
+)
+for lib in ${libs[@]}; do
+  # libpath=$(brew --prefix ${lib}) # safer
+  libpath="/usr/local/opt/${lib}" # faster
+  add_libpath "${libpath}"
 done
+
+# add_libpath $(brew --prefix zlib)
 
 export STDOUT_SYNC=1
 
@@ -49,8 +69,6 @@ export STDOUT_SYNC=1
 # export LSCOLORS='' # OS X,
 export CLICOLOR=1 # use colors in supported commands (ls, others?)
 
-# load secrets
-O=$(set +o) && set -o allexport && . "${HOME}/.env.secret.sh"; eval "${O}"
 
 ## environment variables for ec2-api-tools
 #export AWS_ACCESS_KEY="${AMAZON_ACCESS_KEY_ID}" # still needed?

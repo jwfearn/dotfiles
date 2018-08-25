@@ -11,6 +11,10 @@ scratch/
 *.iml
 .idea/
 
+# Visual Studio Code IDE and plugins
+.vscode/
+.history/
+
 # Erlang/Elixir/Phoenix
 *.ez
 _build/
@@ -30,3 +34,6 @@ npm-debug.log
 .ruby-version
 binstubs/
 vendor/bundle/
+
+# Python
+.python-version

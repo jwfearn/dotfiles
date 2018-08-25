@@ -23,6 +23,7 @@ mdf() {
   prettier --prose-wrap=always --print-width=80 "${f}" | sponge "${f}"
 }
 
+pping() { prettyping "$@"; }
 myip() { ipconfig getifaddr en0; }
 mycores() { sysctl -n hw.physicalcpu; }
 
@@ -326,10 +327,40 @@ mycnfs() {
   done
 }
 
-## Roku-related functions
-roco() { telnet "${ROKU_DEV_TARGET}" 8085 "$@"; }
-rodb() { telnet "${ROKU_DEV_TARGET}" 8080 "$@"; }
-ross() { telnet "${ROKU_DEV_TARGET}" 8087 "$@"; }
+## Roku-related functionsv
+vk() { docker-compose run shell invoke "$@"; }
+vx() { docker-compose run shell "$@"; }
+vb() { docker-compose build "$@"; }
+vrb() { docker-compose build --no-cache "$@"; }
+rog() { curl -s "http://${ROKU_DEV_TARGET}:8060/$1" | xml2json | jq "${@:2}"; }
+rop() { curl -d '' "http://${ROKU_DEV_TARGET}:8060/$1"; }
+rob() { roku "${ROKU_DEV_TARGET}" -t "$@"; } # roku-cli build and run
+roc() { telnet "${ROKU_DEV_TARGET}" 8085 "$@"; } # Roku debug console, see: https://sdkdocs.roku.com/display/sdkdoc/Debugging+Your+Application
+rod() { telnet "${ROKU_DEV_TARGET}" 8080 "$@"; } # Roku debug server, see: https://sdkdocs.roku.com/display/sdkdoc/Debugging+Your+Application
+rol() { curl -d '' "http://${ROKU_DEV_TARGET}:8060/launch/dev?startup_show_id=54"; }
+ros() { telnet "${ROKU_DEV_TARGET}" 8087 "$@"; } # Roku screensaver, see: https://sdkdocs.roku.com/display/sdkdoc/Screensavers
+row() { open "http://${ROKU_DEV_TARGET}:80"; } # Roku web interface
+ron() { # Generate Roku new user data
+  local t="$(date +%s)"
+  open "https://my.roku.com/signup"
+  echo "   first name: jf"
+  echo "    last name: ${t}"
+  echo "        email: jf.${t}@roku.com"
+  echo "     password: testtest"
+  echo ""
+  echo "  card number: 370021129040059"
+  echo "        month: 06"
+  echo "         year: 2023"
+  echo "security code: 9546"
+  echo "      address: 150 Winchester Circle"
+  echo "         city: Los Gatos"
+  echo "        state: CA"
+  echo "          zip: 95032"
+  echo "        phone: 8162728106"
+  echo ""
+  echo "  device name: BLASTOISE"
+  echo "     location: Office"
+}
 
 ## Elixir-related functions
 ism() { iex -S mix "$@"; }
@@ -395,8 +426,14 @@ vinfo() { vagrant version; vps; vagrant global-status; vagrant status "$@" 2> /d
 vbo() { vagrant box outdated "$@"; }
 vbs() { vagrant box list -i "$@"; }
 vbu() { vagrant box update "$@"; }
-vpu() { vagrant plugin list && vagrant plugin update "$@"; vagrant version; }
-vsh() { vagrant ssh "$@"; }
+vpu() {
+  if [ $(which vagrant > /dev/null) ]; then
+    vagrant plugin list && vagrant plugin update "$@"
+    vagrant version
+  fi
+}
+
+# vsh() { vagrant ssh "$@"; }
 # vu() { v up --provider=vmware_fusion && vsh "$@"; }
 vu() { vagrant up "$@"; }
 vhelp() { vagrant help "$@"; }
@@ -438,17 +475,20 @@ cdot() { pushd_ "${DOTFILES}"; }
 cdj() { pushd_ "${HOME}/repos/jwfearn/$1"; }
 cdo() { pushd_ "${HOME}/repos/other/$1"; }
 cdg() { cdj 'graph-ruby'; }
-cdh() { cdj 'hotpot'; }
-cdi() { cdj 'interview-john-fearnside'; }
 cdn() { cdo 'nand2tetris2017/jwfearn'; }
 cdr() { cdj 'resume'; }
-cdw() { cdj 'whiteboard'; }
+cdi() { cdj 'whiteboard'; }
 cdul_() { cd "/usr/local/$1"; }
 cdull() { cdul_ "lib/$1"; }
 cdulb() { cdul_ "bin/$1"; }
 # cdt() { cd "${HOME}/_out/bhtmp/repo/"; }
 
 pgi() { cdi; psql -W -U postgres termfront_dev "$@"; }
+
+## BEGIN: Hulu-related functions
+cdw() { pushd_ "${HOME}/repos/hulu/$1"; }
+cdc() { cdw cube-roku; }
+## END: Hulu-related functions
 
 ## BEGIN: Avvo-related functions
 agems() {
@@ -666,8 +706,8 @@ py+() { pyenv install "$1"; }
 py-() { pyenv uninstall "$1"; }
 pyup() { pyis_ > pyis0.txt; brew upgrade pyenv; pyis_ > pyis1.txt; gdiff pyis0.txt pyis1.txt; }
 py0() { pyenv local system; pys; }
-py2() { pyenv local 2.7.14; pys; }
-py3() { pyenv local 3.6.3; pys; }
+py2() { pyenv local 2.7.15; pys; }
+py3() { pyenv local 3.7.0; pys; }
 pya() { pyenv local anaconda3-5.0.1; pys; }
 
 #pyl() { pyenv local linkscape; }
