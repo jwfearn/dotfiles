@@ -211,7 +211,7 @@ smux() { lmux.sh url 10; }
 
 
 ## Homebrew-related functions
-o() { vpu && rgo && bod; }
+o() { vpu && pip list --outdated && rgo && bod; }
 bod() { brew update && brew outdated && brew doctor; }
 buc() { brew upgrade; brew cleanup; }
 bs() { brew services "$@"; }
@@ -709,6 +709,7 @@ py0() { pyenv local system; pys; }
 py2() { pyenv local 2.7.15; pys; }
 py3() { pyenv local 3.7.0; pys; }
 pya() { pyenv local anaconda3-5.0.1; pys; }
+pyu() { pyenv pip-update "$@"; }
 
 #pyl() { pyenv local linkscape; }
 syspip() { PIP_REQUIRE_VIRTUALENV='' pip "$@"; }
