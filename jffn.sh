@@ -211,7 +211,7 @@ smux() { lmux.sh url 10; }
 
 
 ## Homebrew-related functions
-o() { vpu && pip list --outdated && rgo && bod; }
+o() { vpu && ppo && rgo && bod; }
 bod() { brew update && brew outdated && brew doctor; }
 buc() { brew upgrade; brew cleanup; }
 bs() { brew services "$@"; }
@@ -678,7 +678,7 @@ rg+() { rbenv each -v gem install "$@"; }
 rg-() { rbenv each -v gem uninstall "$@"; }
 rgo() { rbenv each -v gem outdated; }
 rgu() { rbenv each -v gem update "$@"; rbenv each -v gem cleanup "$@"; }
-rbig() { local cc=$CC; export CC=gcc; rbi "$1"; export CC="${cc}"; } # if rbi doesn't work, try this
+rbig() { local cc=$CC; export CC=gcc; rbi "$1"; export CC="${cc}"; } # if rbi does not work, try this
 gup() {
   gem list > gems0.txt
   gem update --no-document
@@ -709,7 +709,16 @@ py0() { pyenv local system; pys; }
 py2() { pyenv local 2.7.15; pys; }
 py3() { pyenv local 3.7.0; pys; }
 pya() { pyenv local anaconda3-5.0.1; pys; }
-pyu() { pyenv pip-update "$@"; }
+ppu() {
+  if [ $(which pyenv > /dev/null) ]; then
+    pyenv pip-update "$@"
+  fi
+}
+ppo() {
+  if [ $(which pip > /dev/null) ]; then
+    pip list --outdated "$@"
+  fi
+}
 
 #pyl() { pyenv local linkscape; }
 syspip() { PIP_REQUIRE_VIRTUALENV='' pip "$@"; }
