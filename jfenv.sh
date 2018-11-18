@@ -18,11 +18,12 @@ export EDITOR='subl -w'
 export WWW_HOME='google.com'
 
 ## Roku
-export ROKU_DEV_IP_ADDRESS_HOME=192.168.1.230
-export ROKU_DEV_IP_ADDRESS_WORK=10.30.0.159
+export ROKU_DEV_IP_ADDRESS_HOME_4200X='192.168.1.230'
+export ROKU_DEV_IP_ADDRESS_HOME_8101X='192.168.1.33'
+export ROKU_DEV_IP_ADDRESS_WORK='10.30.0.159'
 export ROKU_DEV_USER="rokudev:${ROKU_DEV_PASSWORD_WORK}"
 export DEVPASSWORD="${ROKU_DEV_PASSWORD_WORK}"
-# export ROKU_DEV_TARGET="${ROKU_DEV_IP_ADDRESS_HOME};${ROKU_DEV_IP_ADDRESS_WORK}"
+# export ROKU_DEV_TARGET="${ROKU_DEV_IP_ADDRESS_HOME_8101X}"
 export ROKU_DEV_TARGET="${ROKU_DEV_IP_ADDRESS_WORK}"
 
 add_libpath() {
@@ -49,6 +50,7 @@ libs=( \
   'libpng' \
   'libtiff' \
   'libunistring' \
+  'ncurses' \
   'openssl' \
   'readline' \
   'zlib' \
@@ -91,6 +93,7 @@ export CLICOLOR=1 # use colors in supported commands (ls, others?)
 export PATH="${PATH}:${GOPATH}/bin"
 export PATH="${PATH}:/usr/local/sbin"
 export PATH="${PATH}:/usr/local/opt/go/libexec/bin"
+export PATH="${PATH}:/usr/local/opt/sca-cmd/bin"
 export PATH="${PATH}:${HOME}/Library/Android/sdk/platform-tools"
 export PATH="${PATH}:${HOME}/bin"
 export PATH="${PATH}:/usr/local/Cellar/zookeeper/3.4.9/bin"

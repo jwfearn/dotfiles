@@ -260,17 +260,17 @@ path() { echo "${PATH}" | tr ':' '\n'; }
 func() { typeset -F; }
 err() { echo $?; }
 rmat() { xattr -cr; } # remove the @ attribute in macOS
-treef() { tree -Fa --prune --dirsfirst -I '.git|.idea|_build|assets|deps|vendor' "$@"; }
+treef() { tree -Fa --prune --dirsfirst -I '.git|.history|.idea|_build|assets|deps|vendor' "$@"; }
 treef1() { treef -L 1 "$@"; }
 treef2() { treef -L 2 "$@"; }
 treef3() { treef -L 3 "$@"; }
 treef4() { treef -L 4 "$@"; }
-treed() { tree -Fad --prune -I '.git|.idea|_build|assets|deps|vendor' "$@"; }
+treed() { tree -Fad --prune -I '.git|.history|.idea|_build|assets|deps|vendor' "$@"; }
 treed1() { treed -L 1 "$@"; }
 treed2() { treed -L 2 "$@"; }
 treed3() { treed -L 3 "$@"; }
 treed4() { treed -L 4 "$@"; }
-treeg() { tree -fi -I '.git|.idea|_build|assets|deps|vendor' | grep "$@"; }
+treeg() { tree -fi -I '.git|.history|.idea|_build|assets|deps|vendor' | grep "$@"; }
 wh() { grealpath "$(which "$@")"; } # requires 'brew install coreutils'
 broken() { find -L . -type l -ls; }
 jj() { "$@" | python -mjson.tool; }
@@ -332,14 +332,16 @@ vk() { docker-compose run shell invoke "$@"; }
 vx() { docker-compose run shell "$@"; }
 vb() { docker-compose build "$@"; }
 vrb() { docker-compose build --no-cache "$@"; }
+
+# Roku xxx (as JSON)
 rog() { curl -s "http://${ROKU_DEV_TARGET}:8060/$1" | xml2json | jq "${@:2}"; }
 rop() { curl -d '' "http://${ROKU_DEV_TARGET}:8060/$1"; }
 rob() { roku "${ROKU_DEV_TARGET}" -t "$@"; } # roku-cli build and run
 roc() { telnet "${ROKU_DEV_TARGET}" 8085 "$@"; } # Roku debug console, see: https://sdkdocs.roku.com/display/sdkdoc/Debugging+Your+Application
 rod() { telnet "${ROKU_DEV_TARGET}" 8080 "$@"; } # Roku debug server, see: https://sdkdocs.roku.com/display/sdkdoc/Debugging+Your+Application
+ros() { open "http://${ROKU_DEV_TARGET}:8087" "$@"; } # Roku screensaver, see: https://sdkdocs.roku.com/display/sdkdoc/xxx
+row() { open "http://${ROKU_DEV_TARGET}:80" "$@"; } # Roku web interface
 rol() { curl -d '' "http://${ROKU_DEV_TARGET}:8060/launch/dev?startup_show_id=54"; }
-ros() { telnet "${ROKU_DEV_TARGET}" 8087 "$@"; } # Roku screensaver, see: https://sdkdocs.roku.com/display/sdkdoc/Screensavers
-row() { open "http://${ROKU_DEV_TARGET}:80"; } # Roku web interface
 ron() { # Generate Roku new user data
   local t="$(date +%s)"
   open "https://my.roku.com/signup"
@@ -658,8 +660,9 @@ rbup_() { brew upgrade rbenv 2> /dev/null; brew upgrade ruby-build 2> /dev/null;
 rbup() { rbis_ > rbis0.txt; rbup_; rbis_ > rbis1.txt; gdiff rbis0.txt rbis1.txt; }
 rbs() { rbenv -v; ruby-build --version; rbenv versions; echo "CURRENT RUBY: $(ruby -v)"; }
 rb0() { rbenv local system; rbs; }
-rb2() { rbenv local 2.5.1; rbs; }
-rb25() { rbenv local 2.5.1; rbs; }
+rb2() { rbenv local 2.5.3; rbs; }
+rb25() { rbenv local 2.5.3; rbs; }
+rb251() { rbenv local 2.5.1; rbs; }
 rb24() { rbenv local 2.4.3; rbs; }
 rb243() { rbenv local 2.4.3; rbs; }
 rb23() { rbenv local 2.3.6; rbs; }
@@ -707,18 +710,10 @@ py-() { pyenv uninstall "$1"; }
 pyup() { pyis_ > pyis0.txt; brew upgrade pyenv; pyis_ > pyis1.txt; gdiff pyis0.txt pyis1.txt; }
 py0() { pyenv local system; pys; }
 py2() { pyenv local 2.7.15; pys; }
-py3() { pyenv local 3.7.0; pys; }
+py3() { pyenv local 3.7.1; pys; }
 pya() { pyenv local anaconda3-5.0.1; pys; }
-ppu() {
-  if [ $(which pyenv > /dev/null) ]; then
-    pyenv pip-update "$@"
-  fi
-}
-ppo() {
-  if [ $(which pip > /dev/null) ]; then
-    pip list --outdated "$@"
-  fi
-}
+ppu() { which pyenv > /dev/null && pyenv pip-update "$@"; }
+ppo() { which pip > /dev/null && pip list --outdated "$@"; }
 
 #pyl() { pyenv local linkscape; }
 syspip() { PIP_REQUIRE_VIRTUALENV='' pip "$@"; }
@@ -791,6 +786,22 @@ findpy() { findname '*.py'; }
 findrb() { findname '*.rb'; }
 # TODO: refactor findcpp
 findcpp() { find . -type f \( -name '' -or -name '*.h' -or -name '*.hpp' -or -name '*.hxx' -or -name '*.c' -or -name '*.cc' -or -name '*.cpp' -or -name '*.cxx' \); }
+
+gitls() {
+  git ls-tree --name-only --full-tree -r HEAD
+}
+
+findin() { # print lines
+  local pattern="${1}"
+  local glob="${2}"
+  # use rg because it has globbing
+}
+
+findwith() { # print file paths only
+  local pattern="${1}"
+  local glob="${2}"
+  # use rg because it has globbing
+}
 
 _grb() { grep -r --include "*.rb" "$@" .; }
 # grb() { _grb --exclude-dir=vendor "$@"; }
