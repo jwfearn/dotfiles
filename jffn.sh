@@ -64,7 +64,8 @@ whilefail() { while ! $1 ; do :; done; }
 vt() { TESTOPTS='--verbose' t "$@"; }
 
 ls() { env ls -aF "$@"; }
-tree() { env tree -CFa --dirsfirst "$@"; }
+l() { ls "$@"; }
+ll() { ls -l "$@"; }
 
 man() {
   env \
@@ -260,17 +261,18 @@ path() { echo "${PATH}" | tr ':' '\n'; }
 func() { typeset -F; }
 err() { echo $?; }
 rmat() { xattr -cr; } # remove the @ attribute in macOS
-treef() { tree -Fa --prune --dirsfirst -I '.git|.history|.idea|_build|assets|deps|vendor' "$@"; }
+_tree() { tree -I '.git|.history|.idea|_build|assets|deps|node_modules|vendor' --dirsfirst --prune -CFa "$@"; }
+treef() { _tree  "$@"; }
 treef1() { treef -L 1 "$@"; }
 treef2() { treef -L 2 "$@"; }
 treef3() { treef -L 3 "$@"; }
 treef4() { treef -L 4 "$@"; }
-treed() { tree -Fad --prune -I '.git|.history|.idea|_build|assets|deps|vendor' "$@"; }
+treed() { _tree -d "$@"; }
 treed1() { treed -L 1 "$@"; }
 treed2() { treed -L 2 "$@"; }
 treed3() { treed -L 3 "$@"; }
 treed4() { treed -L 4 "$@"; }
-treeg() { tree -fi -I '.git|.history|.idea|_build|assets|deps|vendor' | grep "$@"; }
+treeg() { _tree -fi | grep "$@"; }
 wh() { grealpath "$(which "$@")"; } # requires 'brew install coreutils'
 broken() { find -L . -type l -ls; }
 jj() { "$@" | python -mjson.tool; }
@@ -363,6 +365,8 @@ ron() { # Generate Roku new user data
   echo "  device name: BLASTOISE"
   echo "     location: Office"
 }
+
+mp4v() { ~/repos/other/mp4viewer/src/showboxes.py "$@"; }
 
 ## Elixir-related functions
 ism() { iex -S mix "$@"; }
@@ -489,6 +493,7 @@ pgi() { cdi; psql -W -U postgres termfront_dev "$@"; }
 
 ## BEGIN: Hulu-related functions
 cdw() { pushd_ "${HOME}/repos/hulu/$1"; }
+cdb() { cdo brs; }
 cdc() { cdw cube-roku; }
 ## END: Hulu-related functions
 
