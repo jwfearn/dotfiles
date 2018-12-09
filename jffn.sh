@@ -427,30 +427,26 @@ dmc() { dm create -d vmwarefusion --vmwarefusion-boot2docker-url 'https://github
 avt() { avro-tools "$@"; }
 
 ## Vagrant-related functions
-vps() { vagrant plugin list "$@"; }
-vinfo() { vagrant version; vps; vagrant global-status; vagrant status "$@" 2> /dev/null; }
-vbo() { vagrant box outdated "$@"; }
-vbs() { vagrant box list -i "$@"; }
-vbu() { vagrant box update "$@"; }
-vpu() {
-  if [ $(which vagrant > /dev/null) ]; then
-    vagrant plugin list && vagrant plugin update "$@"
-    vagrant version
-  fi
-}
+vagrant_() { which vagrant > /dev/null && vagrant "$@"; }
+vps() { vagrant_ plugin list "$@"; }
+vinfo() { vagrant_ version; vps; vagrant_ global-status; vagrant_ status "$@" 2> /dev/null; }
+vbo() { vagrant_ box outdated "$@"; }
+vbs() { vagrant_ box list -i "$@"; }
+vbu() { vagrant_ box update "$@"; }
+vpu() { vagrant_ plugin list && vagrant_ plugin update "$@"; vagrant_ version; return 0; }
 
 # vsh() { vagrant ssh "$@"; }
 # vu() { v up --provider=vmware_fusion && vsh "$@"; }
-vu() { vagrant up "$@"; }
-vhelp() { vagrant help "$@"; }
-vsus() { vagrant suspend "$@"; }
+vu() { vagrant_ up "$@"; }
+vhelp() { vagrant_ help "$@"; }
+vsus() { vagrant_ suspend "$@"; }
 vsw() { vsus "$1" && vush "$2"; }
-vd() { vagrant destroy -f "$@"; }
-vl() { vagrant reload "$@"; }
+vd() { vagrant_ destroy -f "$@"; }
+vl() { vagrant_ reload "$@"; }
 vdu() { vd "$@" && vu "$@"; }
 vush() { vu "$@" && vsh "$@"; }
 vdush() { vd "$@" && vush "$@"; }
-vrps() { vagrant reload --provision "$@" && vsh "$@"; }  # faster than vdus?
+vrps() { vagrant_ reload --provision "$@" && vsh "$@"; }  # faster than vdus?
 cdvp() { cd "${HOME}/vagrant/processing"; vp; }
 cdvd() { cd "${HOME}/vagrant/boot2docker"; vp; }
 cdvw() { cd "${HOME}/vagrant/vmwtest/"; }
@@ -657,35 +653,27 @@ bcop() { bx rubocop "$@"; bx rubocop --format 'fi' "$@" | wc -l; }
 # hound() { cop $(git diff --name-only); }
 
 ## rbenv-related functions
-rb+() { rbenv install "$1"; }
-rb-() { rbenv uninstall "$1"; }
-rbis_() { ruby-build --definitions; }
+rbenv_() { which rbenv > /dev/null && rbenv "$@"; }
+ruby-build_() { which ruby-build > /dev/null && ruby-build "$@"; }
+ruby_() { which ruby > /dev/null && ruby "$@"; }
+rbs() { ruby-build_ --version; rbenv_ -v; rbenv_ versions; echo "CURRENT RUBY: $(ruby_ -v)"; }
+rb+() { rbenv_ install "$1"; }
+rb-() { rbenv_ uninstall "$1"; }
+rbis_() { ruby-build_ --definitions; }
 rbis() { rbis_ | column; }
-rbup_() { brew upgrade rbenv 2> /dev/null; brew upgrade ruby-build 2> /dev/null; rbenv -v; ruby-build --version; }
+rbup_() { brew upgrade rbenv 2> /dev/null; brew upgrade ruby-build 2> /dev/null; rbenv_ -v; ruby-build_ --version; }
 rbup() { rbis_ > rbis0.txt; rbup_; rbis_ > rbis1.txt; gdiff rbis0.txt rbis1.txt; }
-rbs() { rbenv -v; ruby-build --version; rbenv versions; echo "CURRENT RUBY: $(ruby -v)"; }
-rb0() { rbenv local system; rbs; }
-rb2() { rbenv local 2.5.3; rbs; }
-rb25() { rbenv local 2.5.3; rbs; }
-rb251() { rbenv local 2.5.1; rbs; }
-rb24() { rbenv local 2.4.3; rbs; }
-rb243() { rbenv local 2.4.3; rbs; }
-rb23() { rbenv local 2.3.6; rbs; }
-rb236() { rbenv local 2.3.6; rbs; }
-rb22() { rbenv local 2.2.9; rbs; }
-rb221() { rbenv local 2.2.1; rbs; }
-rb223() { rbenv local 2.2.3; rbs; }
-rb226() { rbenv local 2.2.6; rbs; }
-rb229() { rbenv local 2.2.9; rbs; }
-rb21() { rbenv local 2.1.10; rbs; }
-rb2110() { rbenv local 2.1.10; rbs; }
-rbj() { rbenv local jruby-9.1.13.0; rbs; }
-rbe() { rbenv each "$@"; }
-rgs() { rbenv each -v gem list; }
-rg+() { rbenv each -v gem install "$@"; }
-rg-() { rbenv each -v gem uninstall "$@"; }
-rgo() { rbenv each -v gem outdated; }
-rgu() { rbenv each -v gem update "$@"; rbenv each -v gem cleanup "$@"; }
+rb0() { rbenv_ local system; rbs; }
+rb2() { rb25; }
+rb25() { rb253; }
+rb253() { rbenv_ local 2.5.3; rbs; }
+rbj() { rbenv_ local jruby-9.2.5.0; rbs; }
+rbe() { rbenv_ each "$@"; }
+rgs() { rbenv_ each -v gem list; }
+rg+() { rbenv_ each -v gem install "$@"; }
+rg-() { rbenv_ each -v gem uninstall "$@"; }
+rgo() { rbenv_ each -v gem outdated; return 0; }
+rgu() { rbenv_ each -v gem update "$@"; rbenv each -v gem cleanup "$@"; }
 rbig() { local cc=$CC; export CC=gcc; rbi "$1"; export CC="${cc}"; } # if rbi does not work, try this
 gup() {
   gem list > gems0.txt
@@ -695,7 +683,7 @@ gup() {
   # install global gems needed for JetBrains debugging
   gem install --no-document debase debase-ruby_core_source ruby-debug-ide
   gem cleanup
-  rbenv rehash
+  rbenv_ rehash
   hash -r
   gem list > gems1.txt
   gdiff gems0.txt gems1.txt
@@ -707,25 +695,29 @@ j0() { jenv local system; js; }
 j8() { jenv local oracle64-1.8.0.60; js; }
 
 ## pyenv-related functions
-pys() { pyenv --version; pyenv versions; echo "CURRENT PYTHON: $(python --version 2>&1)"; }
-pyis_() { pyenv install --list "$@"; }
+python_() { which python > /dev/null && python "$@"; }
+pyenv_() { which pyenv > /dev/null && pyenv "$@"; }
+pip_() { which pip > /dev/null && pip "$@"; }
+
+pys() { pyenv_ --version && pyenv_ versions; echo "CURRENT PYTHON: $(python_ --version 2>&1)"; }
+pyis_() { pyenv_ install --list "$@"; }
 pyis() { pyis_ | column; }
-py+() { pyenv install "$1"; }
-py-() { pyenv uninstall "$1"; }
+py+() { pyenv_ install "$1"; }
+py-() { pyenv_ uninstall "$1"; }
 pyup() { pyis_ > pyis0.txt; brew upgrade pyenv; pyis_ > pyis1.txt; gdiff pyis0.txt pyis1.txt; }
-py0() { pyenv local system; pys; }
-py2() { pyenv local 2.7.15; pys; }
-py3() { pyenv local 3.7.1; pys; }
-pya() { pyenv local anaconda3-5.0.1; pys; }
-ppu() { which pyenv > /dev/null && pyenv pip-update "$@"; }
-ppo() { which pip > /dev/null && pip list --outdated "$@"; }
+py0() { pyenv_ local system; pys; }
+py2() { pyenv_ local 2.7.15; pys; }
+py3() { pyenv_ local 3.7.1; pys; }
+pya() { pyenv_ local anaconda3-5.0.1; pys; }
+ppu() { pyenv_ pip-update "$@"; }
+ppo() { pip_ list --outdated "$@"; return 0; }
 
 #pyl() { pyenv local linkscape; }
-syspip() { PIP_REQUIRE_VIRTUALENV='' pip "$@"; }
-pyx() { local cmd="$@"; local py="from subprocess import check_output as x; o = x('$cmd'); print(o)"; echo $py; python -c"$py"; }
-pea() { pyenv activate "$@"; }
-ped() { pyenv deactivate "$@"; }
-pyv() { pyenv virtualenv "$@"; }
+syspip() { PIP_REQUIRE_VIRTUALENV='' pip_ "$@"; }
+pyx() { local cmd="$@"; local py="from subprocess import check_output as x; o = x('$cmd'); print(o)"; echo $py; python_ -c"$py"; }
+pea() { pyenv_ activate "$@"; }
+ped() { pyenv_ deactivate "$@"; }
+pyv() { pyenv_ virtualenv "$@"; }
 
 ## MySQL-related functions
 mystart_dot() { mysql.server start "$@"; }
