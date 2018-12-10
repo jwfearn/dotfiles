@@ -476,6 +476,7 @@ grl() { git reflog --format=format:"%C(yellow)%h %Cblue%aD%Creset %gd %Cgreen%aN
 cdot() { pushd_ "${DOTFILES}"; }
 cdj() { pushd_ "${HOME}/repos/jwfearn/$1"; }
 cdo() { pushd_ "${HOME}/repos/other/$1"; }
+cdor() { pushd_ "${HOME}/repos/other_roku/$1"; }
 cdg() { cdj 'graph-ruby'; }
 cdn() { cdo 'nand2tetris2017/jwfearn'; }
 cdr() { cdj 'resume'; }
@@ -489,7 +490,7 @@ pgi() { cdi; psql -W -U postgres termfront_dev "$@"; }
 
 ## BEGIN: Hulu-related functions
 cdw() { pushd_ "${HOME}/repos/hulu/$1"; }
-cdb() { cdo brs; }
+cdb() { cdor brs; }
 cdc() { cdw cube-roku; }
 ## END: Hulu-related functions
 
