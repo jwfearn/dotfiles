@@ -778,7 +778,7 @@ the_silver_searcher() {
   echo "use the 'ag' command to use the_silver_searcher.  See also: https://github.com/ggreer/the_silver_searcher"
 }
 
-findname()  { find . -type f \( -name '' -or -name "$@" \); }
+ff()  { find . -type f \( -name '' -or -name "$@" \); }
 findpy() { findname '*.py'; }
 findrb() { findname '*.rb'; }
 # TODO: refactor findcpp
