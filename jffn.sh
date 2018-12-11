@@ -35,7 +35,9 @@ anyrspec3() { find "${1:-.}" -name '*_spec.rb' -print -quit; } # faster, simpler
 anyrspec4() { compgen -G 'spec/**/*_spec.rb'; } # fastest but not ZShell-compatible
 
 t() {
-  if [ -f 'mix.exs' ]; then # ExUnit
+  if [ -f 'yarn.lock' ]; then # Yarn
+    time yarn test  "$@"
+  elif [ -f 'mix.exs' ]; then # ExUnit
     time MIX_ENV='test' mix test "$@"
   else
     if [ -n "$(find 'spec' -name '*_spec.rb' -print -quit 2> /dev/null)" ]; then # Rspec
