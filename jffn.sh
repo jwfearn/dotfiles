@@ -667,9 +667,9 @@ rbis() { rbis_ | column; }
 rbup_() { brew upgrade rbenv 2> /dev/null; brew upgrade ruby-build 2> /dev/null; rbenv_ -v; ruby-build_ --version; }
 rbup() { rbis_ > rbis0.txt; rbup_; rbis_ > rbis1.txt; gdiff rbis0.txt rbis1.txt; }
 rb0() { rbenv_ local system; rbs; }
-rb2() { rb25; }
-rb25() { rb253; }
-rb253() { rbenv_ local 2.5.3; rbs; }
+rb2() { rb26; }
+rb26() { rb260; }
+rb260() { rbenv_ local 2.6.0; rbs; }
 rbj() { rbenv_ local jruby-9.2.5.0; rbs; }
 rbe() { rbenv_ each "$@"; }
 rgs() { rbenv_ each -v gem list; }
