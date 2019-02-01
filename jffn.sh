@@ -214,7 +214,18 @@ smux() { lmux.sh url 10; }
 
 
 ## Homebrew-related functions
-o() { vpu && ppo && rgo && bod; }
+o() {
+  echo "UPDATE VAGRANT" \
+  && vpu \
+  && echo "OUTDATED PYTHON PACKAGES" \
+  && ppo \
+  && echo "OUTDATED RUBY GEMS" \
+  && rgo \
+  && echo "OUTDATED NODE PACKAGES" \
+  && npo \
+  && echo "OUTDATED HOMEBREW PACKAGES AND DIAGNOSIS" \
+  && bod;
+}
 bod() { brew update && brew outdated && brew doctor; }
 buc() { brew upgrade; brew cleanup; }
 bs() { brew services "$@"; }
@@ -398,6 +409,9 @@ yfp() { yarn foreman:prod "$@"; }
 ## Node-relate functions
 nr() { npm run "$@"; }
 nt() { npm test "$@"; }
+nps() { npm -g list --depth=0  "$@"; } # node packages
+npo() { npm -g outdated "$@"; return 0; } # outdated node packages
+npu() { npm -g update "$@"; } # update node packages
 
 ## Docker-related functions
 rr() { docker run -d --restart=unless-stopped -p 8080:8080 rancher/server:preview; }
@@ -494,6 +508,7 @@ pgi() { cdi; psql -W -U postgres termfront_dev "$@"; }
 cdw() { pushd_ "${HOME}/repos/hulu/$1"; }
 cdb() { cdor brs; }
 cdc() { cdw cube-roku; }
+cdi() { cdor roku-dev-cli; }
 ## END: Hulu-related functions
 
 ## BEGIN: Avvo-related functions
@@ -668,8 +683,8 @@ rbup_() { brew upgrade rbenv 2> /dev/null; brew upgrade ruby-build 2> /dev/null;
 rbup() { rbis_ > rbis0.txt; rbup_; rbis_ > rbis1.txt; gdiff rbis0.txt rbis1.txt; }
 rb0() { rbenv_ local system; rbs; }
 rb2() { rb26; }
-rb26() { rb260; }
-rb260() { rbenv_ local 2.6.0; rbs; }
+rb26() { rb261; }
+rb261() { rbenv_ local 2.6.1; rbs; }
 rbj() { rbenv_ local jruby-9.2.5.0; rbs; }
 rbe() { rbenv_ each "$@"; }
 rgs() { rbenv_ each -v gem list; }

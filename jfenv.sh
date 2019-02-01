@@ -18,13 +18,13 @@ export EDITOR='subl -w'
 export WWW_HOME='google.com'
 
 ## Roku
-export ROKU_DEV_IP_ADDRESS_HOME_3800X='192.168.1.139'
-export ROKU_DEV_IP_ADDRESS_HOME_4200X='192.168.1.230'
-export ROKU_DEV_IP_ADDRESS_HOME_8101X='192.168.1.33'
-export ROKU_DEV_IP_ADDRESS_WORK_4230X='10.30.0.83'
-export ROKU_DEV_USER="rokudev:${ROKU_DEV_PASSWORD_WORK}"
+export ROKU_DEV_TARGET_HOME_3800X='192.168.1.140'
+export ROKU_DEV_TARGET_HOME_4200X='192.168.1.205'
+export ROKU_DEV_TARGET_HOME_8101X='192.168.1.33'
+export ROKU_DEV_TARGET_WORK_4230X='10.30.0.83'
+export ROKU_DEV_TARGET="${ROKU_DEV_TARGET_WORK_4230X}"
 export DEVPASSWORD="${ROKU_DEV_PASSWORD_WORK}"
-export ROKU_DEV_TARGET="${ROKU_DEV_IP_ADDRESS_HOME_3800X}"
+export ROKU_DEV_USER="rokudev:${DEVPASSWORD}"
 
 add_libpath() {
   local libpath="$1"
@@ -45,14 +45,17 @@ add_libpath() {
 libs=( \
   'icu4c' \
   'jpeg-turbo' \
+  'libffi' \
   'libidn2' \
   'libjpg' \
   'libpng' \
   'libtiff' \
   'libunistring' \
+  'mozjpeg' \
   'ncurses' \
   'openssl' \
   'readline' \
+  'sqlite' \
   'zlib' \
 )
 for lib in ${libs[@]}; do
