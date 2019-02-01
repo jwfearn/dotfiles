@@ -469,7 +469,7 @@ cdvw() { cd "${HOME}/vagrant/vmwtest/"; }
 cdvb() { cd "${HOME}/vagrant/vbtest/"; }
 
 ## Git-related functions
-gi() { git status; git --version; }
+gi() { git --version; git status "$@"; }
 gdiff_() { local b0="$1"; local b1="$2"; shift 2; git diff --color --minimal "${b0}..${b1}" "$@"; }
 gstat_() { local b0="$1"; local b1="$2"; shift 2; git diff --color --minimal --stat "${b0}..${b1}" "$@"; }
 # gdiffl_() { pushd_ "${HOME}/repos/linkscape"; gdiff_ ${B0:-'crawl-sched-Jul-5-2013'} ${B1:-'sprint-Gordon'} "$@"; popd_; }
