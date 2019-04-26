@@ -18,11 +18,15 @@ export EDITOR='subl -w'
 export WWW_HOME='google.com'
 
 ## Roku
-export ROKU_DEV_TARGET_HOME_3800X='192.168.1.140'
-export ROKU_DEV_TARGET_HOME_4200X='192.168.1.205'
-export ROKU_DEV_TARGET_HOME_8101X='192.168.1.33'
-export ROKU_DEV_TARGET_WORK_4230X='10.30.0.83'
-export ROKU_DEV_TARGET="${ROKU_DEV_TARGET_WORK_4230X}"
+export MAC_4640X_HOME='88:de:a9:c0:4e:fc'
+export IP_3800X_HOME='192.168.1.140'
+export IP_4200X_HOME='192.168.1.205'
+export IP_4640X_HOME='192.168.1.163' # Ethernet: 88:de:a9:c0:4e:fc, WiFi: 88:de:a9:c0:4e:fd
+export IP_8101X_HOME='192.168.1.33'
+export IP_3900X_WORK='10.30.62.112' # WiFi: d8:31:34:c6:db:6e
+export IP_4230X_WORK='10.30.0.167' # Ethernet b8:a1:75:6b:3b:d2
+export ROKU_DEV_TARGET="${IP_4230X_WORK}"
+# export ROKU_DEV_TARGET='192.168.1.114'
 export DEVPASSWORD="${ROKU_DEV_PASSWORD_WORK}"
 export ROKU_DEV_USER="rokudev:${DEVPASSWORD}"
 

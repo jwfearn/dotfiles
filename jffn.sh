@@ -24,7 +24,11 @@ mdf() {
 }
 
 pping() { prettyping "$@"; }
-myip() { ipconfig getifaddr en0; }
+myip() { ipconfig getifaddr en0 "$@"; }
+# mac2ip() { arp -an | grep "$1" | tr '(' ' ' | tr ')' ' ' | gawk -v MAC="$1" '{print $2}'; }
+# mac2ip() { arp -a | awk '$4 ~ /'$1'/ { print substr($2, 2, length($2) - 2) }'; }
+# mac2ip() { arp -a | awk -F '[ ()]+' '$4 ~ /'$1'/ { print $2 }'; }
+mac2ip() { arp -a | awk -F '[ ()]+' -v IGNORECASE=1 '$4 ~ /'$1'/ { print $2 }'; }
 mycores() { sysctl -n hw.physicalcpu; }
 
 q() { mysql -p -uroot "$@"; }
@@ -252,7 +256,7 @@ dirb() { find "$(pwd)" -depth 1 "$@"; }
 
 ## general purpose shell functions
 disks() { diskutil list; }
-ts() { date +"%s"; }
+ts() { date '+%s'; }
 vars() { env | sort -V; }
 ei() { env | sort | grep "$@"; }
 e() { subl "$@"; }
@@ -342,13 +346,16 @@ mycnfs() {
   done
 }
 
-## Roku-related functionsv
+## Docker-related functions
 vk() { docker-compose run shell invoke "$@"; }
 vx() { docker-compose run shell "$@"; }
 vb() { docker-compose build "$@"; }
 vrb() { docker-compose build --no-cache "$@"; }
 
 # Roku xxx (as JSON)
+rdbg() { bs_const='IS_AUTOMATION_BUILD=false;IS_MITMPROXY_BUILD=false;TRACE_URL_TRANSFERS=false;ENABLE_DBG=true;ENABLE_LOG=false' roku "$@"; }
+
+rowake() { curl -d '' "http://$ROKU_DEV_TARGET:8060/keypress/Home"; }
 rog() { curl -s "http://${ROKU_DEV_TARGET}:8060/$1" | xml2json | jq "${@:2}"; }
 rop() { curl -d '' "http://${ROKU_DEV_TARGET}:8060/$1"; }
 rob() { roku "${ROKU_DEV_TARGET}" -t "$@"; } # roku-cli build and run
@@ -378,6 +385,7 @@ ron() { # Generate Roku new user data
   echo "  device name: BLASTOISE"
   echo "     location: Office"
 }
+rochmod() { chmod -x $(git ls-files); }
 
 mp4v() { ~/repos/other/mp4viewer/src/showboxes.py "$@"; }
 
@@ -407,11 +415,12 @@ yfd() { yarn foreman:dev "$@"; }
 yfp() { yarn foreman:prod "$@"; }
 
 ## Node-relate functions
-nr() { npm run "$@"; }
-nt() { npm test "$@"; }
-nps() { npm -g list --depth=0  "$@"; } # node packages
-npo() { npm -g outdated "$@"; return 0; } # outdated node packages
-npu() { npm -g update "$@"; } # update node packages
+npm_() { which npm > /dev/null && npm "$@"; }
+nr() { npm_ run "$@"; }
+nt() { npm_ test "$@"; }
+nps() { npm_ -g list --depth=0  "$@"; } # node packages
+npo() { npm_ -g outdated "$@"; return 0; } # outdated node packages
+npu() { npm_ -g update "$@"; } # update node packages
 
 ## Docker-related functions
 rr() { docker run -d --restart=unless-stopped -p 8080:8080 rancher/server:preview; }
@@ -682,9 +691,7 @@ rbis() { rbis_ | column; }
 rbup_() { brew upgrade rbenv 2> /dev/null; brew upgrade ruby-build 2> /dev/null; rbenv_ -v; ruby-build_ --version; }
 rbup() { rbis_ > rbis0.txt; rbup_; rbis_ > rbis1.txt; gdiff rbis0.txt rbis1.txt; }
 rb0() { rbenv_ local system; rbs; }
-rb2() { rb26; }
-rb26() { rb261; }
-rb261() { rbenv_ local 2.6.1; rbs; }
+rb2() { rbenv_ local 2.6.3; rbs; }
 rbj() { rbenv_ local jruby-9.2.5.0; rbs; }
 rbe() { rbenv_ each "$@"; }
 rgs() { rbenv_ each -v gem list; }
@@ -724,11 +731,12 @@ py+() { pyenv_ install "$1"; }
 py-() { pyenv_ uninstall "$1"; }
 pyup() { pyis_ > pyis0.txt; brew upgrade pyenv; pyis_ > pyis1.txt; gdiff pyis0.txt pyis1.txt; }
 py0() { pyenv_ local system; pys; }
-py2() { pyenv_ local 2.7.15; pys; }
-py3() { pyenv_ local 3.7.1; pys; }
+py2() { pyenv_ local 2.7.16; pys; }
+py3() { pyenv_ local 3.7.3; pys; }
 pya() { pyenv_ local anaconda3-5.0.1; pys; }
 ppu() { pyenv_ pip-update "$@"; }
 ppo() { pip_ list --outdated "$@"; return 0; }
+pps() { pip_ list "$@"; }
 
 #pyl() { pyenv local linkscape; }
 syspip() { PIP_REQUIRE_VIRTUALENV='' pip_ "$@"; }
@@ -796,7 +804,8 @@ the_silver_searcher() {
   echo "use the 'ag' command to use the_silver_searcher.  See also: https://github.com/ggreer/the_silver_searcher"
 }
 
-ff()  { find . -type f \( -name '' -or -name "$@" \); }
+fx() { find . -type f -perm +111 -print "$@"; }
+ff() { find . -type f \( -name '' -or -name "$@" \); }
 findpy() { findname '*.py'; }
 findrb() { findname '*.rb'; }
 # TODO: refactor findcpp
@@ -951,3 +960,21 @@ if [ "${ZSH_VERSION}" ]; then
 elif [ "${BASH_VERSION}" ]; then
   source "${DOTFILES}/jffn.bash"
 fi
+
+
+# https://forums.roku.com/viewtopic.php?f=34&t=70133#p442404
+
+packageroku() {
+
+  uagent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)';
+  ftime = $(($(date + '%s') * 1000));
+  if ["$1"] && ["$2"] && ["$3"] && [$ {#1} -lt 32 ]; then
+    purl= $(curl--silent--show - error--user - agent "$uagent"--form "app_name=$1"
+    --form "passwd=$2"--form "pkg_time=$ftime"--form "mysubmit=Package""http://$3/plugin_package"
+    | grep "href" | grep - v "plugin_inspect\|plugin_install" | awk - F 'href="''{ print $2 }'
+    | tr '"''\n' | head - n1;);
+    wget http: //$3/$purl ;
+  else echo - e "Function Description";
+  fi
+
+}
