@@ -24,7 +24,14 @@ mdf() {
 }
 
 pping() { prettyping "$@"; }
-myip() { ipconfig getifaddr en0 "$@"; }
+myip() { ipconfig getifaddr "${1:-en0}" "$@"; }
+myifs() { ifconfig -l "$@"; }
+myips() {
+  for interface in $(ifconfig -l); do
+    local ip=$(ipconfig getifaddr $interface)
+    [ -n "${ip}" ] && printf "%8s %s\n" "${interface}" "${ip}"
+  done
+}
 # mac2ip() { arp -an | grep "$1" | tr '(' ' ' | tr ')' ' ' | gawk -v MAC="$1" '{print $2}'; }
 # mac2ip() { arp -a | awk '$4 ~ /'$1'/ { print substr($2, 2, length($2) - 2) }'; }
 # mac2ip() { arp -a | awk -F '[ ()]+' '$4 ~ /'$1'/ { print $2 }'; }
@@ -252,7 +259,7 @@ cdup() { cd ..; }
 cdroot() { cd / || return 1; }
 cls() { clear; }
 dir() { ls "$@"; }
-dirb() { find "$(pwd)" -depth 1 "$@"; }
+dirb() { find "$(pwd)" -depth 1 "$@"; } # bare directory listing (like DOS: `dir /b`)
 
 ## general purpose shell functions
 disks() { diskutil list; }
@@ -263,7 +270,6 @@ e() { subl "$@"; }
 h() { history | tail -"$1"; }
 lsl() { env ls -lOeF "$@"; }  # -O is a Mac-specific option
 lsd() { env ls -d .*/ "$@"; }
-lsb() { find "$@"; }  # bare directory listing (like DOS: `dir /b`)
 lsapts() {
   local F='/etc/apt/sources.list'
   local D="${L}.d"
@@ -385,7 +391,6 @@ ron() { # Generate Roku new user data
   echo "  device name: BLASTOISE"
   echo "     location: Office"
 }
-rochmod() { chmod -x $(git ls-files); }
 
 mp4v() { ~/repos/other/mp4viewer/src/showboxes.py "$@"; }
 
@@ -503,7 +508,6 @@ cdj() { pushd_ "${HOME}/repos/jwfearn/$1"; }
 cdo() { pushd_ "${HOME}/repos/other/$1"; }
 cdor() { pushd_ "${HOME}/repos/other_roku/$1"; }
 cdg() { cdj 'graph-ruby'; }
-cdn() { cdo 'nand2tetris2017/jwfearn'; }
 cdr() { cdj 'resume'; }
 cdi() { cdj 'whiteboard'; }
 cdul_() { cd "/usr/local/$1"; }
@@ -515,9 +519,11 @@ pgi() { cdi; psql -W -U postgres termfront_dev "$@"; }
 
 ## BEGIN: Hulu-related functions
 cdw() { pushd_ "${HOME}/repos/hulu/$1"; }
-cdb() { cdor brs; }
-cdc() { cdw cube-roku; }
-cdi() { cdor roku-dev-cli; }
+cdb() { cdor 'brs'; }
+cdc() { cdw 'cube-roku'; }
+cdp() { cdw 'cdp'; }
+cdn() { cdw 'Neutron'; }
+cdi() { cdor 'roku-dev-cli'; }
 ## END: Hulu-related functions
 
 ## BEGIN: Avvo-related functions
@@ -804,16 +810,20 @@ the_silver_searcher() {
   echo "use the 'ag' command to use the_silver_searcher.  See also: https://github.com/ggreer/the_silver_searcher"
 }
 
-fx() { find . -type f -perm +111 -print "$@"; }
-ff() { find . -type f \( -name '' -or -name "$@" \); }
-findpy() { findname '*.py'; }
-findrb() { findname '*.rb'; }
+ffgit() { git ls-files "$@"; } # TODO: recursively list git files matching a pattern
+ffall() { find . -type f \( -name '' -or -name "$@" \); } # recursively list all files matching a pattern
+findpy() { ffall '*.py'; }
+findrb() { ffall '*.rb'; }
 # TODO: refactor findcpp
 findcpp() { find . -type f \( -name '' -or -name '*.h' -or -name '*.hpp' -or -name '*.hxx' -or -name '*.c' -or -name '*.cc' -or -name '*.cpp' -or -name '*.cxx' \); }
 
-gitls() {
-  git ls-tree --name-only --full-tree -r HEAD
-}
+lsx() { "$@"; }
+
+fxall() { find . -type f -perm +111 -print "$@"; } # recursively list all files with executable permission
+fx() { fxall | grep -v '.git/'; } # TODO: recursively list git files with executable permission
+-x() { chmod -x $(git ls-files); } # recursively remove executable permission from git files
+
+gitls() { git ls-tree --name-only --full-tree -r HEAD; }
 
 findin() { # print lines
   local pattern="${1}"
