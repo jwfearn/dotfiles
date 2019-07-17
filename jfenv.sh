@@ -17,6 +17,7 @@ export ERL_AFLAGS='-kernel shell_history enabled'
 export EDITOR='subl -w'
 export WWW_HOME='google.com'
 
+
 ## Roku
 export MAC_4640X_HOME='88:de:a9:c0:4e:fc'
 export IP_3800X_HOME='192.168.1.140'
@@ -97,6 +98,9 @@ export CLICOLOR=1 # use colors in supported commands (ls, others?)
 # export QMAKE='/usr/local/opt/qt5/bin/qmake' # default brew install qt5 location
 # export CHEF_CLIENT_NAME='john'
 
+export SEAT_ENGINE_DOCKER="${HOME}/repos/seatengine/seat-engine"
+
+export PATH="${PATH}:${SEAT_ENGINE_DOCKER}/bin"
 export PATH="${PATH}:${GOPATH}/bin"
 export PATH="${PATH}:/usr/local/sbin"
 export PATH="${PATH}:/usr/local/opt/go/libexec/bin"
