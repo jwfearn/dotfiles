@@ -9,6 +9,10 @@ main() {
     shell='zsh'
     setopt autocd pushdignoredups
     autoload -U promptinit && promptinit
+
+    ## enable fzf
+    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
   elif [ "${BASH_VERSION}" ]; then
     local shell='bash'
     local git_integration="${HOME}/git-completion.bash"
@@ -16,11 +20,14 @@ main() {
     local iterm_integration="${HOME}/.iterm2_shell_integration.bash"
     [ -f "${iterm_integration}" ] && source "${iterm_integration}"
 
+    ## enable fzf
+    [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
 #    if [[ $(which -s brew) ]] && [[ -f $(brew --prefix)/etc/bash_completion ]]; then
 #      . $(brew --prefix)/etc/bash_completion
 #    fi
   fi
- 
+
   ## enable rbenv
   if which rbenv > /dev/null; then
     eval "$(rbenv init - ${shell})"
