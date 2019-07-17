@@ -517,14 +517,9 @@ cdulb() { cdul_ "bin/$1"; }
 
 pgi() { cdi; psql -W -U postgres termfront_dev "$@"; }
 
-## BEGIN: Hulu-related functions
-cdw() { pushd_ "${HOME}/repos/hulu/$1"; }
-cdb() { cdor 'brs'; }
-cdc() { cdw 'cube-roku'; }
-cdp() { cdw 'cdp'; }
-cdn() { cdw 'Neutron'; }
-cdi() { cdor 'roku-dev-cli'; }
-## END: Hulu-related functions
+## BEGIN: SeatEngine-related functions
+cdw() { pushd_ "${HOME}/repos/seatengine/seat-engine-docker"; }
+## END: SeatEngine-related functions
 
 ## BEGIN: Avvo-related functions
 agems() {
@@ -576,6 +571,9 @@ uatin() { ec2ssh_ henry61 internal; }
 # stagin() { ; }
 zstag() { "$@"; }
 kstag() { "$@"; }
+
+exj() { cd "${HOME}/Exercism/java/" && docker run -it gradle:jdk11; }
+
 ef() { exercism fetch elixir; }
 et() { elixir ./*_test.exs; }
 kp() {
@@ -821,7 +819,11 @@ lsx() { "$@"; }
 
 fxall() { find . -type f -perm +111 -print "$@"; } # recursively list all files with executable permission
 fx() { fxall | grep -v '.git/'; } # TODO: recursively list git files with executable permission
--x() { chmod -x $(git ls-files); } # recursively remove executable permission from git files
+-x() { chmod -x $(fx); } # recursively remove executable permission from git files
+# -x() { chmod -x $(git ls-files); } # recursively remove executable permission from git files
+yellow_() { find . -type d -perm +22 "$@"; }
+yellow() { yellow_ -print "$@"; }
+-yellow() { chmod =rw+x $(yellow_); }
 
 gitls() { git ls-tree --name-only --full-tree -r HEAD; }
 
