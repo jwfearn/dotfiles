@@ -11,6 +11,58 @@ alias 'cd...'='cd ../..'
 alias 'cd....'='cd ../../..'
 alias 'cd.....'='cd ../../../..'
 alias 'cd-'='cd -'
+alias 'wat'="git for-each-ref --count=30 --sort=committerdate refs/head/ --format='%(refname:short)' | fzf | xargs git checkout"
+
+# Version 0.9.4 is available! (You are running version 0.9.3) Please download our latest version.
+opu() {
+  local msg=$(op update "$@")
+  echo "${msg}"
+  # if msg contains "available" and msg does not contain "http", then echo link to op downloads page
+  echo "Check here: http://xxx.xxx"
+}
+
+# Join Zoom Meeting
+# https://us04web.zoom.us/j/331731845?pwd=SWlvVjNoY2JFakRSZnBrZk45cXdWdz09
+
+# Meeting ID: 331 731 845
+# Password: 281028
+
+keyrates() {
+  defaults read NSGlobalDomain KeyRepeat
+  defaults read NSGlobalDomain InitialKeyRepeat
+}
+
+keyrates_set() {
+  defaults write NSGlobalDomain KeyRepeat -int ${1:-6}
+  defaults write NSGlobalDomain InitialKeyRepeat -int  ${2:-25}
+  echo "KeyRepeat changes will take effect after restart"
+  keyrates
+}
+
+keyrates_jf() { keyrates_set 2; }
+
+## Homebrew-related functions
+o() {
+  echo "OUTDATED PYTHON PACKAGES?" \
+  && ppo \
+  && echo "OUTDATED RUBY GEMS?" \
+  && rgo \
+  && echo "OUTDATED NODE PACKAGES?" \
+  && npo \
+  && echo "OUTDATED 1PASSWORD?" \
+  && opu \
+  && echo "OUTDATED HOMEBREW PACKAGES AND DIAGNOSIS?" \
+  && bod;
+}
+bod() { brew update && brew outdated && brew doctor; }
+buc() { brew upgrade; brew cleanup; }
+bs() { brew services "$@"; }
+bss() { brew services list "$@"; }
+
+## 1Password-related functions
+opsi() { eval $(op signin my) "$@"; }
+opso() { op signout "$@"; }
+
 # alias irb='irb --'
 hs() { HardwareSimulator.sh "$1.tst"; }
 ce() { Assembler.sh "$1.asm" && CPUEmulator.sh "$1.tst"; }
@@ -65,6 +117,8 @@ t() {
   fi
 }
 
+tmc() { MIX_ENV=test mix coveralls.html && open 'cover/excoveralls.html'; }
+
 yt() {
   pushd "${HOME}/repos/avvo/scooter/apps/scooter_web/assets"
   yarn test "$@"
@@ -76,7 +130,7 @@ whilefail() { while ! $1 ; do :; done; }
 
 vt() { TESTOPTS='--verbose' t "$@"; }
 
-ls() { env ls -aF "$@"; }
+ls() { env ls -haF "$@"; }
 l() { ls "$@"; }
 ll() { ls -l "$@"; }
 
@@ -224,23 +278,22 @@ pmux() { lmux.sh processing xxx; }
 smux() { lmux.sh url 10; }
 
 
-## Homebrew-related functions
-o() {
-  echo "UPDATE VAGRANT" \
-  && vpu \
-  && echo "OUTDATED PYTHON PACKAGES" \
-  && ppo \
-  && echo "OUTDATED RUBY GEMS" \
-  && rgo \
-  && echo "OUTDATED NODE PACKAGES" \
-  && npo \
-  && echo "OUTDATED HOMEBREW PACKAGES AND DIAGNOSIS" \
-  && bod;
-}
-bod() { brew update && brew outdated && brew doctor; }
-buc() { brew upgrade; brew cleanup; }
-bs() { brew services "$@"; }
-bss() { brew services list "$@"; }
+# POSTGRESQL RE-INSTALL
+# =====================
+#.  brew uninstall postgresql
+#.  rm -rf /usr/local/var/postgres                  # DANGER! REMOVES ALL DATABASES
+#.  brew install postgresql
+#   brew services stop postgresql
+#.  subl /usr/local/var/postgres/postgresql.conf    # CHANGE PORT TO 5433
+#.  rm -rf /usr/local/var/postgres                  # DANGER! REMOVES ALL DATABASES
+#.  initdb --username=postgres --local=en_US --encoding=UTF8 /usr/local/var/postgres
+#   brew services start postgresql
+
+pgs() { psql -l "$@"; } # list dbs, requires running postgresql service
+pgrc() { subl /usr/local/var/postgres/postgresql.conf; };
+pgstop() { brew services stop postgresql "$@"; }
+pgstart() { brew services start postgresql "$@"; }
+pgrestart() { brew services restart postgresql "$@"; }
 
 ## tmux-related functions
 tls() { tmux list-sessions "$@"; }
@@ -280,7 +333,13 @@ popd_() { popd "$@" > /dev/null; }
 posh() { powershell "$@"; }
 
 lk() { open -a ScreenSaverEngine; }
-path() { echo "${PATH}" | tr ':' '\n'; }
+
+_path() { echo $1 | tr ':' '\n'; }
+cpath() { _path "${C_INCLUDE_PATH}"; }
+cppath() { _path "${CPLUS_INCLUDE_PATH}"; }
+path() { _path "${PATH}"; }
+ppath() { _path "${PKG_CONFIG_PATH}"; }
+
 func() { typeset -F; }
 err() { echo $?; }
 rmat() { xattr -cr; } # remove the @ attribute in macOS
@@ -486,6 +545,17 @@ cdvb() { cd "${HOME}/vagrant/vbtest/"; }
 gi() { git --version; git status "$@"; }
 gdiff_() { local b0="$1"; local b1="$2"; shift 2; git diff --color --minimal "${b0}..${b1}" "$@"; }
 gstat_() { local b0="$1"; local b1="$2"; shift 2; git diff --color --minimal --stat "${b0}..${b1}" "$@"; }
+gitc() {
+    command git "$@"
+    local exitCode=$?
+    if [ $exitCode -ne 0 ]; then
+        printf "\033[0;31mERROR: git exited with code $exitCode\033[0m\n"
+        return $exitCode
+    fi
+}
+colorerr() (set -o pipefail;"$@" 2>&1>&3|sed $'s,.*,\e[31m&\e[m,'>&2)3>&1
+
+
 # gdiffl_() { pushd_ "${HOME}/repos/linkscape"; gdiff_ ${B0:-'crawl-sched-Jul-5-2013'} ${B1:-'sprint-Gordon'} "$@"; popd_; }
 # gstatl_() { pushd_ "${HOME}/repos/linkscape"; gstat_ ${B0:-'crawl-sched-Jul-5-2013'} ${B1:-'sprint-Gordon'} "$@"; popd_; }
 
@@ -513,12 +583,20 @@ cdi() { cdj 'whiteboard'; }
 cdul_() { cd "/usr/local/$1"; }
 cdull() { cdul_ "lib/$1"; }
 cdulb() { cdul_ "bin/$1"; }
-# cdt() { cd "${HOME}/_out/bhtmp/repo/"; }
+cdt() { cd '/Users/john/repos/other/release_training_elixirconf_2019/2_configuring_a_release/exercise/phx_example_app'; }
 
 pgi() { cdi; psql -W -U postgres termfront_dev "$@"; }
+psqld() { psql --host=localhost --port=5432 "$@"; }
 
 ## BEGIN: SeatEngine-related functions
-cdw() { pushd_ "${HOME}/repos/seatengine/seat-engine-docker"; }
+cdw() { pushd_ "${SEAT_ENGINE_DOCKER}"; }
+cdc() { pushd_ "${SEAT_ENGINE_DOCKER}/repos/seat-engine-core"; }
+cde() { pushd_ "${SEAT_ENGINE_DOCKER}/repos/seat-engine-elixir"; }
+cdp() { pushd_ "${SEAT_ENGINE_DOCKER}/repos/seat-engine-payments"; }
+cdf() { pushd_ "${SEAT_ENGINE_DOCKER}/repos/seat-engine-print"; }
+cds() { pushd_ "${SEAT_ENGINE_DOCKER}/repos/seat-engine-shows"; }
+cdu() { pushd_ "${SEAT_ENGINE_DOCKER}/repos/seat-engine-users"; }
+cdv() { pushd_ "${SEAT_ENGINE_DOCKER}/repos/seat-engine-venues"; }
 ## END: SeatEngine-related functions
 
 ## BEGIN: Avvo-related functions
@@ -695,7 +773,7 @@ rbis() { rbis_ | column; }
 rbup_() { brew upgrade rbenv 2> /dev/null; brew upgrade ruby-build 2> /dev/null; rbenv_ -v; ruby-build_ --version; }
 rbup() { rbis_ > rbis0.txt; rbup_; rbis_ > rbis1.txt; gdiff rbis0.txt rbis1.txt; }
 rb0() { rbenv_ local system; rbs; }
-rb2() { rbenv_ local 2.6.3; rbs; }
+rb2() { rbenv_ local 2.7.1; rbs; }
 rbj() { rbenv_ local jruby-9.2.5.0; rbs; }
 rbe() { rbenv_ each "$@"; }
 rgs() { rbenv_ each -v gem list; }
@@ -723,31 +801,40 @@ js() { jenv --version; jenv versions; echo 'CURRENT JAVA:'; java -version; }
 j0() { jenv local system; js; }
 j8() { jenv local oracle64-1.8.0.60; js; }
 
-## pyenv-related functions
-python_() { which python > /dev/null && python "$@"; }
-pyenv_() { which pyenv > /dev/null && pyenv "$@"; }
-pip_() { which pip > /dev/null && pip "$@"; }
+## Python-related functions
+python3_() { which python3 > /dev/null && python3 "$@"; }
+pip3_() { which pip3 > /dev/null && pip3 "$@"; }
+pps() { pip3_ list "$@"; }
+ppo() { pip3_ list --outdated "$@"; return 0; }
+ppu() { pip3_ list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip3 install -U; }
 
-pys() { pyenv_ --version && pyenv_ versions; echo "CURRENT PYTHON: $(python_ --version 2>&1)"; }
-pyis_() { pyenv_ install --list "$@"; }
-pyis() { pyis_ | column; }
-py+() { pyenv_ install "$1"; }
-py-() { pyenv_ uninstall "$1"; }
-pyup() { pyis_ > pyis0.txt; brew upgrade pyenv; pyis_ > pyis1.txt; gdiff pyis0.txt pyis1.txt; }
-py0() { pyenv_ local system; pys; }
-py2() { pyenv_ local 2.7.16; pys; }
-py3() { pyenv_ local 3.7.3; pys; }
-pya() { pyenv_ local anaconda3-5.0.1; pys; }
-ppu() { pyenv_ pip-update "$@"; }
-ppo() { pip_ list --outdated "$@"; return 0; }
-pps() { pip_ list "$@"; }
+# As of 17 Jan 2020, pipupgrade is buggy
+# pipupgrade3_() { pipupgrade --pip-path '/usr/local/bin/pip3' "$@"; }
+# ppo() { pipupgrade3_ --check "$@"; }
+# ppu() { pipupgrade3_ --self --yes && pipupgrade3_ --latest --yes "$@"; }
+
+# pys() { pyenv_ --version && pyenv_ versions; echo "CURRENT PYTHON: $(python_ --version 2>&1)"; }
+# pyis_() { pyenv_ install --list "$@"; }
+# pyis() { pyis_ | column; }
+# py+() { pyenv_ install "$1"; }
+# py-() { pyenv_ uninstall "$1"; }
+# pyup() { pyis_ > pyis0.txt; brew upgrade pyenv; pyis_ > pyis1.txt; gdiff pyis0.txt pyis1.txt; }
+# py0() { pyenv_ local system; pys; }
+# py2() { pyenv_ local 2.7.17; pys; }
+# py3() { pyenv_ local 3.8.0; pys; }
+# pyb() { pyenv_ local 3.7.5-brew; pys; }
+# pya() { pyenv_ local anaconda3-5.0.1; pys; }
+# xxppu() { pyenv_ pip-update "$@"; }
+# xppu() { which pip > /dev/null && pip freeze --local | sed -En 's/^([^=# \t\\][^ \t=]*)=.*/echo; echo Processing \1 ...; pip install -U \1/p' | sh; }
 
 #pyl() { pyenv local linkscape; }
-syspip() { PIP_REQUIRE_VIRTUALENV='' pip_ "$@"; }
-pyx() { local cmd="$@"; local py="from subprocess import check_output as x; o = x('$cmd'); print(o)"; echo $py; python_ -c"$py"; }
-pea() { pyenv_ activate "$@"; }
-ped() { pyenv_ deactivate "$@"; }
-pyv() { pyenv_ virtualenv "$@"; }
+# syspip() { PIP_REQUIRE_VIRTUALENV='' pip_ "$@"; }
+# pyx() { local cmd="$@"; local py="from subprocess import check_output as x; o = x('$cmd'); print(o)"; echo $py; python_ -c"$py"; }
+# pea() { pyenv_ activate "$@"; }
+# ped() { pyenv_ deactivate "$@"; }
+# pyv() { pyenv_ virtualenv "$@"; }
+
+
 
 ## MySQL-related functions
 mystart_dot() { mysql.server start "$@"; }
@@ -809,9 +896,9 @@ the_silver_searcher() {
 }
 
 ffgit() { git ls-files "$@"; } # TODO: recursively list git files matching a pattern
-ffall() { find . -type f \( -name '' -or -name "$@" \); } # recursively list all files matching a pattern
-findpy() { ffall '*.py'; }
-findrb() { ffall '*.rb'; }
+ff() { find . -type f \( -name '' -or -name "$@" \); } # recursively list all files matching a pattern
+findpy() { ff '*.py'; }
+findrb() { ff '*.rb'; }
 # TODO: refactor findcpp
 findcpp() { find . -type f \( -name '' -or -name '*.h' -or -name '*.hpp' -or -name '*.hxx' -or -name '*.c' -or -name '*.cc' -or -name '*.cpp' -or -name '*.cxx' \); }
 
@@ -831,6 +918,7 @@ findin() { # print lines
   local pattern="${1}"
   local glob="${2}"
   # use rg because it has globbing
+  rg "${pattern}" "${glob}"
 }
 
 findwith() { # print file paths only

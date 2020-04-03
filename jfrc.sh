@@ -5,27 +5,48 @@ main() {
   source "${DOTFILES}/jfprompt.sh"
 
   local shell='sh'
+  local integrations=()
+
   if [ "${ZSH_VERSION}" ]; then
     shell='zsh'
     setopt autocd pushdignoredups
     autoload -U promptinit && promptinit
 
-    ## enable fzf
-    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+    ## enable unmanaged Bash completions
+    integrations=( \
+      "${HOME}/.fzf.zsh" \
+      "${HOME}/.iterm2_shell_integration.zsh" \
+    )
+
+    ## enable Homebrew-managed Zsh completions (from: https://docs.brew.sh/Shell-Completion)
+    if type brew &>/dev/null; then
+      FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+    fi
 
   elif [ "${BASH_VERSION}" ]; then
-    local shell='bash'
-    local git_integration="${HOME}/git-completion.bash"
-    [ -f "${git_integration}" ] && source "${git_integration}"
-    local iterm_integration="${HOME}/.iterm2_shell_integration.bash"
-    [ -f "${iterm_integration}" ] && source "${iterm_integration}"
-
-    ## enable fzf
-    [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+    shell='bash'
 
 #    if [[ $(which -s brew) ]] && [[ -f $(brew --prefix)/etc/bash_completion ]]; then
 #      . $(brew --prefix)/etc/bash_completion
 #    fi
+
+    ## enable unmanaged Bash completions
+    integrations=( \
+      "${HOME}/.fzf.bash" \
+      "${HOME}/.iterm2_shell_integration.bash" \
+    )
+
+    ## enable Homebrew-managed Bash completions (from: https://docs.brew.sh/Shell-Completion)
+    if type brew &>/dev/null; then
+      HOMEBREW_PREFIX="$(brew --prefix)"
+      if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]; then
+        source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
+      else
+        for COMPLETION in "${HOMEBREW_PREFIX}/etc/bash_completion.d/"*; do
+          [[ -r "$COMPLETION" ]] && source "$COMPLETION"
+        done
+      fi
+    fi
   fi
 
   ## enable rbenv
@@ -44,7 +65,17 @@ main() {
     eval "$(jenv init -)"
   fi
 
+  ## enable asdf
+  # source "$(brew --prefix asdf)/asdf.sh" # safer
+  source "/usr/local/opt/asdf/asdf.sh" # faster
+
+  for integration in ${integrations[@]}; do
+    [[ -r "${integration}" ]] && source "${integration}"
+  done
+
   source "${DOTFILES}/jffn.sh"
+
+  source "${HOME}/Library/Preferences/org.dystroy.broot/launcher/bash/br"
 }
 main
 unset -f main

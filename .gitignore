@@ -1,3 +1,9 @@
 .DS_Store
 .history/
 .idea/
+*.dump
+*.iml
+*.log
+doc/
+_gen*/
+_scratch*/

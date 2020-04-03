@@ -12,11 +12,16 @@ export SHELLCHECK_OPTS='--exclude=SC1090,SC2164'
 # load secrets
 O=$(set +o) && set -o allexport && . "${HOME}/.env.secret.sh"; eval "${O}"
 
+export PGUSER=postgres # used by `psql`
+export PGPORT=5432 # conmpare to setting in /usr/local/var/postgres/postgresql.conf
+
 export ERL_AFLAGS='-kernel shell_history enabled'
 
 export EDITOR='subl -w'
 export WWW_HOME='google.com'
 
+export AWS_ACCESS_KEY_ID="${JOHN_AWS_ACCESS_KEY_ID}"
+export AWS_SECRET_ACCESS_KEY="${JOHN_AWS_SECRET_ACCESS_KEY}"
 
 ## Roku
 export MAC_4640X_HOME='88:de:a9:c0:4e:fc'
@@ -58,7 +63,7 @@ libs=( \
   'libunistring' \
   'mozjpeg' \
   'ncurses' \
-  'openssl' \
+  'openssl@1.1' \
   'readline' \
   'sqlite' \
   'zlib' \
@@ -69,8 +74,6 @@ for lib in ${libs[@]}; do
   add_libpath "${libpath}"
 done
 
-# add_libpath $(brew --prefix zlib)
-
 export STDOUT_SYNC=1
 
 [ -z "${MSYSTEM}" ] && export GREP_OPTIONS='--color=auto'
@@ -78,7 +81,6 @@ export STDOUT_SYNC=1
 # export LS_COLORS='' # Linux
 # export LSCOLORS='' # OS X,
 export CLICOLOR=1 # use colors in supported commands (ls, others?)
-
 
 ## environment variables for ec2-api-tools
 #export AWS_ACCESS_KEY="${AMAZON_ACCESS_KEY_ID}" # still needed?
@@ -101,7 +103,8 @@ export CLICOLOR=1 # use colors in supported commands (ls, others?)
 export SEAT_ENGINE_DOCKER="${HOME}/repos/seatengine/seat-engine"
 
 export PATH="${PATH}:${SEAT_ENGINE_DOCKER}/bin"
-export PATH="${PATH}:${GOPATH}/bin"
+export PATH="${PATH}:${HOME}/.mix/escripts"
+# export PATH="${PATH}:${GOPATH}/bin"
 export PATH="${PATH}:/usr/local/sbin"
 export PATH="${PATH}:/usr/local/opt/go/libexec/bin"
 export PATH="${PATH}:/usr/local/opt/sca-cmd/bin"
