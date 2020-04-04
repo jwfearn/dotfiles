@@ -2,9 +2,6 @@
 
 # shellcheck disable=SC2039
 
-# cd /mnt/cluster/bh/work/; s=$(cat shard.id); ls -d xA*/*.stack 2> /dev/null | xargs -I% egrep -o -m1 '"bestPartitions":"[^"]*"' % | sed "s/\"//g" | sed "s/bestPartitions://g" | xargs -I% echo "$(cat %)"
-# amexample() { curl -u "$APP_MONSTA_KEY:X" 'https://api.appmonsta.com/v1/stores/itunes/details/450432947.json?country=ALL' | jq '.'; }
-
 ## aliases
 alias 'cd..'='cd ..' # 'cd..' cannot be a function name
 alias 'cd...'='cd ../..'
@@ -14,18 +11,13 @@ alias 'cd-'='cd -'
 alias 'wat'="git for-each-ref --count=30 --sort=committerdate refs/head/ --format='%(refname:short)' | fzf | xargs git checkout"
 
 # Version 0.9.4 is available! (You are running version 0.9.3) Please download our latest version.
+op_() { which op > /dev/null && op "$@"; }
 opu() {
-  local msg=$(op update "$@")
+  local msg=$(op_ update "$@")
   echo "${msg}"
   # if msg contains "available" and msg does not contain "http", then echo link to op downloads page
   echo "Check here: http://xxx.xxx"
 }
-
-# Join Zoom Meeting
-# https://us04web.zoom.us/j/331731845?pwd=SWlvVjNoY2JFakRSZnBrZk45cXdWdz09
-
-# Meeting ID: 331 731 845
-# Password: 281028
 
 keyrates() {
   defaults read NSGlobalDomain KeyRepeat
@@ -130,9 +122,9 @@ whilefail() { while ! $1 ; do :; done; }
 
 vt() { TESTOPTS='--verbose' t "$@"; }
 
-ls() { env ls -haF "$@"; }
-l() { ls "$@"; }
-ll() { ls -l "$@"; }
+# ls() { env ls -haF "$@"; }
+# l() { ls "$@"; }
+# ll() { ls -l "$@"; }
 
 man() {
   env \
@@ -143,7 +135,7 @@ man() {
     LESS_TERMCAP_so="$(printf "\e[1;44;33m")" \
     LESS_TERMCAP_ue="$(printf "\e[0m")" \
     LESS_TERMCAP_us="$(printf "\e[1;32m")" \
-    man "$@"
+    env man "$@"
 }
 
 # prt() { lsof -n -i4TCP:$1 | grep LISTEN; }
@@ -553,7 +545,7 @@ gitc() {
         return $exitCode
     fi
 }
-colorerr() (set -o pipefail;"$@" 2>&1>&3|sed $'s,.*,\e[31m&\e[m,'>&2)3>&1
+# colorerr() (set -o pipefail;"$@" 2>&1>&3|sed $'s,.*,\e[31m&\e[m,'>&2)3>&1
 
 
 # gdiffl_() { pushd_ "${HOME}/repos/linkscape"; gdiff_ ${B0:-'crawl-sched-Jul-5-2013'} ${B1:-'sprint-Gordon'} "$@"; popd_; }
@@ -782,7 +774,7 @@ rg-() { rbenv_ each -v gem uninstall "$@"; }
 rgo() { rbenv_ each -v gem outdated; return 0; }
 rgu() { rbenv_ each -v gem update "$@"; rbenv each -v gem cleanup "$@"; }
 rbig() { local cc=$CC; export CC=gcc; rbi "$1"; export CC="${cc}"; } # if rbi does not work, try this
-gup() {
+gemup() {
   gem list > gems0.txt
   gem update --no-document
   # install global bundler gem
@@ -930,7 +922,7 @@ findwith() { # print file paths only
 _grb() { grep -r --include "*.rb" "$@" .; }
 # grb() { _grb --exclude-dir=vendor "$@"; }
 # grbv() { _grb --include-dir=vendor "$@"; } # TODO
-grb() { ag --stats --ruby "$@" .; } # honors .gitignore, et al
+rbg() { ag --stats --ruby "$@" .; } # honors .gitignore, et al
 # grbv() { "$@"; } # TODO
 eg() { env | sort | ag "$@"; }
 
@@ -1060,21 +1052,3 @@ if [ "${ZSH_VERSION}" ]; then
 elif [ "${BASH_VERSION}" ]; then
   source "${DOTFILES}/jffn.bash"
 fi
-
-
-# https://forums.roku.com/viewtopic.php?f=34&t=70133#p442404
-
-packageroku() {
-
-  uagent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)';
-  ftime = $(($(date + '%s') * 1000));
-  if ["$1"] && ["$2"] && ["$3"] && [$ {#1} -lt 32 ]; then
-    purl= $(curl--silent--show - error--user - agent "$uagent"--form "app_name=$1"
-    --form "passwd=$2"--form "pkg_time=$ftime"--form "mysubmit=Package""http://$3/plugin_package"
-    | grep "href" | grep - v "plugin_inspect\|plugin_install" | awk - F 'href="''{ print $2 }'
-    | tr '"''\n' | head - n1;);
-    wget http: //$3/$purl ;
-  else echo - e "Function Description";
-  fi
-
-}
