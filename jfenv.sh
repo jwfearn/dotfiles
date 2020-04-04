@@ -82,27 +82,6 @@ export STDOUT_SYNC=1
 # export LSCOLORS='' # OS X,
 export CLICOLOR=1 # use colors in supported commands (ls, others?)
 
-## environment variables for ec2-api-tools
-#export AWS_ACCESS_KEY="${AMAZON_ACCESS_KEY_ID}" # still needed?
-#export AWS_SECRET_KEY="${AMAZON_SECRET_ACCESS_KEY}" # still needed?
-## environment variables for Homebrew
-# export AWS_ACCESS_KEY_ID="${AMAZON_ACCESS_KEY_ID}"
-# export AWS_SECRET_ACCESS_KEY="${AMAZON_SECRET_ACCESS_KEY}"
-# export AWS_REGION="${AMAZON_REGION}"
-
-# required by brew-installed ec2-api-tools
-# export JAVA_HOME="$(/usr/libexec/java_home)"
-# export JAVA_HOME="$(jenv javahome)"
-# export EC2_HOME="$(dirname $(dirname $(grealpath $(which ec2ver))))/libexec"
-
-# export FLAGS_GETOPT_CMD="/usr/local/opt/gnu-getopt"
-
-# export QMAKE='/usr/local/opt/qt5/bin/qmake' # default brew install qt5 location
-# export CHEF_CLIENT_NAME='john'
-
-export SEAT_ENGINE_DOCKER="${HOME}/repos/seatengine/seat-engine"
-
-export PATH="${PATH}:${SEAT_ENGINE_DOCKER}/bin"
 export PATH="${PATH}:${HOME}/.mix/escripts"
 # export PATH="${PATH}:${GOPATH}/bin"
 export PATH="${PATH}:/usr/local/sbin"
