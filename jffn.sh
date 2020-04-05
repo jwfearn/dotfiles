@@ -313,6 +313,8 @@ vars() { env | sort -V; }
 ei() { env | sort | grep "$@"; }
 e() { subl "$@"; }
 h() { history | tail -"$1"; }
+history_remove_all() { rm "${HISTFILE}"; }
+history_remove_session() { { local HISTSIZE=0; }
 lsl() { env ls -lOeF "$@"; }  # -O is a Mac-specific option
 lsd() { env ls -d .*/ "$@"; }
 lsapts() {
@@ -1046,9 +1048,3 @@ src() { . "${DOTFILES}/jffn.sh"; }  # reload function only
 srcx() { . "${DOTFILES}/jfenv.sh"; src; }  # also reload environment variables
 colors() { bash "${DOTFILES}/bin/colortest.sh"; }
 minr() { ruby "${DOTFILES}/bin/minrails.rb"; }
-
-if [ "${ZSH_VERSION}" ]; then
-  source "${DOTFILES}/jffn.zsh"
-elif [ "${BASH_VERSION}" ]; then
-  source "${DOTFILES}/jffn.bash"
-fi
