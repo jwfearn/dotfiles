@@ -10,7 +10,7 @@
 export SHELLCHECK_OPTS='--exclude=SC1090,SC2164'
 
 # load secrets
-O=$(set +o) && set -o allexport && . "${HOME}/.env.secret.sh"; eval "${O}"
+# O=$(set +o) && set -o allexport && . "${HOME}/.env.secret.sh"; eval "${O}"
 
 export PGUSER=postgres # used by `psql`
 export PGPORT=5432 # conmpare to setting in /usr/local/var/postgres/postgresql.conf
@@ -29,11 +29,9 @@ export IP_3800X_HOME='192.168.1.140'
 export IP_4200X_HOME='192.168.1.205'
 export IP_4640X_HOME='192.168.1.163' # Ethernet: 88:de:a9:c0:4e:fc, WiFi: 88:de:a9:c0:4e:fd
 export IP_8101X_HOME='192.168.1.33'
-export IP_3900X_WORK='10.30.63.6' # WiFi: d8:31:34:c6:db:6e
-export IP_4230X_WORK='10.30.0.110' # Ethernet b8:a1:75:6b:3b:d2
-export ROKU_DEV_TARGET="${IP_4230X_WORK}"
+export ROKU_DEV_TARGET="${IP_8101X_HOME}"
 # export ROKU_DEV_TARGET='192.168.1.114'
-export DEVPASSWORD="${ROKU_DEV_PASSWORD_WORK}"
+export DEVPASSWORD="${ROKU_DEV_PASSWORD_HOME}"
 export ROKU_DEV_USER="rokudev:${DEVPASSWORD}"
 
 add_libpath() {
