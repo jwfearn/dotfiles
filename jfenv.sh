@@ -9,19 +9,26 @@
 # environment variables used by multiple shells
 export SHELLCHECK_OPTS='--exclude=SC1090,SC2164'
 
-# load secrets
-# O=$(set +o) && set -o allexport && . "${HOME}/.env.secret.sh"; eval "${O}"
+# Usage: dotenv <filepath>
+dotenv() {
+  local save=$(set +o | grep allexport)
+  set -o allexport
+  source "${1}"
+  result=$?
+  eval "${save}"
+  return result
+}
+
+dotenv "${HOME}/.env.secret.sh"
 
 export PGUSER=postgres # used by `psql`
 export PGPORT=5432 # conmpare to setting in /usr/local/var/postgres/postgresql.conf
 
 export ERL_AFLAGS='-kernel shell_history enabled'
 
-export EDITOR='subl -w'
+export EDITOR='code' # options: bbedit, code, subl
+function edit() { ${EDITOR} "$@"; }
 export WWW_HOME='google.com'
-
-export AWS_ACCESS_KEY_ID="${JOHN_AWS_ACCESS_KEY_ID}"
-export AWS_SECRET_ACCESS_KEY="${JOHN_AWS_SECRET_ACCESS_KEY}"
 
 ## Roku
 export MAC_4640X_HOME='88:de:a9:c0:4e:fc'

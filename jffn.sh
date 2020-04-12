@@ -13,6 +13,10 @@ alias 'ls'='ls -haF'
 alias 'll'='ls -l'
 # l() { ls "$@"; }
 
+if [ "${ZSH_VERSION}" ]; then
+  alias 'type'='whence -cx 2'
+fi
+
 # Version 0.9.4 is available! (You are running version 0.9.3) Please download our latest version.
 op_() { which op > /dev/null && op "$@"; }
 opu() {
@@ -231,7 +235,7 @@ disks() { diskutil list; }
 ts() { date '+%s'; }
 vars() { env | sort -V; }
 ei() { env | sort | grep "$@"; }
-e() { subl "$@"; }
+edit() { ${EDITOR} "$@"; }
 h() { history | tail -"$1"; }
 history_remove_all() { rm "${HISTFILE}"; }
 history_remove_session() { local HISTSIZE=0; }
@@ -248,11 +252,10 @@ posh() { powershell "$@"; }
 
 lk() { open -a ScreenSaverEngine; }
 
-_path() { echo $1 | tr ':' '\n'; }
-cpath() { _path "${C_INCLUDE_PATH}"; }
-cppath() { _path "${CPLUS_INCLUDE_PATH}"; }
-path() { _path "${PATH}"; }
-ppath() { _path "${PKG_CONFIG_PATH}"; }
+path() { eval echo \$${1:-PATH} | tr ':' '\n'; }
+cpath() { path C_INCLUDE_PATH; }
+cpppath() { path CPLUS_INCLUDE_PATH; }
+pkgpath() { path PKG_CONFIG_PATH; }
 
 func() { typeset -F; }
 err() { echo $?; }
@@ -861,7 +864,7 @@ zshi() {
   filesp_ "$(zshprofiles_)"
 }
 
-rc() { e "${DOTFILES}/jffn.sh"; }
+rc() { edit "${DOTFILES}/jffn.sh"; }
 src() { . "${DOTFILES}/jffn.sh"; }  # reload function only
 srcx() { . "${DOTFILES}/jfenv.sh"; src; }  # also reload environment variables
 colors() { bash "${DOTFILES}/bin/colortest.sh"; }
