@@ -9,12 +9,15 @@ alias 'cd....'='cd ../../..'
 alias 'cd.....'='cd ../../../..'
 alias 'cd-'='cd -'
 alias 'wat'="git for-each-ref --count=30 --sort=committerdate refs/head/ --format='%(refname:short)' | fzf | xargs git checkout"
+alias 'exa'='exa -aF'
 alias 'ls'='ls -haF'
 alias 'll'='ls -l'
 # l() { ls "$@"; }
 
 if [ "${ZSH_VERSION}" ]; then
   alias 'type'='whence -cx 2'
+else
+  alias noglob=''
 fi
 
 # Version 0.9.4 is available! (You are running version 0.9.3) Please download our latest version.
@@ -252,7 +255,16 @@ posh() { powershell "$@"; }
 
 lk() { open -a ScreenSaverEngine; }
 
-path() { eval echo \$${1:-PATH} | tr ':' '\n'; }
+echo_dir() {
+  local prefix=''
+  if ! [ -d "${1}" ]; then prefix='\e[31m'; fi # red
+  printf "${prefix}${1}\e[0m\n" # reset
+}
+
+path() {
+  local dirs=($(eval echo \$${1:-PATH} | tr ':' ' '))
+  for dir in ${dirs[@]}; do echo_dir $dir; done
+}
 cpath() { path C_INCLUDE_PATH; }
 cpppath() { path CPLUS_INCLUDE_PATH; }
 pkgpath() { path PKG_CONFIG_PATH; }
@@ -741,15 +753,18 @@ cecho() { tput setab "$1" && echo -n "$1" && tput setab 0; }
 # setab = Set background color using ANSI escape
 # setaf = Set foreground color using ANSI escape
 
-## SEARCH FUNCTIONS
-the_silver_searcher() {
-  echo "use the 'ag' command to use the_silver_searcher.  See also: https://github.com/ggreer/the_silver_searcher"
-}
+ff_with_find() { time find . -type f \( -name '' -or -name "$@" \); } # recursively list all files matching a pattern
 
-ffgit() { git ls-files "$@"; } # TODO: recursively list git files matching a pattern
-ff() { find . -type f \( -name '' -or -name "$@" \); } # recursively list all files matching a pattern
-findpy() { ff '*.py'; }
-findrb() { ff '*.rb'; }
+# These need to be aliases because `noglob` doesn't work in functions
+alias ff_with_fd='noglob time fd --case-sensitive --glob' # glob search, much faster than `find`, requires `fd`
+alias ff_with_rg='noglob time rg --files --glob'  # glob search, slightly faster than `fd`, requires `ripgrep`
+alias ff_with_git='noglob time git ls-files'
+alias ff='ff_with_fd'
+alias ffg='ff_with_git'
+
+# fpy() { ff "$@" -t 'py'; }
+# frb() { ff "$@" -t 'ruby'; }
+# fcp() { ff "$@" -t 'cpp'; }
 # TODO: refactor findcpp
 findcpp() { find . -type f \( -name '' -or -name '*.h' -or -name '*.hpp' -or -name '*.hxx' -or -name '*.c' -or -name '*.cc' -or -name '*.cpp' -or -name '*.cxx' \); }
 
@@ -770,12 +785,6 @@ findin() { # print lines
   local glob="${2}"
   # use rg because it has globbing
   rg "${pattern}" "${glob}"
-}
-
-findwith() { # print file paths only
-  local pattern="${1}"
-  local glob="${2}"
-  # use rg because it has globbing
 }
 
 _grb() { grep -r --include "*.rb" "$@" .; }

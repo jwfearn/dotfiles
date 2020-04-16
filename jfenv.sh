@@ -7,19 +7,22 @@
 # are set in /etc/launchd.conf (and ~/.launchd.conf?)
 
 # environment variables used by multiple shells
-export SHELLCHECK_OPTS='--exclude=SC1090,SC2164'
 
 # Usage: dotenv <filepath>
 dotenv() {
   local save=$(set +o | grep allexport)
   set -o allexport
   source "${1}"
-  result=$?
+  local result=$?
   eval "${save}"
   return result
 }
 
 dotenv "${HOME}/.env.secret.sh"
+
+export SHELLCHECK_OPTS='--exclude=SC1090,SC2164'
+
+export P4CONFIG=p4config.txt
 
 export PGUSER=postgres # used by `psql`
 export PGPORT=5432 # conmpare to setting in /usr/local/var/postgres/postgresql.conf
@@ -27,7 +30,6 @@ export PGPORT=5432 # conmpare to setting in /usr/local/var/postgres/postgresql.c
 export ERL_AFLAGS='-kernel shell_history enabled'
 
 export EDITOR='code' # options: bbedit, code, subl
-function edit() { ${EDITOR} "$@"; }
 export WWW_HOME='google.com'
 
 ## Roku
