@@ -27007,13 +27007,13 @@
 	<key>Hotkey</key>
 	<false/>
 	<key>HotkeyChar</key>
-	<integer>0</integer>
+	<integer>32</integer>
 	<key>HotkeyCode</key>
-	<integer>0</integer>
+	<integer>49</integer>
 	<key>HotkeyMigratedFromSingleToMulti</key>
 	<true/>
 	<key>HotkeyModifiers</key>
-	<integer>0</integer>
+	<integer>524288</integer>
 	<key>IRMemory</key>
 	<integer>4</integer>
 	<key>JobName</key>
@@ -27086,7 +27086,7 @@
 	<key>NSWindow Frame UKCrashReporter</key>
 	<string>127 443 592 584 0 0 1680 1027 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>0 0 1680 1027 0 0 1680 1027 </string>
+	<string>0 574 570 453 0 0 1680 1027 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>3840 666 1680 1027 3840 666 1680 1027 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
@@ -27790,7 +27790,7 @@
 					<key>precision</key>
 					<string>very_high</string>
 					<key>regex</key>
-					<string>https?://([a-z0-9A-Z]+(:[a-zA-Z0-9]+)?@)?[a-z0-9A-Z]+(\.[a-z0-9A-Z]+)*((:[0-9]+)?)(/[a-zA-Z0-9;/\.\-_+%~?&amp;@=#\(\)]*)?</string>
+					<string>https?://([a-z0-9A-Z]+(:[a-zA-Z0-9]+)?@)?([a-z0-9A-Z][-a-z0-9A-Z]*\.)+[A-Za-z][-A-Za-z]*((:[0-9]+)?)(/[a-zA-Z0-9;/\.\-_+%?&amp;@=#\(\)~]*)?</string>
 				</dict>
 				<dict>
 					<key>notes</key>
@@ -28571,7 +28571,7 @@
 					<key>precision</key>
 					<string>very_high</string>
 					<key>regex</key>
-					<string>https?://([a-z0-9A-Z]+(:[a-zA-Z0-9]+)?@)?[a-z0-9A-Z]+(\.[a-z0-9A-Z]+)*((:[0-9]+)?)(/[a-zA-Z0-9;/\.\-_+%~?&amp;@=#\(\)]*)?</string>
+					<string>https?://([a-z0-9A-Z]+(:[a-zA-Z0-9]+)?@)?([a-z0-9A-Z][-a-z0-9A-Z]*\.)+[A-Za-z][-A-Za-z]*((:[0-9]+)?)(/[a-zA-Z0-9;/\.\-_+%?&amp;@=#\(\)~]*)?</string>
 				</dict>
 				<dict>
 					<key>notes</key>
@@ -28674,7 +28674,7 @@
 		<key>screenFrame</key>
 		<string>{{0, 0}, {1680, 1050}}</string>
 		<key>topLeft</key>
-		<string>{473, 825}</string>
+		<string>{400, 826}</string>
 	</dict>
 	<key>NoSyncHaveRequestedFullDiskAccess</key>
 	<true/>
@@ -28689,7 +28689,7 @@
 	<key>NoSyncLastTipTime</key>
 	<real>588720947.83952796</real>
 	<key>NoSyncLaunchExperienceControllerRunCount</key>
-	<integer>142</integer>
+	<integer>152</integer>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile</key>
 	<true/>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile_selection</key>
@@ -29585,7 +29585,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2020-04-13T02:08:18Z</date>
+	<date>2020-04-22T17:51:34Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SUUpdateGroupIdentifier</key>
