@@ -20,6 +20,26 @@ else
   alias noglob=''
 fi
 
+ff_with_find() { time find . -type f \( -name '' -or -name "$@" \); } # recursively list all files matching a pattern
+
+# These need to be aliases because ZShell `noglob` doesn't work in functions
+alias ff_with_fd='noglob time fd --type file --case-sensitive --glob' # glob search, much faster than `find`, requires `fd` (see https://github.com/sharkdp/fd)
+alias ff_with_rg='noglob time rg --files --glob'  # glob search, slightly faster than `fd`, requires `ripgrep`
+alias ff_with_git='noglob time git ls-files'
+alias ff='ff_with_fd'
+alias ffg='ff_with_git'
+
+fcp() { rg --type=cpp "$@"; }
+fpy() { rg --type=py "$@"; }
+fmp() { rg --type-add 'mp:*.mp' --type=mp "$@"; }
+fxp() { rg --type-add 'xcodeproj:*.xcodeproj' --type=xcodeproj "$@"; }
+# fpy() { ff "$@" -t 'py'; }
+# frb() { ff "$@" -t 'ruby'; }
+# fcp() { ff "$@" -t 'cpp'; }
+# TODO: refactor findcpp
+findcpp() { find . -type f \( -name '' -or -name '*.h' -or -name '*.hpp' -or -name '*.hxx' -or -name '*.c' -or -name '*.cc' -or -name '*.cpp' -or -name '*.cxx' \); }
+
+
 # Version 0.9.4 is available! (You are running version 0.9.3) Please download our latest version.
 op_() { which op > /dev/null && op "$@"; }
 opu() {
@@ -752,21 +772,6 @@ adate() { curl -0 -i http://s3.amazonaws.com/; }
 cecho() { tput setab "$1" && echo -n "$1" && tput setab 0; }
 # setab = Set background color using ANSI escape
 # setaf = Set foreground color using ANSI escape
-
-ff_with_find() { time find . -type f \( -name '' -or -name "$@" \); } # recursively list all files matching a pattern
-
-# These need to be aliases because `noglob` doesn't work in functions
-alias ff_with_fd='noglob time fd --case-sensitive --glob' # glob search, much faster than `find`, requires `fd`
-alias ff_with_rg='noglob time rg --files --glob'  # glob search, slightly faster than `fd`, requires `ripgrep`
-alias ff_with_git='noglob time git ls-files'
-alias ff='ff_with_fd'
-alias ffg='ff_with_git'
-
-# fpy() { ff "$@" -t 'py'; }
-# frb() { ff "$@" -t 'ruby'; }
-# fcp() { ff "$@" -t 'cpp'; }
-# TODO: refactor findcpp
-findcpp() { find . -type f \( -name '' -or -name '*.h' -or -name '*.hpp' -or -name '*.hxx' -or -name '*.c' -or -name '*.cc' -or -name '*.cpp' -or -name '*.cxx' \); }
 
 lsx() { "$@"; }
 
