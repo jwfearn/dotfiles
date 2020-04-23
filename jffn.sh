@@ -337,40 +337,6 @@ vx() { docker-compose run shell "$@"; }
 vb() { docker-compose build "$@"; }
 vrb() { docker-compose build --no-cache "$@"; }
 
-# Roku xxx (as JSON)
-rdbg() { bs_const='IS_AUTOMATION_BUILD=false;IS_MITMPROXY_BUILD=false;TRACE_URL_TRANSFERS=false;ENABLE_DBG=true;ENABLE_LOG=false' roku "$@"; }
-
-rowake() { curl -d '' "http://$ROKU_DEV_TARGET:8060/keypress/Home"; }
-rog() { curl -s "http://${ROKU_DEV_TARGET}:8060/$1" | xml2json | jq "${@:2}"; }
-rop() { curl -d '' "http://${ROKU_DEV_TARGET}:8060/$1"; }
-rob() { roku "${ROKU_DEV_TARGET}" -t "$@"; } # roku-cli build and run
-roc() { telnet "${ROKU_DEV_TARGET}" 8085 "$@"; } # Roku debug console, see: https://sdkdocs.roku.com/display/sdkdoc/Debugging+Your+Application
-rod() { telnet "${ROKU_DEV_TARGET}" 8080 "$@"; } # Roku debug server, see: https://sdkdocs.roku.com/display/sdkdoc/Debugging+Your+Application
-ros() { open "http://${ROKU_DEV_TARGET}:8087" "$@"; } # Roku screensaver, see: https://sdkdocs.roku.com/display/sdkdoc/xxx
-row() { open "http://${ROKU_DEV_TARGET}:80" "$@"; } # Roku web interface
-rol() { curl -d '' "http://${ROKU_DEV_TARGET}:8060/launch/dev?startup_show_id=54"; }
-ron() { # Generate Roku new user data
-  local t="$(date +%s)"
-  open "https://my.roku.com/signup"
-  echo "   first name: jf"
-  echo "    last name: ${t}"
-  echo "        email: jf.${t}@roku.com"
-  echo "     password: testtest"
-  echo ""
-  echo "  card number: 370021129040059"
-  echo "        month: 06"
-  echo "         year: 2023"
-  echo "security code: 9546"
-  echo "      address: 150 Winchester Circle"
-  echo "         city: Los Gatos"
-  echo "        state: CA"
-  echo "          zip: 95032"
-  echo "        phone: 8162728106"
-  echo ""
-  echo "  device name: BLASTOISE"
-  echo "     location: Office"
-}
-
 mp4v() { ~/repos/other/mp4viewer/src/showboxes.py "$@"; }
 
 ## Elixir-related functions
