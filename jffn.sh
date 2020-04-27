@@ -46,7 +46,7 @@ opu() {
   local msg=$(op_ update "$@")
   echo "${msg}"
   # if msg contains "available" and msg does not contain "http", then echo link to op downloads page
-  echo "Check here: http://xxx.xxx"
+  echo "Check here: https://app-updates.agilebits.com/product_history/CLI"
 }
 
 keyrates() {
