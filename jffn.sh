@@ -9,10 +9,9 @@ alias 'cd....'='cd ../../..'
 alias 'cd.....'='cd ../../../..'
 alias 'cd-'='cd -'
 alias 'wat'="git for-each-ref --count=30 --sort=committerdate refs/head/ --format='%(refname:short)' | fzf | xargs git checkout"
-alias 'exa'='exa -aF'
-alias 'ls'='ls -haF'
-alias 'll'='ls -l'
-# l() { ls "$@"; }
+alias 'ls'='exa -aF'
+alias 'll'='exa -laF'
+alias 'els'='env ls'
 
 if [ "${ZSH_VERSION}" ]; then
   alias 'type'='whence -cx 2'
@@ -460,6 +459,9 @@ ggrab() { git co "$2" -- "$1"; }
 # grm() { git rebase master; }
 grl() { git reflog --format=format:"%C(yellow)%h %Cblue%aD%Creset %gd %Cgreen%aN%Creset %gs %s"; }
 cdot() { pushd_ "${DOTFILES}"; }
+cdw() { pushd_ "/Volumes/R/$1"; }
+cda() { cdw 'fearnsid_ae_2019.08_mac'; }
+cdm() { cdw 'fearnsid_ae_main_mac'; }
 cdj() { pushd_ "${HOME}/repos/jwfearn/$1"; }
 cdo() { pushd_ "${HOME}/repos/other/$1"; }
 cdor() { pushd_ "${HOME}/repos/other_roku/$1"; }
