@@ -9,9 +9,11 @@ alias 'cd....'='cd ../../..'
 alias 'cd.....'='cd ../../../..'
 alias 'cd-'='cd -'
 alias 'wat'="git for-each-ref --count=30 --sort=committerdate refs/head/ --format='%(refname:short)' | fzf | xargs git checkout"
-alias 'ls'='exa -aF'
-alias 'll'='exa -laF'
+alias 'ls'='exa --all --classify'
+alias 'll'='exa --all --classify --long'
+alias 'tree'='exa --all --classify --tree'
 alias 'els'='env ls'
+alias 'etree'='env tree'
 
 if [ "${ZSH_VERSION}" ]; then
   alias 'type'='whence -cx 2'
@@ -460,8 +462,9 @@ ggrab() { git co "$2" -- "$1"; }
 grl() { git reflog --format=format:"%C(yellow)%h %Cblue%aD%Creset %gd %Cgreen%aN%Creset %gs %s"; }
 cdot() { pushd_ "${DOTFILES}"; }
 cdw() { pushd_ "/Volumes/R/$1"; }
-cda() { cdw 'fearnsid_ae_2019.08_mac'; }
-cdm() { cdw 'fearnsid_ae_main_mac'; }
+cdm() { cdw "fearnsid_ae_main_mac/ae/main/AfterEffects/$1"; }
+cda() { cdw "fearnsid_ae_2019.08_mac/ae/main/AfterEffects/$1"; }
+cdpp() { cda 'src/plugin/aegp/Properties'; }
 cdj() { pushd_ "${HOME}/repos/jwfearn/$1"; }
 cdo() { pushd_ "${HOME}/repos/other/$1"; }
 cdor() { pushd_ "${HOME}/repos/other_roku/$1"; }

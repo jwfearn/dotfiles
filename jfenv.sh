@@ -22,7 +22,12 @@ dotenv "${HOME}/.env.secret.sh"
 
 export SHELLCHECK_OPTS='--exclude=SC1090,SC2164'
 
-export P4CONFIG=p4config.txt
+export DVA_DEFAULT_WORKSPACE="${HOME}/Perforce/fearnsid_VALENTOWN_2036"
+
+export P4CONFIG='p4config.txt'
+export P4EDITOR='subl'
+export P4PORT='ssl:lavender.corp.adobe.com:22700'
+export P4USER='fearnsid'
 
 export PGUSER=postgres # used by `psql`
 export PGPORT=5432 # conmpare to setting in /usr/local/var/postgres/postgresql.conf
