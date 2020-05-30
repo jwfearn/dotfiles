@@ -464,6 +464,7 @@ cdot() { pushd_ "${DOTFILES}"; }
 cdw() { pushd_ "/Volumes/R/$1"; }
 cdm() { cdw "fearnsid_ae_main_mac/ae/main/AfterEffects/$1"; }
 cda() { cdw "fearnsid_ae_2019.08_mac/ae/main/AfterEffects/$1"; }
+cdd() { cdw "dva/$1"; }
 cdpp() { cda 'src/plugin/aegp/Properties'; }
 cdj() { pushd_ "${HOME}/repos/jwfearn/$1"; }
 cdo() { pushd_ "${HOME}/repos/other/$1"; }
@@ -768,7 +769,7 @@ _grb() { grep -r --include "*.rb" "$@" .; }
 # grbv() { _grb --include-dir=vendor "$@"; } # TODO
 rbg() { ag --stats --ruby "$@" .; } # honors .gitignore, et al
 # grbv() { "$@"; } # TODO
-eg() { env | sort | ag "$@"; }
+eg() { env | sort | rg "$@"; }
 
 xgrep_in_bash_profiles() {
   local profiles=('/etc/profile' '/etc/bash.bashrc' "${HOME}/.bashrc" "${HOME}/.bash_profile" "${HOME}/.bash_login" "${HOME}/.profile")
