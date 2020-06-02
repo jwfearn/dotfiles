@@ -15,7 +15,7 @@ dotenv() {
   source "${1}"
   local result=$?
   eval "${save}"
-  return result
+  return "${result}"
 }
 
 dotenv "${HOME}/.env.secret.sh"
