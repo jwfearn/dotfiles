@@ -768,8 +768,8 @@ envp_() {
   # for each k:
   #   if k has a value, echo k and $k in 'set' setyle
   #   otherwise echo k 'not set' setyle
-  local DIM='\033[1;30m'
-  local BRIGHT='\033[32m'
+  local DIM='\033[30m'
+  local BRIGHT='\033[1m'
   local RESET='\033[0m'
   for k in "$@"; do
     local s
@@ -787,8 +787,8 @@ filesp_() {
   # for each f:
   #   if f exists, echo f in 'present' style
   #   otherwise echo f in 'not present'
-  local DIM='\033[1;30m'
-  local BRIGHT='\033[32m'
+  local DIM='\033[30m'
+  local BRIGHT='\033[1m'
   local RESET='\033[0m'
   for f in "$@"; do
     local style="${DIM}"
