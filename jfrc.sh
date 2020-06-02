@@ -65,17 +65,11 @@ main() {
     eval "$(jenv init -)"
   fi
 
-  ## enable asdf
-  # source "$(brew --prefix asdf)/asdf.sh" # safer
-  source "/usr/local/opt/asdf/asdf.sh" # faster
-
   for integration in ${integrations[@]}; do
     [[ -r "${integration}" ]] && source "${integration}"
   done
 
   source "${DOTFILES}/jffn.sh"
-
-  source "${HOME}/Library/Preferences/org.dystroy.broot/launcher/bash/br"
 }
 main
 unset -f main
