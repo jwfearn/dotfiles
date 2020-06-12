@@ -94,6 +94,7 @@ export STDOUT_SYNC=1
 # export LSCOLORS='' # OS X,
 export CLICOLOR=1 # use colors in supported commands (ls, others?)
 
+export PATH="${PATH}:/Applications/Araxis Merge.app/Contents/Utilities"
 export PATH="${PATH}:${HOME}/.mix/escripts"
 # export PATH="${PATH}:${GOPATH}/bin"
 export PATH="${PATH}:/usr/local/sbin"
