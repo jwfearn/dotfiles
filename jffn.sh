@@ -142,12 +142,6 @@ t() {
 
 tmc() { MIX_ENV=test mix coveralls.html && open 'cover/excoveralls.html'; }
 
-yt() {
-  pushd "${HOME}/repos/avvo/scooter/apps/scooter_web/assets"
-  yarn test "$@"
-  popd
-}
-
 whilepass() { while $1; do :; done; }
 whilefail() { while ! $1 ; do :; done; }
 
@@ -477,22 +471,6 @@ pgi() { cdi; psql -W -U postgres termfront_dev "$@"; }
 psqld() { psql --host=localhost --port=5432 "$@"; }
 
 ## BEGIN: Avvo-related functions
-agems() {
-  gem list \
-    --remote \
-    --clear-sources \
-    --source "https://${PACKAGECLOUD_READ_TOKEN}@packagecloud.io/avvo/gems" \
-    "$@";
-}
-
-
-# xprods() {
-#   parallel -q -j 7 \
-#   ssh -i ~/.ssh/id_rsa.deployer deployer@{}.prod.avvo.com sh -c \
-#   'hostname && /usr/local/rvm/bin/rvm-exec -- ' "$@" \
-#   ::: sv1wow sv2wow sv3wow sv4wow amos5wow amos6wow amos7wow amos8wow
-# }
-
 hosts_() {
   local HOSTS="$1"; shift
   local SUFFIX="$1"; shift
@@ -503,7 +481,7 @@ hosts_() {
     ::: ${HOSTS}
 }
 
-prods() { hosts_ 'amos5wow amos6wow amos7wow amos8wow api1wad api2wad sv1wow sv2wow sv3wow sv4wow util3wad util4wad' '.prod.avvo.com' "$@"; }
+prods() { hosts_ 'amos5wow amos6wow amos7wow amos8wow api1wad api2wad sv1wow sv2wow sv3wow sv4wow util3wad util4wad' "$@"; }
 stags() { hosts_ 'sv1stag sv2stag util2stag' '' "$@"; }
 
 prodsb() { prods '/usr/local/rvm/bin/rvm-exec -- bundle -v'; }
@@ -516,14 +494,6 @@ stagsbash() { stags 'bash --version | head -1'; }
 
 uatmon() { open 'xxx' "$@"; } # kafkamon for UAT
 ec2ssh_() { cdc && "bin/deploy" vpc ssh "$1" "$2"; }
-uatdb() { ec2ssh_ henry61 db; } # mysql, kafka, ...
-uatfe() { ec2ssh_ henry61 frontend; } # switchboard, ...
-uatbe() { ec2ssh_ henry61 backend; } # stranger-forces, ...
-uatin() { ec2ssh_ henry61 internal; }
-# stagdb() { ssh db1stag.corp.avvo.com; } # mysql, kafka, ...
-# stagfe() { ; } # switchboard, ...
-# stagbe() { ; }
-# stagin() { ; }
 zstag() { "$@"; }
 kstag() { "$@"; }
 
