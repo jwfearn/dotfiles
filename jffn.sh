@@ -40,15 +40,18 @@ fxp() { rg --type-add 'xcodeproj:*.xcodeproj' --type=xcodeproj "$@"; }
 # TODO: refactor findcpp
 findcpp() { find . -type f \( -name '' -or -name '*.h' -or -name '*.hpp' -or -name '*.hxx' -or -name '*.c' -or -name '*.cc' -or -name '*.cpp' -or -name '*.cxx' \); }
 
-
-# Version 0.9.4 is available! (You are running version 0.9.3) Please download our latest version.
-op_() { which op > /dev/null && op "$@"; }
-opu() {
-  local msg=$(op_ update "$@")
-  echo "${msg}"
-  # if msg contains "available" and msg does not contain "http", then echo link to op downloads page
-  echo "Check here: https://app-updates.agilebits.com/product_history/CLI"
+swap() {
+  local src=$1
+  if ! [ -f "${src}" ]; then echo "'${src}' is not a file"; return 1; fi # TODO: add usage
+  local dst=${2:-x$1}
+  if [ -d "${dst}" ]; then echo "'${dst}' is not a file"; return 1; fi # TODO: add usage
+  if ! [ -f "${dst}" ]; then cp "${src}" "${dst}"; fi
+  local tmp="__tmp__${src}"
+  mv "${src}" "${tmp}" && mv "${dst}" "${src}" && mv "${tmp}" "${dst}"
 }
+
+op_() { which op > /dev/null && op "$@"; }
+opu() { op_ update "$@"; }
 
 keyrates() {
   defaults read NSGlobalDomain KeyRepeat
@@ -277,8 +280,8 @@ echo_dir() {
 }
 
 path() {
-  local dirs=($(eval echo \$${1:-PATH} | tr ':' ' '))
-  for dir in ${dirs[@]}; do echo_dir $dir; done
+  local p=($(eval echo \$${1:-PATH}))
+  echo "${p}" | tr ':' '\n' | while IFS= read -r dir; do echo_dir $dir; done
 }
 cpath() { path C_INCLUDE_PATH; }
 cpppath() { path CPLUS_INCLUDE_PATH; }
@@ -423,6 +426,7 @@ cdvw() { cd "${HOME}/vagrant/vmwtest/"; }
 cdvb() { cd "${HOME}/vagrant/vbtest/"; }
 
 ## Git-related functions
+gitpushd() { pushd_ "$(git rev-parse --show-toplevel)/${1}"; }
 gi() { git --version; git status "$@"; }
 gdiff_() { local b0="$1"; local b1="$2"; shift 2; git diff --color --minimal "${b0}..${b1}" "$@"; }
 gstat_() { local b0="$1"; local b1="$2"; shift 2; git diff --color --minimal --stat "${b0}..${b1}" "$@"; }
@@ -447,17 +451,10 @@ gitc() {
 # statl() { gstatl_ .; }
 # grab file from a particular commit.  Usage: ggrab filepath commit
 ggrab() { git co "$2" -- "$1"; }
-# gmm() { git merge master; }
-# grm() { git rebase master; }
 grl() { git reflog --format=format:"%C(yellow)%h %Cblue%aD%Creset %gd %Cgreen%aN%Creset %gs %s"; }
 cdot() { pushd_ "${DOTFILES}"; }
-cdw() { pushd_ "/Volumes/R/$1"; }
-cdm() { cdw "fearnsid_ae_main_mac/ae/main/AfterEffects/$1"; }
-cda() { cdw "fearnsid_ae_2019.08_mac/ae/main/AfterEffects/$1"; }
-cdd() { cdw "dva/$1"; }
-cdpp() { cda 'src/plugin/aegp/Properties'; }
 cdj() { pushd_ "${HOME}/repos/jwfearn/$1"; }
-cdo() { pushd_ "${HOME}/repos/other/$1"; }
+cdother() { pushd_ "${HOME}/repos/other/$1"; }
 cdor() { pushd_ "${HOME}/repos/other_roku/$1"; }
 cdg() { cdj 'graph-ruby'; }
 cdr() { cdj 'resume'; }
@@ -507,19 +504,6 @@ kp() {
     read pid <"${pidfile}"
     kill "${pid}" && echo "killed: ${pid}"
   done
-}
-mrel() {
-  git checkout release \
-    && git remote update -p \
-    && git merge --ff-only "@{u}" \
-    && git checkout master \
-    && git merge --ff-only "@{u}" \
-    && git merge --no-ff release -m "Merge branch 'release' into 'master'" \
-    && git checkout release \
-    && git merge master \
-    && git push \
-    && git checkout master \
-    && git push;
 }
 ## END: Avvo-related functions
 
@@ -821,3 +805,65 @@ src() { . "${DOTFILES}/jffn.sh"; }  # reload function only
 srcx() { . "${DOTFILES}/jfenv.sh"; src; }  # also reload environment variables
 colors() { bash "${DOTFILES}/bin/colortest.sh"; }
 minr() { ruby "${DOTFILES}/bin/minrails.rb"; }
+
+
+# DVA-related functions
+cdw() { pushd_ "/Volumes/R/$1"; }
+cdd() { cdw "dva/$1"; }
+cdu() { cdd 'MakeDVA/Make/'; } # uber directory
+cdo() { cdd 'AfterEffects/tools/'; } # otto directory
+cdpp() { cdd 'AfterEffects/src/plugin/aegp/Properties/'; }
+b_() {
+  gitpushd "MakeDVA/Make/"
+  python ./build-dva.py "$@"
+  popd_
+}
+bae_() { b_ --apps=AfterEffects "$@"; }
+bsb() { bae_ --syncbin "$@"; }
+bmp() { bae_ --makeMP "$@"; }
+bd() { bae_ --debug "$@"; }
+xball() { bae_ --syncbin --makeMP --debug "$@"; }
+
+p4in() { p4 logout; p4 login "$@" && p4 login -s; }
+
+mybanner() {
+  # Unicode box characters:
+  # ┌─┐  ┏━┓  ╔═╗  ╭─╮  ┌┄┐  ┏┅┓  ┌┈┐  ┏┉┓
+  # │ │  ┃ ┃  ║ ║  │ │  ┆ ┆  ┇ ┇  ┊ ┊  ┋ ┋
+  # └─┘  ┗━┛  ╚═╝  ╰─╯  └┄┘  ┗┅┛  └┈┘  ┗┉┛
+  let margin=2
+  let width_outside=COLUMNS-2
+  let width_inside=width_outside-margin-margin
+  printf "╔%${width_outside}s╗\n" | tr ' ' '═'
+  printf "║\033[30m\033[44m%${margin}s%-${width_inside}s%${margin}s\033[0m║\n" ' ' "${1}"
+  printf "╚%${width_outside}s╝\n" | tr ' ' '═'
+}
+
+sane() {
+  cd '/Volumes/R/dva/AfterEffects/tools/' \
+  && mybanner 'BEGIN SANITY TESTS' \
+  && ./otto.py -tests d sanity \
+}
+
+ssane() {
+  cd '/Volumes/R/dva/MakeDVA/Make/' \
+  && mybanner 'BEGIN SYNCBIN' \
+  && ./build-dva.py --apps=AfterEffects --syncbin automation \
+  && sane
+}
+
+ball() {
+  cd '/Volumes/R/dva/MakeDVA/Make/' \
+  && mybanner 'BEGIN SYNCBIN' \
+  && ./build-dva.py --apps=AfterEffects --syncbin automation \
+  && mybanner 'BEGIN MAKEMP' \
+  && ./build-dva.py --apps=AfterEffects --makeMP \
+  && mybanner 'BEGIN BUILD' \
+  && ./build-dva.py --apps=AfterEffects --debug
+}
+
+docx2gfm() {
+  local docx="${1}"
+  local gfm="${docx}.md"
+  docker run --rm --volume "$(pwd):/data" --user "$(id -u):$(id -g)" 'pandoc/latex' --to gfm "${docx}" -o "${gfm}"
+}
