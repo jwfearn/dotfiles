@@ -27,8 +27,12 @@ ff_with_find() { time find . -type f \( -name '' -or -name "$@" \); } # recursiv
 alias ff_with_fd='noglob time fd --type file --case-sensitive --glob' # glob search, much faster than `find`, requires `fd` (see https://github.com/sharkdp/fd)
 alias ff_with_rg='noglob time rg --files --glob'  # glob search, slightly faster than `fd`, requires `ripgrep`
 alias ff_with_git='noglob time git ls-files'
-alias ff='ff_with_fd'
+alias ff='noglob time fd --type file --case-sensitive --glob'
 alias ffg='ff_with_git'
+
+# yq r --prettyPrint pp-example-01.json > pp-example-01.yml
+j2y() { yq read --prettyPrint "$@"; }
+y2j() { yq read --tojson "$@" | jq; }
 
 fcp() { rg --type=cpp "$@"; }
 fpy() { rg --type=py "$@"; }
@@ -806,6 +810,11 @@ srcx() { . "${DOTFILES}/jfenv.sh"; src; }  # also reload environment variables
 colors() { bash "${DOTFILES}/bin/colortest.sh"; }
 minr() { ruby "${DOTFILES}/bin/minrails.rb"; }
 
+docx2gfm() {
+  local docx="${1}"
+  local gfm="${docx}.md"
+  docker run --rm --volume "$(pwd):/data" --user "$(id -u):$(id -g)" 'pandoc/latex' --to gfm "${docx}" -o "${gfm}"
+}
 
 # DVA-related functions
 cdw() { pushd_ "/Volumes/R/$1"; }
@@ -852,18 +861,62 @@ ssane() {
   && sane
 }
 
-ball() {
+mall() {
   cd '/Volumes/R/dva/MakeDVA/Make/' \
   && mybanner 'BEGIN SYNCBIN' \
   && ./build-dva.py --apps=AfterEffects --syncbin automation \
   && mybanner 'BEGIN MAKEMP' \
-  && ./build-dva.py --apps=AfterEffects --makeMP \
+  && ./build-dva.py --apps=AfterEffects --makeMP
+}
+
+bae() {
+  cd '/Volumes/R/dva/MakeDVA/Make/' \
   && mybanner 'BEGIN BUILD' \
   && ./build-dva.py --apps=AfterEffects --debug
 }
 
-docx2gfm() {
-  local docx="${1}"
-  local gfm="${docx}.md"
-  docker run --rm --volume "$(pwd):/data" --user "$(id -u):$(id -g)" 'pandoc/latex' --to gfm "${docx}" -o "${gfm}"
+ball() { mall && bae; }
+
+tae() {
+  # local filter="${1:-Test__U_AnyTreeWrapper/SetFrom_JSON/Focus}" # see: xxx
+  local filter="${1:-Test__U_AnyTreeWrapper}" # see: xxx
+  local aedir='/Volumes/R/dva/AfterEffects'
+  local appdir="${aedir}/lib/mac/debug/After Effects (Beta).app/Contents"
+  local outdir="${aedir}/Results" # PRO TIP: use an ignored directory
+  local report_level='confirm' # confirm|no|short|detailed (default: confirm)
+  local aecmd="${appdir}/aecmd.app/Contents/MacOS/aecmd"
+  local driver="${aedir}/lib/mac/debug/BoostTestDriver.app/Contents/MacOS/BoostTestDriver"
+  local out_junit="${outdir}/results.xml" # JUNIT results file
+  local out_hrf="${outdir}/results.txt" # HRF (Human Readable Format) results file
+  # FORMAT := HRF|JUNIT
+  # LOG_LEVEL := all|test_suite|message|warning|error|cpp_exception|system_error|fatal_error|nothing (default: error)
+  local log1="JUNIT,all,${out_junit}" # three comma-separated values, no spaces: `FORMAT,LOG_LEVEL,results_filepath`
+  local log2="HRF,all,${out_hrf}"
+  local logger="${log1}:${log2}" # N colon separated log values
+
+  mybanner "BEGIN TEST: ${filter}"
+
+  # run tests to produce JUNIT and HRF test results
+  set -x
+  mkdir -p "${outdir}"
+  time "${aecmd}" \
+      --tests \
+      --random \
+      --run_test="${filter}" \
+      --logger="${logger}" \
+      --report_level="${report_level}" \
+    > >(tee "${outdir}/stdout.log") 2> >(tee "${outdir}/stderr.log" >&2)
+  set +x
+  # make HTML test results from JUNIT
+  local out_html="${outdir}/results.html" # HTML results file
+  local icns="${appdir}/Resources/ae_app_stable.icns"
+  local icon="${outdir}/icon.png"
+  [ -f "${icon}" ] || sips --setProperty format png "${icns}" --out "${icon}" # make an AE icon if needed
+  xunit-viewer \
+    --results="${out_junit}" \
+    --output="${out_html}" \
+    --title='aecmd Test Results' \
+    --brand="${icon}"
+
+  mybanner "END TEST: ${filter}"
 }
