@@ -86,6 +86,9 @@ for lib in ${libs[@]}; do
   add_libpath "${libpath}"
 done
 
+# export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)" # safer
+export RUBY_CONFIGURE_OPTS='--with-openssl-dir=/usr/local/opt/openssl@1.1' # faster
+
 export STDOUT_SYNC=1
 
 [ -z "${MSYSTEM}" ] && export GREP_OPTIONS='--color=auto'
