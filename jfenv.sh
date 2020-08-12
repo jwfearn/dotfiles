@@ -10,13 +10,18 @@
 
 # Usage: dotenv <filepath>
 dotenv() {
-  local save=$(set +o | grep allexport)
-  set -o allexport
-  source "${1}"
-  local result=$?
-  eval "${save}"
-  return "${result}"
+  if [ -f "${1}" ]; then
+    local save=$(set +o | grep allexport)
+    set -o allexport
+    source "${1}"
+    local result=$?
+    eval "${save}"
+    return "${result}"
+  fi
 }
+
+export DVA_ROOT="/Volumes/R/dva" # Mac
+[ -d "${DVA_ROOT}" ] || export DVA_ROOT="${HOME}/repos/dva" # PC
 
 dotenv "${HOME}/.env.secret.sh"
 

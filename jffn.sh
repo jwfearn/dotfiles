@@ -9,11 +9,17 @@ alias 'cd....'='cd ../../..'
 alias 'cd.....'='cd ../../../..'
 alias 'cd-'='cd -'
 alias 'wat'="git for-each-ref --count=30 --sort=committerdate refs/head/ --format='%(refname:short)' | fzf | xargs git checkout"
-alias 'ls'='exa --all --classify'
-alias 'll'='exa --all --classify --long'
-alias 'tree'='exa --all --classify --tree'
 alias 'els'='env ls'
 alias 'etree'='env tree'
+
+if [ -x "$(command -v exa)" ]; then
+  alias 'l'='exa --all --classify'
+  alias 'll'='exa --all --classify --long'
+  alias 'tree'='exa --all --classify --tree'
+else
+  alias 'l'='ls -haF'
+  alias 'll'='ls -halF'
+fi
 
 if [ "${ZSH_VERSION}" ]; then
   alias 'type'='whence -cx 2'
@@ -21,14 +27,16 @@ else
   alias noglob=''
 fi
 
-ff_with_find() { time find . -type f \( -name '' -or -name "$@" \); } # recursively list all files matching a pattern
+# Use aliases if needed, ZShell `noglob` doesn't work in functions
+if [ -x "$(command -v fd)" ]; then
+  alias ff='noglob time fd --type file --case-sensitive --glob'
+elif [ -x "$(command -v rg)" ]; then
+  alias ff='noglob time rg --files --glob'  # glob search, slightly faster than `fd`, requires `ripgrep`
+else
+  ff() { time find . -type f \( -name '' -or -name "$@" \); } # recursively list all files matching a pattern
+fi
 
-# These need to be aliases because ZShell `noglob` doesn't work in functions
-alias ff_with_fd='noglob time fd --type file --case-sensitive --glob' # glob search, much faster than `find`, requires `fd` (see https://github.com/sharkdp/fd)
-alias ff_with_rg='noglob time rg --files --glob'  # glob search, slightly faster than `fd`, requires `ripgrep`
-alias ff_with_git='noglob time git ls-files'
-alias ff='noglob time fd --type file --case-sensitive --glob'
-alias ffg='ff_with_git'
+alias ffg='noglob time git ls-files'
 
 # yq r --prettyPrint pp-example-01.json > pp-example-01.yml
 j2y() { yq read --prettyPrint "$@"; }
@@ -723,7 +731,7 @@ _grb() { grep -r --include "*.rb" "$@" .; }
 # grbv() { _grb --include-dir=vendor "$@"; } # TODO
 rbg() { ag --stats --ruby "$@" .; } # honors .gitignore, et al
 # grbv() { "$@"; } # TODO
-eg() { env | sort | rg "$@"; }
+eg() { env | sort | grep "$@"; }
 
 xgrep_in_bash_profiles() {
   local profiles=('/etc/profile' '/etc/bash.bashrc' "${HOME}/.bashrc" "${HOME}/.bash_profile" "${HOME}/.bash_login" "${HOME}/.profile")
@@ -817,8 +825,7 @@ docx2gfm() {
 }
 
 # DVA-related functions
-cdw() { pushd_ "/Volumes/R/$1"; }
-cdd() { cdw "dva/$1"; }
+cdd() { cd "${DVA_ROOT}/${1}"; }
 cdu() { cdd 'MakeDVA/Make/'; } # uber directory
 cdo() { cdd 'AfterEffects/tools/'; } # otto directory
 cdpp() { cdd 'AfterEffects/src/plugin/aegp/Properties/'; }
@@ -833,6 +840,7 @@ bmp() { bae_ --makeMP "$@"; }
 bd() { bae_ --debug "$@"; }
 xball() { bae_ --syncbin --makeMP --debug "$@"; }
 
+
 p4in() { p4 logout; p4 login "$@" && p4 login -s; }
 
 mybanner() {
@@ -840,6 +848,11 @@ mybanner() {
   # ┌─┐  ┏━┓  ╔═╗  ╭─╮  ┌┄┐  ┏┅┓  ┌┈┐  ┏┉┓
   # │ │  ┃ ┃  ║ ║  │ │  ┆ ┆  ┇ ┇  ┊ ┊  ┋ ┋
   # └─┘  ┗━┛  ╚═╝  ╰─╯  └┄┘  ┗┅┛  └┈┘  ┗┉┛
+  # ASCII boc characters:
+  # +-+
+  # | |
+  # | |
+  # +-+
   let margin=2
   let width_outside=COLUMNS-2
   let width_inside=width_outside-margin-margin
@@ -848,22 +861,22 @@ mybanner() {
   printf "╚%${width_outside}s╝\n" | tr ' ' '═'
 }
 
-ipr() { python '/Volumes/R/dva/tools/isolated_pull_request.py' "$@"; }
+ipr() { python "${DVA_ROOT}/tools/isolated_pull_request.py" "$@"; }
 
 sae() {
-  cd '/Volumes/R/dva/MakeDVA/Make/' \
+  cd "${DVA_ROOT}/MakeDVA/Make/" \
   && mybanner 'BEGIN SYNCBIN' \
   && python build-dva.py --apps=AfterEffects --syncbin automation
 }
 
 mae() {
-  cd '/Volumes/R/dva/MakeDVA/Make/' \
+  cd "${DVA_ROOT}/MakeDVA/Make/" \
   && mybanner 'BEGIN MAKEMP' \
   && python build-dva.py --apps=AfterEffects --makeMP
 }
 
 bae() {
-  cd '/Volumes/R/dva/MakeDVA/Make/' \
+  cd "${DVA_ROOT}/MakeDVA/Make/" \
   && mybanner 'BEGIN BUILD' \
   && python build-dva.py --apps=AfterEffects --debug
 }
@@ -872,9 +885,9 @@ mall() { sae && mae; }
 ball() { sae && mae && bae; }
 
 sane() {
-  cd '/Volumes/R/dva/AfterEffects/tools/' \
+  cd "${DVA_ROOT}/AfterEffects/tools/" \
   && mybanner 'BEGIN SANITY TESTS' \
-  && python otto.py -tests d sanity \
+  && python otto.py -tests d sanity
 }
 
 ssane() { sae && sane; }
