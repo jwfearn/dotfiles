@@ -848,44 +848,45 @@ mybanner() {
   printf "╚%${width_outside}s╝\n" | tr ' ' '═'
 }
 
-sane() {
-  cd '/Volumes/R/dva/AfterEffects/tools/' \
-  && mybanner 'BEGIN SANITY TESTS' \
-  && ./otto.py -tests d sanity \
-}
+ipr() { python '/Volumes/R/dva/tools/isolated_pull_request.py' "$@"; }
 
-ssane() {
+sae() {
   cd '/Volumes/R/dva/MakeDVA/Make/' \
   && mybanner 'BEGIN SYNCBIN' \
-  && ./build-dva.py --apps=AfterEffects --syncbin automation \
-  && sane
+  && python build-dva.py --apps=AfterEffects --syncbin automation
 }
 
-mall() {
+mae() {
   cd '/Volumes/R/dva/MakeDVA/Make/' \
-  && mybanner 'BEGIN SYNCBIN' \
-  && ./build-dva.py --apps=AfterEffects --syncbin automation \
   && mybanner 'BEGIN MAKEMP' \
-  && ./build-dva.py --apps=AfterEffects --makeMP
+  && python build-dva.py --apps=AfterEffects --makeMP
 }
 
 bae() {
   cd '/Volumes/R/dva/MakeDVA/Make/' \
   && mybanner 'BEGIN BUILD' \
-  && ./build-dva.py --apps=AfterEffects --debug
+  && python build-dva.py --apps=AfterEffects --debug
 }
 
-ball() { mall && bae; }
+mall() { sae && mae; }
+ball() { sae && mae && bae; }
+
+sane() {
+  cd '/Volumes/R/dva/AfterEffects/tools/' \
+  && mybanner 'BEGIN SANITY TESTS' \
+  && python otto.py -tests d sanity \
+}
+
+ssane() { sae && sane; }
 
 tae() {
-  # local filter="${1:-Test__U_AnyTreeWrapper/SetFrom_JSON/Focus}" # see: xxx
-  local filter="${1:-Test__U_AnyTreeWrapper}" # see: xxx
+  local filter="${1:-Test__U_AnyTreeWrapper}"
   local aedir='/Volumes/R/dva/AfterEffects'
   local appdir="${aedir}/lib/mac/debug/After Effects (Beta).app/Contents"
   local outdir="${aedir}/Results" # PRO TIP: use an ignored directory
   local report_level='confirm' # confirm|no|short|detailed (default: confirm)
   local aecmd="${appdir}/aecmd.app/Contents/MacOS/aecmd"
-  local driver="${aedir}/lib/mac/debug/BoostTestDriver.app/Contents/MacOS/BoostTestDriver"
+  # local driver="${aedir}/lib/mac/debug/BoostTestDriver.app/Contents/MacOS/BoostTestDriver"
   local out_junit="${outdir}/results.xml" # JUNIT results file
   local out_hrf="${outdir}/results.txt" # HRF (Human Readable Format) results file
   # FORMAT := HRF|JUNIT
@@ -894,10 +895,8 @@ tae() {
   local log2="HRF,all,${out_hrf}"
   local logger="${log1}:${log2}" # N colon separated log values
 
-  mybanner "BEGIN TEST: ${filter}"
-
   # run tests to produce JUNIT and HRF test results
-  set -x
+  set -x # print command lines as they execute
   mkdir -p "${outdir}"
   time "${aecmd}" \
       --tests \
@@ -907,7 +906,8 @@ tae() {
       --report_level="${report_level}" \
     > >(tee "${outdir}/stdout.log") 2> >(tee "${outdir}/stderr.log" >&2)
   set +x
-  # make HTML test results from JUNIT
+
+  # make HTML test results from JUNIT (requires: https://www.npmjs.com/package/xunit-viewer)
   local out_html="${outdir}/results.html" # HTML results file
   local icns="${appdir}/Resources/ae_app_stable.icns"
   local icon="${outdir}/icon.png"
@@ -917,6 +917,4 @@ tae() {
     --output="${out_html}" \
     --title='aecmd Test Results' \
     --brand="${icon}"
-
-  mybanner "END TEST: ${filter}"
 }
