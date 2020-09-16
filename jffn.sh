@@ -931,3 +931,11 @@ tae() {
     --title='aecmd Test Results' \
     --brand="${icon}"
 }
+
+iv() {
+  if [ -x "$(command -v icc)" ]; then
+    icc -V
+  else
+    "%ProgramFiles(x86)%\IntelSWTools\compilers_and_libraries\windows\bin\intel64\icl.exe"
+  fi
+}
