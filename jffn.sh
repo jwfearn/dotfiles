@@ -37,6 +37,8 @@ else
   #ff() { time find . -type f \( -name '' -or -name "$@" \); } # recursively list all files matching a pattern
 fi
 
+# Like `ff` but without globbing
+fff() { time find . -type f \( -name '' -or -name "$@" \); } # recursively list all files matching a pattern
 alias ffg='noglob time git ls-files'
 
 # yq r --prettyPrint pp-example-01.json > pp-example-01.yml
@@ -53,6 +55,13 @@ fxp() { rg --type-add 'xcodeproj:*.xcodeproj' --type=xcodeproj "$@"; }
 # TODO: refactor findcpp
 findcpp() { find . -type f \( -name '' -or -name '*.h' -or -name '*.hpp' -or -name '*.hxx' -or -name '*.c' -or -name '*.cc' -or -name '*.cpp' -or -name '*.cxx' \); }
 
+touchp() {
+  for f in "$@"; do
+    # [ -d $f:h ] || mkdir -p $f:h && touch $f # <== `:h`means "head of pathname" (ZSH-only?)
+    mkdir -p "$(dirname "${f}")/" && touch "${f}"
+  done
+}
+
 swap() {
   local src=$1
   if ! [ -f "${src}" ]; then echo "'${src}' is not a file"; return 1; fi # TODO: add usage
@@ -63,7 +72,7 @@ swap() {
   mv "${src}" "${tmp}" && mv "${dst}" "${src}" && mv "${tmp}" "${dst}"
 }
 
-op_() { which op > /dev/null && op "$@"; }
+op_() { if [ -x "$(command -v op)" ]; then op "$@"; fi; }
 opu() { op_ update "$@"; }
 
 keyrates() {
@@ -108,11 +117,82 @@ ce() { Assembler.sh "$1.asm" && CPUEmulator.sh "$1.tst"; }
 #ktopics() { ; }
 
 ## formatters
-exf() { mix format "$@"; }
-mdf() {
+fex() { mix format "$@"; }
+fmd() {
   local f="${1:-README.md}"
-  prettier --prose-wrap=always --print-width=80 "${f}" | sponge "${f}"
+  prettier --prose-wrap=always --print-width=80 "${f}" \
+  | sponge "${f}"
 }
+x1fxml() {
+  local f=$(realpath "${1}")
+  cat "${f}" \
+  | python3 -c 'import sys; import xml.dom.minidom as m; print(m.parseString(sys.stdin.read()).toprettyxml(indent="  ", newl=""))' \
+  | sponge "${f}"
+}
+
+x2fxml() {
+  local f=$(realpath "${1}")
+  python3 -c "import sys; import xml.dom.minidom as m; print(m.parse(open('${f}')).toprettyxml(indent='  ', newl=''))" \
+  | sponge "${f}"
+}
+
+x3fxml() {
+  local f=$(realpath "${1}")
+  python3 -c "import sys; import xml.dom.minidom as m; print(m.parse('${f}').toprettyxml(indent='  ', newl=''))" # trailing ws
+}
+
+x4fxml() {
+  local f=$(realpath "${1}")
+  python3 -c "import sys; import xml.dom.minidom as m; print(m.parse('${f}').toprettyxml(indent='  ', newl=''))" \
+  | sed 's/[[:space:]]*$//' # OK
+}
+
+
+x5fxml() {
+  local f=$(realpath "${1}")
+  python3 -c "import xml.etree.ElementTree as ET;print(ET.canonicalize(from_file='${f}'))" # no indents
+}
+
+x6fxml() {
+  local f=$(realpath "${1}")
+  python3 -c "import xml.etree.ElementTree as ET;print(ET.indent(ET.parse('${f}')))" # None
+}
+
+x7fxml() {
+  local f=$(realpath "${1}")
+  python3 -c "import xml.etree.ElementTree as ET;ET.dump(ET.parse('${f}'))" # no indents
+}
+
+x8fxml() {
+  local f=$(realpath "${1}")
+  python3 -c "import xml.etree.ElementTree as ET;print(ET.tostring(ET.parse('${f}').getroot()))" # b'....'
+}
+
+x9fxml() {
+  local f=$(realpath "${1}")
+  python3 -c "import xml.etree.ElementTree as ET;print(ET.indent(ET.parse('${f}').getroot()))" # None
+}
+
+fxml() {
+  local f=$(realpath "${1}")
+  python3 -c "import xml.dom.minidom as m; print(m.parse('${f}').toprettyxml(indent='  ', newl=''))" \
+  | sed 's/[[:space:]]*$//' \
+  | sponge "${f}" # OK
+}
+
+x11fxml() {
+  local f=$(realpath "${1}")
+  python3 -c "import xml.dom.minidom as m; import xml.etree.ElementTree as ET; print(m.parseString(ET.canonicalize(from_file='${f}')).toprettyxml(indent='  ', newl=''))" \
+  | sed 's/[[:space:]]*$//' \
+  | sponge "${f}" # BETTER, attrs are alpha-sorted
+}
+
+#xxxfxml() {
+  # open file in Dreamweaver
+  # apply source formatting
+  # close and save file
+#}
+
 
 pping() { prettyping "$@"; }
 myip() { ipconfig getifaddr "${1:-en0}" "$@"; }
@@ -376,7 +456,7 @@ yfd() { yarn foreman:dev "$@"; }
 yfp() { yarn foreman:prod "$@"; }
 
 ## Node-relate functions
-npm_() { which npm > /dev/null && npm "$@"; }
+npm_() { if [ -x "$(command -v npm)" ]; then npm "$@"; fi; }
 nr() { npm_ run "$@"; }
 nt() { npm_ test "$@"; }
 nps() { npm_ -g list --depth=0  "$@"; } # node packages
@@ -413,7 +493,7 @@ dmc() { dm create -d vmwarefusion --vmwarefusion-boot2docker-url 'https://github
 avt() { avro-tools "$@"; }
 
 ## Vagrant-related functions
-vagrant_() { which vagrant > /dev/null && vagrant "$@"; }
+vagrant_() { if [ -x "$(command -v vagrant)" ]; then vagrant "$@"; fi; }
 vps() { vagrant_ plugin list "$@"; }
 vinfo() { vagrant_ version; vps; vagrant_ global-status; vagrant_ status "$@" 2> /dev/null; }
 vbo() { vagrant_ box outdated "$@"; }
@@ -607,9 +687,9 @@ bcop() { bx rubocop "$@"; bx rubocop --format 'fi' "$@" | wc -l; }
 # hound() { cop $(git diff --name-only); }
 
 ## rbenv-related functions
-rbenv_() { which rbenv > /dev/null && rbenv "$@"; }
-ruby-build_() { which ruby-build > /dev/null && ruby-build "$@"; }
-ruby_() { which ruby > /dev/null && ruby "$@"; }
+rbenv_() { if [ -x "$(command -v rbenv)" ]; then rbenv "$@"; fi; }
+ruby-build_() { if [ -x "$(command -v ruby-build)" ]; then ruby-build "$@"; fi; }
+ruby_() { if [ -x "$(command -v ruby)" ]; then ruby "$@"; fi; }
 rbs() { ruby-build_ --version; rbenv_ -v; rbenv_ versions; echo "CURRENT RUBY: $(ruby_ -v)"; }
 rb+() { rbenv_ install "$1"; }
 rb-() { rbenv_ uninstall "$1"; }
@@ -646,8 +726,8 @@ j0() { jenv local system; js; }
 j8() { jenv local oracle64-1.8.0.60; js; }
 
 ## Python-related functions
-python3_() { which python3 > /dev/null && python3 "$@"; }
-pip3_() { which pip3 > /dev/null && pip3 "$@"; }
+python3_() { if [ -x "$(command -v python3)" ]; then python3 "$@"; fi; }
+pip3_() { if [ -x "$(command -v pip3)" ]; then pip3 "$@"; fi; }
 pps() { pip3_ list "$@"; }
 ppo() { pip3_ list --outdated "$@"; return 0; }
 ppu() { pip3_ list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip3 install -U; }
@@ -841,7 +921,10 @@ bd() { bae_ --debug "$@"; }
 xball() { bae_ --syncbin --makeMP --debug "$@"; }
 
 
+p4s() { p4 login -s "$@"; }
 p4in() { p4 logout; p4 login "$@" && p4 login -s; }
+
+arts() { du -hcs "$@" "${HOME}/.adobe/artifact_cache" }
 
 mybanner() {
   # Unicode box characters:
@@ -892,6 +975,12 @@ sane() {
 
 ssane() { sae && sane; }
 
+aed() {
+  local aedir='/Volumes/R/dva/AfterEffects'
+  local appfile="${aedir}/lib/mac/debug/After Effects (Beta).app"
+  open "${appfile}"
+}
+
 tae() {
   local filter="${1:-Test__U_AnyTreeWrapper}"
   local aedir='/Volumes/R/dva/AfterEffects'
@@ -939,3 +1028,14 @@ iv() {
     "%ProgramFiles(x86)%\IntelSWTools\compilers_and_libraries\windows\bin\intel64\icl.exe"
   fi
 }
+
+ppx() {
+  cat "${1}" \
+  | python3 -c "import sys; import xml.dom.minidom as m; print(m.parseString(sys.stdin.read()).toprettyxml(indent='  ', newl=''))"
+}
+
+ppx2() {
+  cat "${1}" \
+  | python3 -c "import sys; import xml.etree.ElementTree as ET; print(ET.indent(ET.XML(sys.stdin.read())))"
+}
+
