@@ -31,9 +31,10 @@ fi
 if [ -x "$(command -v fd)" ]; then
   alias ff='noglob time fd --type file --case-sensitive --glob'
 elif [ -x "$(command -v rg)" ]; then
-  alias ff='noglob time rg --files --glob'  # glob search, slightly faster than `fd`, requires `ripgrep`
+  # glob search, slightly faster than `fd`, requires `ripgrep`
+  alias ff='noglob time rg --files --glob'
 else
-  ff() { time find . -type f \( -name '' -or -name "$@" \); } # recursively list all files matching a pattern
+  #ff() { time find . -type f \( -name '' -or -name "$@" \); } # recursively list all files matching a pattern
 fi
 
 alias ffg='noglob time git ls-files'
@@ -617,8 +618,7 @@ rbis() { rbis_ | column; }
 rbup_() { brew upgrade rbenv 2> /dev/null; brew upgrade ruby-build 2> /dev/null; rbenv_ -v; ruby-build_ --version; }
 rbup() { rbis_ > rbis0.txt; rbup_; rbis_ > rbis1.txt; gdiff rbis0.txt rbis1.txt; }
 rb0() { rbenv_ local system; rbs; }
-rb2() { rbenv_ local 2.7.2; rbs; }
-rbj() { rbenv_ local jruby-9.2.5.0; rbs; }
+rb3() { rbenv_ local 3.0.0; rbs; }
 rbe() { rbenv_ each "$@"; }
 rgs() { rbenv_ each -v gem list; }
 rg+() { rbenv_ each -v gem install "$@"; }
