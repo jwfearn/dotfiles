@@ -461,7 +461,7 @@ nr() { npm_ run "$@"; }
 nt() { npm_ test "$@"; }
 nps() { npm_ -g list --depth=0  "$@"; } # node packages
 npo() { npm_ -g outdated "$@"; return 0; } # outdated node packages
-npu() { npm_ -g update "$@"; } # update node packages
+npu() { npm_ i -g npm@latest; npm_ -g update "$@"; } # update node packages
 
 ## Docker-related functions
 rr() { docker run -d --restart=unless-stopped -p 8080:8080 rancher/server:preview; }
