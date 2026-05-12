@@ -1,0 +1,16 @@
+[user]
+	name = John Fearnside
+	email = 276996+jwfearn@users.noreply.github.com
+	signingkey = key::ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMotER+wEOQh1m+1gJ12dD6XLypOH8XqjoHdnIL/NKOH
+
+[gpg]
+	format = ssh
+
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+
+[commit]
+	gpgsign = true
+
+[tag]
+	gpgsign = true
