@@ -2,6 +2,7 @@
 
 _source_dir() {
     [ -d "$1" ] || return 0
+    [ -n "$ZSH_VERSION" ] && setopt localoptions nullglob
     for _f in "$1"/*.sh; do
         [ -r "$_f" ] && . "$_f"
     done
