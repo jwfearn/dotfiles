@@ -20,3 +20,6 @@ run ./up-macos.sh
 
 printf "Xcode Command Line Tools: "
 run ./up-xcode-clt.sh
+
+printf "Homebrew: "
+run ./up-brew.sh
