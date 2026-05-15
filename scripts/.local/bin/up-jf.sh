@@ -2,6 +2,7 @@
 set -e
 
 result=0
+dir=$(dirname "$0")
 
 run() {
   script=$1; shift
@@ -14,12 +15,12 @@ run() {
 }
 
 printf "MAC OS: "
-run ./up-macos.sh "$@"
+run "$dir/up-macos.sh" "$@"
 
 printf "Xcode Command Line Tools: "
-run ./up-xcode-clt.sh "$@"
+run "$dir/up-xcode-clt.sh" "$@"
 
 printf "Homebrew: "
-run ./up-brew.sh "$@"
+run "$dir/up-brew.sh" "$@"
 
 exit $result
