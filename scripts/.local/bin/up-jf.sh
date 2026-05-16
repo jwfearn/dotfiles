@@ -11,11 +11,15 @@ run() {
     echo "up-jf: $script exited with code $code" >&2
     exit $code
   fi
-  [ $code -eq 2 ] && result=2
+  if [ $code -eq 2 ]; then result=2; fi
 }
+
+run "$dir/up-1password.sh" "$@"
 
 printf "MAC OS: "
 run "$dir/up-macos.sh" "$@"
+
+run "$dir/up-xcode.sh" "$@"
 
 printf "Xcode Command Line Tools: "
 run "$dir/up-xcode-clt.sh" "$@"
