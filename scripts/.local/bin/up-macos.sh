@@ -29,7 +29,7 @@ available=$(printf '%s\n' "$update_output" \
     | head -1)
 
 if [ -n "$available" ]; then
-    echo "$current → $available"
+    echo "$current → $available (requires manual update from System Settings)"
     exit 2
 fi
 
