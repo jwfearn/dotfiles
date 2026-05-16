@@ -10,11 +10,7 @@ On a fresh machine, paste this into a terminal (works in zsh and bash):
 [ -d ~/dotfiles ] || git clone https://github.com/jwfearn/dotfiles.git ~/dotfiles && ~/dotfiles/scripts/.local/bin/up-jf.sh
 ```
 
-This clones the repo to `~/dotfiles` if not already present, then runs `up-jf.sh` to check the system. Once an SSH key is configured, update the remote with:
-
-```sh
-git -C ~/dotfiles remote set-url origin git@github.com:jwfearn/dotfiles.git
-```
+This clones the repo to `~/dotfiles` if not already present, then runs `up-jf.sh` to check the system. Once 1Password is installed, `up-jf.sh` will automatically switch the dotfiles remote from HTTPS to SSH.
 
 ## Structure
 
