@@ -108,11 +108,10 @@ if [[ -z "$op_latest" ]]; then
 fi
 
 if ! command -v op &>/dev/null; then
+    echo "op: not installed → $op_latest"
     if [[ "$UPDATE" == true ]]; then
         install_op "$op_latest"
-        echo "op: installed $(op --version)"
     else
-        echo "op: not installed → $op_latest"
         result=2
     fi
 else
@@ -124,12 +123,13 @@ else
 
     if [[ "$op_current" == "$op_latest" ]]; then
         echo "op: $op_current"
-    elif [[ "$UPDATE" == true ]]; then
-        install_op "$op_latest"
-        echo "op: $op_current → $(op --version)"
     else
         echo "op: $op_current → $op_latest"
-        result=2
+        if [[ "$UPDATE" == true ]]; then
+            install_op "$op_latest"
+        else
+            result=2
+        fi
     fi
 fi
 
