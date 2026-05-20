@@ -30,4 +30,7 @@ run "$dir/up-brew.sh" "$@"
 printf "Homebrew packages:\n"
 run "$dir/up-brew-packages.sh" "$@"
 
+printf "Stow packages:\n"
+run "$dir/up-stow.sh" "$@"
+
 exit $result
