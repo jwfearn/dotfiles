@@ -34,14 +34,14 @@ install_op() {
     local url="https://cache.agilebits.com/dist/1P/op2/pkg/v${version}/op_apple_universal_v${version}.pkg"
     local tmp
     tmp=$(mktemp /tmp/op_XXXXXX.pkg)
-    echo "op: downloading v${version}..."
+    echo "1Password CLI: downloading v${version}..."
     if ! curl -fsSL "$url" -o "$tmp"; then
-        echo "op: error: download failed" >&2
+        echo "1Password CLI: error: download failed" >&2
         rm -f "$tmp"
         exit 1
     fi
     if ! sudo installer -pkg "$tmp" -target /; then
-        echo "op: error: installation failed" >&2
+        echo "1Password CLI: error: installation failed" >&2
         rm -f "$tmp"
         exit 1
     fi
@@ -103,12 +103,12 @@ fi
 
 op_latest=$(get_op_latest_version)
 if [[ -z "$op_latest" ]]; then
-    echo "op: error: could not fetch latest version" >&2
+    echo "1Password CLI: error: could not fetch latest version" >&2
     exit 1
 fi
 
 if ! command -v op &>/dev/null; then
-    echo "op: not installed → $op_latest"
+    echo "1Password CLI: not installed → $op_latest"
     if [[ "$UPDATE" == true ]]; then
         install_op "$op_latest"
     else
@@ -117,14 +117,14 @@ if ! command -v op &>/dev/null; then
 else
     op_current=$(op --version 2>/dev/null)
     if [[ -z "$op_current" ]]; then
-        echo "op: error: could not determine installed version" >&2
+        echo "1Password CLI: error: could not determine installed version" >&2
         exit 1
     fi
 
     if [[ "$op_current" == "$op_latest" ]]; then
-        echo "op: $op_current"
+        echo "1Password CLI: $op_current"
     else
-        echo "op: $op_current → $op_latest"
+        echo "1Password CLI: $op_current → $op_latest"
         if [[ "$UPDATE" == true ]]; then
             install_op "$op_latest"
         else

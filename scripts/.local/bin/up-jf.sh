@@ -16,15 +16,18 @@ run() {
 
 run "$dir/up-1password.sh" "$@"
 
-printf "MAC OS: "
+printf "macOS: "
 run "$dir/up-macos.sh" "$@"
 
 run "$dir/up-xcode.sh" "$@"
 
-printf "Xcode Command Line Tools: "
+printf "Xcode CLT: "
 run "$dir/up-xcode-clt.sh" "$@"
 
 printf "Homebrew: "
 run "$dir/up-brew.sh" "$@"
+
+printf "Homebrew packages: "
+run "$dir/up-brew-packages.sh" "$@"
 
 exit $result
