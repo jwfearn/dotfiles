@@ -27,7 +27,7 @@ run "$dir/up-xcode-clt.sh" "$@"
 printf "Homebrew: "
 run "$dir/up-brew.sh" "$@"
 
-printf "Homebrew packages: "
+printf "Homebrew packages:\n"
 run "$dir/up-brew-packages.sh" "$@"
 
 exit $result
